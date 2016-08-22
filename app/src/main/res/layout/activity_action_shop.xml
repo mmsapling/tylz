@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:background="@color/bg_color"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_topmenu"/>
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/shop_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"/>
+                <!--装点的容器-->
+                <LinearLayout
+                    android:id="@+id/shop_point_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between_6px"/>
+
+            <com.tylz.aelos.view.MeasureGridView
+                android:id="@+id/shop_gridview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ECECEC"
+                android:listSelector="@null"
+                android:numColumns="3"
+                android:scrollbars="none"
+                android:verticalSpacing="1dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between_6px"/>
+
+            <com.tylz.aelos.view.MeasureListView
+                android:id="@+id/shop_listview"
+                android:scrollbars="none"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null">
+            </com.tylz.aelos.view.MeasureListView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

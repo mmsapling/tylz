@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#fcfcfc"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_topmenu"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EDEDED">
+
+        <!-- 新建动作 -->
+
+        <ImageView
+            android:id="@+id/iv_new_action"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/selector_new_action">
+        </ImageView>
+        <!-- 帮助 -->
+
+        <ImageView
+            android:id="@+id/iv_help"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/selector_help">
+        </ImageView>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_action"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 居中的添加动作 -->
+
+        <RelativeLayout
+            android:id="@+id/container_not_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/ib_add_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/selector_add_action"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ib_add_action"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="@string/tip_custom_action"
+                android:textColor="#dbdbdb"
+                android:textSize="12sp"/>
+        </RelativeLayout>
+        <!-- 有内容的添加动作 -->
+
+        <LinearLayout
+            android:id="@+id/container_have_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/ib_add_action1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/selector_add_action"/>
+
+            <ListView
+                android:id="@+id/lv_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@mipmap/listview_divider"
+                android:dividerHeight="1dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/tip_custom_action"
+                android:textColor="#dbdbdb"
+                android:textSize="12sp"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_help"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/help_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:listSelector="#00000000"
+            android:scrollbars="none">
+        </ListView>
+    </FrameLayout>
+
+</LinearLayout>

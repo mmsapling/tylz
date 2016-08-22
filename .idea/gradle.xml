@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="LOCAL" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="D:\cxw\android-studio\gradle\gradle-2.10" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/ToggleButtonLib" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/pickview_library" />
+            <option value="$PROJECT_DIR$/sliding_menu_library" />
+          </set>
+        </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/ToggleButtonLib" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/pickview_library" />
+            <option value="$PROJECT_DIR$/sliding_menu_library" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

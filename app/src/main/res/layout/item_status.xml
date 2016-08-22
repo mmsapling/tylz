@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- 上半部 -->
+
+    <RelativeLayout
+        android:id="@+id/item_container_top"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/selector_status" >
+
+        <TextView
+            android:id="@+id/item_tv_num"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="#02b1e6" />
+
+        <!-- 播放 -->
+
+        <ImageView
+            android:id="@+id/item_iv_play"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="4dp"
+            android:src="@drawable/selector_play" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@id/item_iv_play"
+            android:layout_toRightOf="@id/item_tv_num" >
+	
+            <SeekBar
+                android:id="@+id/item_sb"
+                android:max="30"
+                android:progress="15"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:progressDrawable="@mipmap/progress_sudu"
+                android:thumb="@mipmap/tt" />
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@id/item_sb"
+                android:layout_marginRight="8dp"
+                android:src="@mipmap/normal_left"/>
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/item_sb"
+                android:src="@mipmap/normal_right"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    <!-- 下半部 -->
+
+    <LinearLayout
+        android:id="@+id/item_container_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/item_iv_top"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/selector_arr_top" />
+
+        <ImageView
+            android:id="@+id/item_iv_bottom"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:src="@drawable/selector_arr_bottom" />
+
+        <ImageView
+            android:id="@+id/item_iv_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:src="@drawable/selector_delete" />
+    </LinearLayout>
+
+</LinearLayout>

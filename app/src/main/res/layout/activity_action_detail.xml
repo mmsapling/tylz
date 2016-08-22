@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+        <include layout="@layout/include_topmenu"/>
+        <!--视频-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:background="@color/black"
+            android:layout_height="200dp">
+
+            <VideoView
+                android:id="@+id/videoview"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/iv_bg_video"
+                android:src="@mipmap/applogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ProgressBar
+                android:id="@+id/pb_progress"
+                android:visibility="gone"
+              android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <ImageButton
+                android:id="@+id/ib_video_play"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:src="@mipmap/icon_video_play"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!--最底下发送-->
+    <RelativeLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@mipmap/send_background"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/select_btn_radius_bg"
+            android:text="@string/send"
+            android:textColor="@color/white"/>
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_toLeftOf="@id/btn_send"
+            android:textCursorDrawable="@null"
+            android:hint="@string/hint_input_comment"
+            android:textSize="14sp"
+            android:background="@drawable/shape_bg_edittext"
+            android:paddingLeft="6dp"/>
+    </RelativeLayout>
+
+        <com.tylz.aelos.view.LoadMoreListView
+            android:id="@+id/listview"
+            android:layout_below="@id/ll_top"
+            android:layout_above="@id/ll_bottom"
+            android:divider="@null"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+</RelativeLayout>

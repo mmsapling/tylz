@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/main_rl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@mipmap/background">
+    <ImageView
+        android:id="@+id/iv_remote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginLeft="40dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/remote_basickey"/>
+    <ImageView
+        android:id="@+id/iv_store"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="80dp"
+        android:visibility="gone"
+        android:src="@mipmap/remote_actionkey"/>
+    <ImageView
+        android:id="@+id/iv_voice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        android:src="@mipmap/remote_configuration"/>
+    <ImageView
+        android:id="@+id/iv_help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="54dp"
+        android:visibility="gone"
+        android:src="@mipmap/remote_custom_action"/>
+
+    <ImageView
+        android:id="@+id/iv_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="2dp"
+        android:src="@mipmap/remote_return"
+        android:visibility="gone" />
+
+</RelativeLayout>

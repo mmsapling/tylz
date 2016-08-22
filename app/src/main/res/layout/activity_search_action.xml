@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/color_f1"
+              android:orientation="vertical">
+
+    <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/iv_left"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@null"
+            android:src="@drawable/selector_menu_back"/>
+        <ImageButton
+            android:id="@+id/iv_right"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:src="@mipmap/search"/>
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_bg_multilinetext"
+            android:ems="10"
+            android:hint="@string/hint_input_key_search"
+            android:inputType="text"
+            android:maxLength="20"
+            android:layout_toRightOf="@id/iv_left"
+            android:layout_toLeftOf="@id/iv_right"
+            android:paddingLeft="10dp"
+            android:textColor="@color/color_c4"
+            android:textSize="16dp">
+
+            <requestFocus/>
+        </EditText>
+
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tylz.aelos.view.LoadMoreListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null">
+            </com.tylz.aelos.view.LoadMoreListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:id="@+id/tv_nothing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/nothing"
+            android:textColor="#8E8E92"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+</LinearLayout>

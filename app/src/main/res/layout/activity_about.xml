@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_topmenu"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_color_normal"
+        android:padding="30dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/about"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_version_introduce"
+        style="@style/About_Container">
+        <TextView
+            style="@style/About_Title_Left"
+            android:drawableStart="@mipmap/point"
+            android:text="@string/version_introduce"/>
+        <TextView
+            style="@style/About_Title_Right"
+            android:text="VERSION"/>
+    </RelativeLayout>
+
+    <View style="@style/Line_Style"/>
+    <RelativeLayout
+        android:id="@+id/rl_check_update"
+        style="@style/About_Container">
+        <TextView
+            style="@style/About_Title_Left"
+            android:drawableStart="@mipmap/point"
+            android:text="@string/check_update"/>
+        <TextView
+            style="@style/About_Title_Right"
+            android:text="UPDATE"/>
+    </RelativeLayout>
+
+    <View style="@style/Line_Style"/>
+    <RelativeLayout
+        android:id="@+id/rl_instructions"
+        style="@style/About_Container">
+        <TextView
+            style="@style/About_Title_Left"
+            android:drawableStart="@mipmap/point"
+            android:text="@string/instructions"/>
+        <TextView
+            style="@style/About_Title_Right"
+            android:text="DIRECTION"/>
+    </RelativeLayout>
+    <View style="@style/Line_Style"/>
+    <RelativeLayout
+        android:id="@+id/rl_help"
+        style="@style/About_Container">
+        <TextView
+            style="@style/About_Title_Left"
+            android:drawableStart="@mipmap/point"
+            android:text="@string/help"/>
+        <TextView
+            style="@style/About_Title_Right"
+            android:text="HELP"/>
+    </RelativeLayout>
+    <View style="@style/Line_Style"/>
+    <RelativeLayout
+        android:id="@+id/rl_feedback"
+        style="@style/About_Container">
+        <TextView
+            style="@style/About_Title_Left"
+            android:drawableStart="@mipmap/point"
+            android:text="@string/feedback"/>
+        <TextView
+            style="@style/About_Title_Right"
+            android:text="FEEDBACK"/>
+    </RelativeLayout>
+    <View style="@style/Line_Style"/>
+</LinearLayout>

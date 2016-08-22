@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/include_topmenu"/>
+    <!--手机号-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/phone_num"
+        android:textColor="#8E8E92"
+        android:textSize="14dp"/>
+
+    <EditText
+        android:id="@+id/et_phone"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:drawableBottom="@drawable/bg_edittext"
+        android:ems="11"
+        android:hint="@string/hint_input_phone"
+        android:inputType="phone"
+        android:maxLength="11"
+        android:singleLine="true"
+        android:textColor="#1D1D26"
+        android:textColorHint="@color/hint_color"
+        android:textCursorDrawable="@null"
+        android:textSize="14dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/tv_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_bg_selector"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/get_code"
+            android:textColor="@color/white"
+            android:textSize="12dp"/>
+
+        <EditText
+            android:id="@+id/et_code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@null"
+            android:drawableBottom="@drawable/bg_edittext"
+            android:ems="11"
+            android:hint="@string/hint_input_verify_code"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:singleLine="true"
+            android:textColor="#1D1D26"
+            android:textColorHint="@color/hint_color"
+            android:textCursorDrawable="@null"
+            android:textSize="14dp"/>
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/et_pwd"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:drawableBottom="@drawable/bg_edittext"
+        android:hint="@string/hint_input_pwd"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:textColor="#1D1D26"
+        android:textColorHint="#8E8E92"
+        android:textCursorDrawable="@null"
+        android:textSize="14dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/bt_confirm"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp"
+            style="@style/BaseBtnStyle"
+            android:text="@string/confirm_retry_pwd"/>
+        <LinearLayout
+            android:id="@+id/ll_gologin"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="60dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="已有账户"
+                android:textColor="#8E8E92"
+                android:gravity="center_vertical"
+                android:textSize="14dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/go_login"
+                android:textColor="#1D1D26"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

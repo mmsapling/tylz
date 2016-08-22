@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#F1F1F1"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_gg_selector">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_avator"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="20dp"
+            android:src="@mipmap/defaultavatar"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/civ_avator"
+            android:text="@string/no_login"
+            android:textColor="#666666"
+            android:textSize="16dp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_msg"
+        style="@style/MainMenuStyle"
+        android:drawableLeft="@mipmap/left1"
+        android:text="@string/my_msg"/>
+    <TextView
+        android:id="@+id/tv_collect"
+        style="@style/MainMenuStyle"
+        android:drawableLeft="@mipmap/heart_top"
+        android:text="@string/my_collect"/>
+    <TextView
+        android:id="@+id/tv_upload"
+        style="@style/MainMenuStyle"
+        android:drawableLeft="@mipmap/uploading"
+        android:text="@string/my_upload"/>
+
+    <TextView
+        android:id="@+id/tv_setting"
+        style="@style/MainMenuStyle"
+        android:drawableLeft="@mipmap/left2"
+        android:text="@string/setting"/>
+
+    <TextView
+        android:id="@+id/tv_about"
+        style="@style/MainMenuStyle"
+        android:drawableLeft="@mipmap/left3"
+        android:text="@string/about"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="40dp">
+
+        <TextView
+            android:id="@+id/tv_logout"
+            style="@style/MainMenuStyle"
+            android:layout_alignParentBottom="true"
+            android:drawableLeft="@mipmap/left4"
+            android:text="@string/logout"/>
+    </RelativeLayout>
+</LinearLayout>

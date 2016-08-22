@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#C4C4C4</color>
+    <color name="colorPrimaryDark">#C4C4C4</color>
+    <color name="colorAccent">#C4C4C4</color>
+    <color name="bg_color">#F4F3F3</color>
+    <color name="bg_color_normal">#01B0E4</color>
+    <color name="color_f1">#F1F1F1</color>
+    <!--自定义DDialog颜色-->
+    <color name="ddialog_text_color">#333333</color>
+    <color name="ddialog_line_bg">#E3E3E3</color>
+    <color name="ddialog_rightbtn_pressed">#EBEBEB</color>
+    <color name="dalertdialog_line">#C6C6C6</color>
+    <color name="dactionsheet_blue">#037BFF</color>
+    <color name="dactionsheet_red">#FD4A2E</color>
+    <color name="dactionsheet_gray">#8F8F8F</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="bg_btn_press">#c7c7c7</color>
+    <color name="wifi_normal">#02b1e6</color>
+    <color name="wifi_press">#C6C6C6</color>
+    <color name="color_c6">#C6C6C6</color>
+    <!-- 帮助 -->
+    <color name="help_title_color">#666666</color>
+    <color name="help_content_color">#838383</color>
+    <color name="color_60">#606060</color>
+    <color name="color_c5">#C5C5C5</color>
+    <color name="color_f3">#F3F3F3</color>
+    <color name="color_f4">#F4F4F4</color>
+    <color name="color_dd">#DDDDDD</color>
+    <color name="color_66">#666666</color>
+    <color name="color_bb">#BBBBBB</color>
+    <color name="blue">#0000FF</color>
+    <color name="hint_color">#8E8E92</color>
+    <color name="color_c4">#C4C4C4</color>
+    <color name="color_e5">#E5E5E5</color>
+    <color name="color_69">#696969</color>
+    <color name="grid_state_pressed">#1Affffff</color>
+    <color name="grid_state_focused">#80000000</color>
+
+</resources>

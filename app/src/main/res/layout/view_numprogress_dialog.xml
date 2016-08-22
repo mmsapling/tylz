@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:padding="16dp"
+              android:orientation="vertical">
+
+    <com.daimajia.numberprogressbar.NumberProgressBar
+        android:id="@+id/numberbar"
+        android:padding="20dp"
+        style="@style/NumberProgressBar_Default"
+        app:progress_reached_bar_height="2dp"
+        app:progress_unreached_bar_height="1dp"
+        app:progress_text_size="14sp"/>
+
+    <TextView
+        android:id="@+id/_tv_loading_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="12sp"/>
+
+</LinearLayout>

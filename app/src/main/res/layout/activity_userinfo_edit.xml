@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/include_topmenu"/>
+
+    <ScrollView
+        android:scrollbars="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <!--头像部分-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
+                <FrameLayout
+                    android:id="@+id/fl_avator"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civ_avator"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@mipmap/defaultavatar"/>
+                    <ImageView
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:src="@mipmap/picture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/username"/>
+            </LinearLayout>
+            <!--大条目分割线-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between_2px"/>
+            <!--基本信息条目-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="28dp"
+                android:orientation="vertical">
+                <!--昵称-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/nickname"/>
+
+                    <EditText
+                        android:id="@+id/et_nickname"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--性别-->
+                <LinearLayout
+                    android:id="@+id/ll_sex"
+                    android:background="@drawable/btn_wg_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/sex"/>
+
+                    <TextView
+                        android:id="@+id/tv_sex"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--所在地-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/location"/>
+
+                    <EditText
+                        android:id="@+id/et_location"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--个人说明-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/personal_describe"/>
+
+                    <EditText
+                        android:id="@+id/et_personal"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+            </LinearLayout>
+            <!--条目分割线-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between20px"/>
+            <!--其他条目-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="28dp"
+                android:orientation="vertical">
+                <!--QQ-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/qq"/>
+
+                    <EditText
+                        android:id="@+id/et_qq"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--邮箱-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/email"/>
+
+                    <EditText
+                        android:id="@+id/et_email"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--生日-->
+                <LinearLayout
+                    android:id="@+id/ll_birthday"
+                    android:background="@drawable/btn_wg_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/birthday"/>
+
+                    <TextView
+                        android:id="@+id/tv_birthday"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--年龄-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/age"/>
+
+                    <EditText
+                        android:id="@+id/et_age"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+                <!--爱好-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        style="@style/UserInfoLeftStyle"
+                        android:text="@string/hobby"/>
+
+                    <EditText
+                        android:id="@+id/et_hobby"
+                        style="@style/UserInfoEditStyle"/>
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/Line_Style"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between_2px"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

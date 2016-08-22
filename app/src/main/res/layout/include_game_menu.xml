@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_container"
+    android:layout_width="match_parent"
+    android:background="#EDEDED"
+    android:layout_height="48dp">
+    <ImageButton
+        android:id="@+id/iv_left"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@null"
+        android:src="@drawable/selector_menu_back"
+        />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:textColor="#1D1D26"
+        android:layout_centerInParent="true"
+        android:textStyle="normal"
+        android:textSize="18sp"
+        android:layout_height="48dp"/>
+
+    <RelativeLayout
+        android:layout_toRightOf="@id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true">
+
+        <ImageButton
+            android:id="@+id/ib_setting"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:background="@null"
+            android:src="@drawable/selector_game_setting"/>
+
+        <ImageButton
+            android:id="@+id/ib_custom"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="55dp"
+            android:background="@null"
+            android:src="@drawable/selector_custom"/>
+
+
+    </RelativeLayout>
+</RelativeLayout>

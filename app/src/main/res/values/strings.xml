@@ -1,0 +1,256 @@
+<resources>
+    <string name="app_name">Aelos</string>
+    <string name="hard_loading">正在卖力加载中</string>
+    <!--登录-->
+    <string name="login">登录</string>
+    <string name="account">帐号</string>
+    <string name="password">密码</string>
+    <string name="quick_experience">快速体验</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="empty_username">用户名不能为空！</string>
+    <string name="empty_password">密码不能为空！</string>
+    <string name="error_login">用户名或密码错误！</string>
+    <string name="tip_ble_connect_fail">蓝牙连接失败</string>
+    <!--扫描-->
+    <string name="connect_robot">连接机器人</string>
+    <string name="scan_now">立 即 扫 描</string>
+    <string name="no_scan">跳过扫描,立即进入</string>
+    <string name="error_bluetooth_not_supported">该设备不支持蓝牙！</string>
+    <string name="ble_not_supported">不支持BLE</string>
+    <string name="scaning">扫描中...</string>
+    <string name="no_login">尚未登录</string>
+    <string name="my_msg">我的消息</string>
+    <string name="setting">设置</string>
+    <string name="logout">退出</string>
+    <string name="my_robot">我的机器人</string>
+    <string name="connect_bluetooth">正在连接蓝牙</string>
+    <string name="exit_app">再按一次退出程序！</string>
+    <string name="register_account">注册账户</string>
+
+    <string name="title">提示</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="tip">提示</string>
+    <string name="retry">重试</string>
+    <!--遥控器-->
+    <string name="tip_quick_mode">快走模式下最好不要操作超过十分钟！\\n是否切换？</string>
+    <string name="switch_quick_mode">已切换至快走模式</string>
+    <string name="switch_normal_mode">已切换为正常模式</string>
+    <string name="tip_open_tumbler">确定开启不倒翁模式？</string>
+    <string name="open_tumbler_mode">开启不倒翁模式</string>
+    <string name="rssi">信号</string>
+    <string name="left_turn">左转</string>
+    <string name="right_turn">右转</string>
+    <string name="turn_left">向左</string>
+    <string name="back_coming">后退</string>
+    <string name="advance">前进</string>
+    <string name="turn_right">向右</string>
+    <string name="stop_action">停止动作</string>
+
+    <!--连接机器人-->
+    <string name="next">下一步</string>
+    <string name="wifi_config">Wifi配置</string>
+    <string name="help">帮助</string>
+    <string name="wifi_name">WIFI名称：</string>
+    <string name="wifi_pwd">WIFI密码：</string>
+    <string name="not_wifi_conn">当前没有连接wifi</string>
+    <string name="voice_control">语音控制</string>
+    <string name="tip_wifi_pwd">请输入WIFI密码！</string>
+    <!--主页帮助-->
+    <string name="mainhelp_tip">提示：点击帮助卡片，进入视频详情帮助</string>
+    <string name="mainhelp_q1">Q:如何连接机器人</string>
+    <string name="mainhelp_q2">Q:如何快速控制机器人</string>
+    <string name="mainhelp_q3">Q:如何下载或收藏机器人动作到手机?</string>
+    <string name="mainhelp_q4">Q:如何设置遥控器按键对应的机器人动作?</string>
+    <string name="mainhelp_a1">
+	    A:在确保机器人电量充足的情况下，开启手机蓝牙，启动移动端APP后,
+	    在“连接机器人”界面点击“立即扫描”按钮,扫描到相应的机器人设备(例如：AELOS000001),
+	    点击后进入“我的机器人”界面，说明连接成功。
+	</string>
+	<string name="mainhelp_a2">
+	    A:连接机器人后,在“我的机器人”界面点击“操控器”按钮,进入控制机器人界面后可以使用控制面板对机器
+	    人控制。
+	</string>
+	<string name="mainhelp_a3">
+	    A:在“我的机器人”界面点击右下角“动作商城”按钮，进入在线动作商城。在这里我们可以下载自己喜欢的机器人动作到
+	    手机或者收藏喜欢的动作到收藏夹。
+	</string>
+	<string name="mainhelp_a4">
+	    A:在动作商城的动作下载到手机端的前提下，进入操控器界面，点击右上角的设置按钮，同步完成后点击红色的下载按钮
+	    可以将手机端的动作包下载到机器人，然后点击左侧的按键，再次点击刚刚下载到机器人中的动作，点击“保存”按钮保存设置。
+	</string>
+    <string name="help_detail">帮助详情</string>
+    <!--关于-->
+    <string name="version_introduce">版本介绍</string>
+    <string name="about">关于</string>
+    <string name="check_update">检查更新</string>
+    <string name="instructions">使用说明</string>
+    <string name="feedback">意见反馈</string>
+    <string name="nothing">当前暂无数据！</string>
+    <string name="latest_version">已经是最新版本了~</string>
+    <string name="tip_feedback">您可以输入1-100个字，您的反馈对我们非常重要，我们会在您的建议下越做越好，谢谢!</string>
+    <string name="empty_feedback">请输入您要反馈的内容!</string>
+    <string name="tip_thanks_feedback">感谢你的反馈！</string>
+    <!--设置-->
+    <string name="clear_cache">清理缓存</string>
+    <string name="notification">消息提醒</string>
+    <string name="current_wifi_play">仅当WIFI网络播放</string>
+    <string name="success_clear_cache">清理成功！</string>
+    <string name="pwd_safe">密码安全</string>
+    <!--个人中心-->
+    <string name="sex">性别</string>
+    <string name="location">所在地</string>
+    <string name="qq">QQ</string>
+    <string name="age">年龄</string>
+    <string name="birthday">生日</string>
+    <string name="email">邮箱</string>
+    <string name="hobby">爱好</string>
+    <string name="nickname">昵称</string>
+    <string name="username">用户名</string>
+    <string name="personal">个人中心</string>
+    <string name="personal_describe">个人说明</string>
+    <string name="edit_info">编辑信息</string>
+    <string name="save">保存</string>
+    <string name="open_photo">打开相册</string>
+    <string name="camera">拍照</string>
+    <string name="please_select">请选择</string>
+    <string name="title_select_sex">选择性别</string>
+    <string name="man">男</string>
+    <string name="woman">女</string>
+    <string name="keep_secret">保密</string>
+    <!--登录注册相关-->
+    <string name="tip_must_login">你还未登录，是否立即登录？</string>
+    <string name="plean_login">请先登录！</string>
+    <string name="hint_input_accout">请输入帐号！</string>
+    <string name="hint_input_pwd">请输入密码！</string>
+    <string name="empty_account_or_pwd">帐号或密码不能为空！</string>
+    <string name="get_code">获取验证码</string>
+    <string name="phone_num">手机号</string>
+    <string name="go_login">去登录</string>
+    <string name="hint_input_verify_code">请输入验证码！</string>
+    <string name="hint_input_phone">请输入手机号！</string>
+    <string name="phone_verify">手机验证</string>
+    <string name="empty_phone">手机号码不能为空！</string>
+    <string name="error_phone">请输入正确的手机号码！</string>
+    <string name="tip_registed_phone">该手机号已被注册！</string>
+    <string name="time_count">秒后再试一次！</string>
+    <string name="retry_verify_code">再试一次</string>
+    <string name="empty_verify_code">验证码不能为空！</string>
+    <string name="error_verify_code">验证码错误！</string>
+    <string name="hint_input_nickname">请输入昵称！</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="hint_input_confrim_pwd">请再次输入密码！</string>
+    <string name="register">注册</string>
+    <string name="empty_nickname">昵称不能为空！</string>
+    <string name="please_select_photo">请选择照片！</string>
+    <string name="error_pwd_twice">两次输入密码不一致！</string>
+    <string name="fail_register">注册失败！</string>
+    <string name="success_regist">注册成功！</string>
+    <string name="username_repeat">昵称重复！</string>
+    <string name="confirm_retry_pwd">确认重置</string>
+    <string name="password_retake">找回密码</string>
+    <string name="not_exist_phone">该手机号不存在！</string>
+    <string name="fail_pwd_retake">密码重置失败！</string>
+    <string name="tip_check_net">请检查网络是否通畅！</string>
+    <string name="success_pwd_retake">密码重置成功！</string>
+    <string name="success_login">登录成功！</string>
+    <string name="fail_edit">编辑失败！</string>
+    <string name="loading">正在加载</string>
+    <!--动作商城-->
+    <string name="hot">热门</string>
+    <string name="action_shop">动作商城</string>
+    <string name="download">下载</string>
+    <string name="icon_preview">预览</string>
+    <string name="action_introduce">动作介绍</string>
+    <string name="download_action">下载动作</string>
+    <string name="downloaded">已下载</string>
+    <string name="base_action">基础动作</string>
+    <string name="music_dance">音乐舞蹈</string>
+    <string name="fable">寓言故事</string>
+    <string name="football">足球</string>
+    <string name="boxing">拳击</string>
+    <string name="custom">自定义</string>
+    <string name="hint_input_key_search">请输入关键字搜索!</string>
+    <string name="please_waiting_searching">请稍等，正在搜索中！</string>
+    <!--修改密码-->
+    <string name="save_">保  存</string>
+    <string name="original_pwd">原密码</string>
+    <string name="new_pwd">新密码</string>
+    <string name="confirm_new_pwd">确认新密码</string>
+    <string name="hint_input_original_pwd">请输入原密码！</string>
+    <string name="hint_input_new_pwd">请输入新密码！</string>
+    <string name="hint_input_confrim_new_pwd">请再次输入新密码</string>
+    <string name="edit_pwd">修改密码</string>
+    <string name="error_original_pwd">原密码输入错误！</string>
+    <string name="error_input_pwd_twice">两次输入新密码不一致！</string>
+    <string name="success_edit">修改成功！</string>
+    <!--动作详情-->
+    <string name="send">发送</string>
+    <string name="collect">收藏</string>
+    <string name="reply">回复</string>
+    <string name="comment">评论</string>
+    <string name="praise">赞</string>
+    <string name="success_collect">收藏成功!</string>
+    <string name="cancel_collect">取消收藏!</string>
+    <string name="fail_praise">操作失败！</string>
+    <string name="success_praise">点赞成功！</string>
+    <string name="cancel_praise">取消点赞！</string>
+    <string name="fail_operation">操作失败！</string>
+    <string name="success_download">下载成功！</string>
+    <string name="hint_input_comment">我要发表评论！</string>
+    <string name="empty_comment">评论内容不能为空！</string>
+    <string name="success_comment">评论成功！</string>
+    <string name="fail_comment">评论失败！</string>
+    <string name="support_preview">仅供预览！</string>
+    <string name="my_upload">我的上传</string>
+    <string name="my_collect">我的收藏</string>
+    <string name="comment_detail">评论详情</string>
+    <string name="success_reply">回复成功！</string>
+    <string name="self">自己</string>
+    <string name="FAIL_LOAD_MODEL">模型加载失败！</string>
+    <!--动作配置-->
+    <string name="set_key_function">设置按键功能</string>
+    <string name="sucess_enter_83">成功切换在线模式！</string>
+    <string name="SUCCESS_DIRECTORY">目录同步成功！</string>
+    <string name="fail_synchronization">目录同步失败！</string>
+    <string name="fail_download_quest">下载动作请求失败！</string>
+    <string name="fail_download">下载失败,请稍候重试！</string>
+    <string name="robot_buzy">机器人繁忙,请稍候再试！</string>
+    <string name="fail_connect_robot">连接机器人失败！</string>
+    <string name="fail_setting">配置失败,请稍候重试！</string>
+    <string name="success_setting">配置成功！</string>
+    <string name="tip_delete_action">你确定删除这条动作吗？</string>
+    <string name="empty_action">动作为空！</string>
+    <string name="remote_control">遥控器</string>
+    <string name="not_setting">尚未配置！</string>
+    <string name="current_playing_action">当前正在播放动作！</string>
+    <!--自定义动作界面-->
+    <string name="tip_custom_action">提示：请点击添加动作，进行动作自定义。</string>
+    <string name="custom_action">自定义动作</string>
+    <string name="action_name">动作名：</string>
+    <string name="empty_action_name">动作名不能为空！</string>
+    <string name="fail_online">切换在线模式失败！</string>
+    <string name="tip_long_press_num">提示：长按编号可进行更多操作。</string>
+    <string name="tip_click_add">提示：请点击添加状态，进行编辑动作获取。</string>
+    <string name="timeout_get_status">获取状态已超时！</string>
+    <string name="error_steering">号舵机出错！</string>
+    <string name="first_recorder">已经是第一条记录了！</string>
+    <string name="end_recorder">没有下一条记录了！</string>
+    <string name="not_status">当前动作没有状态！</string>
+    <!--上传动作-->
+    <string name="_action_name">动作名称：</string>
+    <string name="type">类别</string>
+    <string name="photo">照片</string>
+    <string name="video">视频</string>
+    <string name="hint_input_custom_action">请描述该自定义动作..</string>
+    <string name="upload_action">上传动作</string>
+    <string name="recording">录制视频</string>
+    <string name="local_video">本地视频</string>
+    <string name="video_not_supported">暂不支持大于10M的视频！</string>
+    <string name="please_select_type">请选择类别</string>
+    <string name="please_select_video">请选择视频</string>
+    <string name="empty_action_des">动作描述不能为空！</string>
+    <string name="success_upload">上传成功！</string>
+
+
+</resources>
