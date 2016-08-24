@@ -30,7 +30,6 @@ import com.tylz.aelos.adapter.CommentAdapter;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.ActionDetailBean;
 import com.tylz.aelos.bean.Comment;
-import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.db.DbHelper;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
@@ -68,7 +67,7 @@ import okhttp3.Call;
  *  @创建时间:  2016/7/27 18:03
  *  @描述：    动作详情界面
  */
-public class ActionDetailActivity
+public class ActionIdDetailActivity
         extends BaseActivity
         implements LoadMoreListView.OnLoadMore,
                    View.OnClickListener,
@@ -102,7 +101,7 @@ public class ActionDetailActivity
     private TextView           mTvTime;
     private ImageButton        mIvLeft;
     private Button             mBtnSend;
-    private ShopBean           mShopBean;
+    private String             id;
     private ActionDetailBean   mActionDetailBean;
     private TextView           mTvDownloadCount;
     private TextView           mTvCollectCount;
@@ -129,7 +128,7 @@ public class ActionDetailActivity
         ButterKnife.bind(this);
         init();
         initListView();
-        initShopBeanData();
+        initData();
         loadDataForNet();
         loadCommentFroNet(1);
     }
@@ -151,7 +150,7 @@ public class ActionDetailActivity
                                   @Override
                                   public void run() {
                                       Map<String, String> params = new HashMap<String, String>();
-                                      params.put("goodsid", mShopBean.id);
+                                      params.put("goodsid", id);
                                       params.put("page", mPage + "");
                                         /*默认展示1000*/
                                       params.put("number", Constants.PAGE_SIZE);
@@ -213,17 +212,16 @@ public class ActionDetailActivity
         mListview.setLoadMoreListen(this);
         mListview.setOnItemClickListener(this);
     }
+
     public void setListViewHeightBasedOnChildren(ListView listView)
     {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-        {
+        if (listAdapter == null) {
             // pre-condition
             return;
         }
         int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++)
-        {
+        for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
@@ -232,28 +230,17 @@ public class ActionDetailActivity
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+
     /**
      * 初始化数据
      * 1.设置标题
      * 2.类型，时长
      * 3.是否
      */
-    private void initShopBeanData() {
+    private void initData() {
 
-        mShopBean = (ShopBean) getIntent().getSerializableExtra(EXTRA_DATA);
-        mTvTitle.setText(mShopBean.title);
-        mTvType.setText(mShopBean.type);
-        mTvTime.setText(mShopBean.second);
-        /*是否收藏过*/
-        if (mShopBean.iscollect.equals("true")) {
-            mIvCollect.setPressed(true);
-        }
-        /*是否下载，需要从本地判断，暂时没做*/
-        if (mDbHelper.isExistActionId(mShopBean.id)) {
-            mIvDownload.setEnabled(false);
-        } else {
-            mIvDownload.setEnabled(true);
-        }
+        id = getIntent().getStringExtra(EXTRA_DATA);
+
     }
 
     private Handler mHandler = new Handler() {
@@ -334,7 +321,7 @@ public class ActionDetailActivity
      * 初始化视频控件
      */
     private void initVideoView() {
-        if (mShopBean.hasAction.equals("false")) {
+        if (mActionDetailBean.hasAction.equals("false")) {
             mIvDownload.setImageResource(R.drawable.selector_icon_prew);
             mIvDownload.setSelected(true);
             mIvDownload.setPressed(true);
@@ -385,10 +372,10 @@ public class ActionDetailActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(mVideoviewCurrentPosition != -1){
-            if(mVideoview != null && mVideoview.isPlaying()){
+        if (mVideoviewCurrentPosition != -1) {
+            if (mVideoview != null && mVideoview.isPlaying()) {
                 mVideoview.seekTo(mVideoviewCurrentPosition);
-            }else {
+            } else {
                 mVideoview.seekTo(mVideoviewCurrentPosition);
             }
         }
@@ -397,7 +384,7 @@ public class ActionDetailActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if(mVideoview != null && mVideoview.isPlaying()){
+        if (mVideoview != null && mVideoview.isPlaying()) {
             /*记录当前位置*/
             mVideoviewCurrentPosition = mVideoview.getCurrentPosition();
             mVideoview.pause();
@@ -408,7 +395,19 @@ public class ActionDetailActivity
      * 获取网络的数据后，设置整个界面视图
      */
     private void setAllView() {
-
+        mTvTitle.setText(mActionDetailBean.title);
+        mTvType.setText(mActionDetailBean.type);
+        mTvTime.setText(mActionDetailBean.second);
+        /*是否收藏过*/
+        if (mActionDetailBean.iscollect.equals("true")) {
+            mIvCollect.setPressed(true);
+        }
+        /*是否下载，需要从本地判断，暂时没做*/
+        if (mDbHelper.isExistActionId(id)) {
+            mIvDownload.setEnabled(false);
+        } else {
+            mIvDownload.setEnabled(true);
+        }
         /*如果当前用户赞过，那么设置点赞按压下过，显示点赞数量，否则显示数量*/
         mTvPraiseCount.setText(mActionDetailBean.applaudCount);
         if (mActionDetailBean.isApplaud.equals("true")) {
@@ -432,10 +431,9 @@ public class ActionDetailActivity
                               .execute(new Runnable() {
                                   @Override
                                   public void run() {
-                                      String id = mSpUtils.getString(Constants.USER_ID, "");
                                       Map<String, String> params = new HashMap<>();
-                                      params.put("id", mShopBean.id);
-                                      params.put("userid", id);
+                                      params.put("id", id);
+                                      params.put("userid", mUser_id);
                                       String  data = HttpUtil.doPost("getGoods", params);
                                       Message msg  = Message.obtain();
                                       msg.what = WHAT_LOAD_DATA;
@@ -470,11 +468,11 @@ public class ActionDetailActivity
                                    closeNumProcess();
                                    long result = mDbHelper.insertAction(mActionDetailBean, "false");
                                    if (result != -1) {
-                                       mShopBean.isdownload = "true";
+                                       mActionDetailBean.isdownload = "true";
                                        mIvDownload.setEnabled(false);
                                        ToastUtils.showToast(R.string.success_download);
                                    } else {
-                                       mShopBean.isdownload = "false";
+                                       mActionDetailBean.isdownload = "false";
                                        mIvDownload.setEnabled(true);
                                    }
                                    loadDownLoadCountFromNet();
@@ -506,7 +504,7 @@ public class ActionDetailActivity
                                   @Override
                                   public void run() {
                                       Map<String, String> params = new HashMap<String, String>();
-                                      params.put("goodsid", mShopBean.id);
+                                      params.put("goodsid", id);
                                       final String countDownload = HttpUtil.doPost("countDownload",
                                                                                    params);
                                       UIUtils.postTaskSafely(new Runnable() {
@@ -514,8 +512,7 @@ public class ActionDetailActivity
                                           public void run() {
                                               closeProgress();
                                               try {
-                                                  JSONArray  jsonArray  = new JSONArray(
-                                                          countDownload);
+                                                  JSONArray jsonArray = new JSONArray(countDownload);
                                                   JSONObject jsonObject = jsonArray.getJSONObject(0);
                                                   String downloadCount = jsonObject.getString(
                                                           "downloadCount");
@@ -530,22 +527,6 @@ public class ActionDetailActivity
                               });
     }
 
-    /**
-     * 携带数据返回
-     */
-    private void goBack() {
-        int    position = getIntent().getIntExtra(EXTRA_POS, -1);
-        Intent intent   = new Intent();
-        intent.putExtra(EXTRA_DATA, mShopBean);
-        intent.putExtra(EXTRA_POS, position);
-        setResult(RESULT_CODE_RETURN, intent);
-        finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        goBack();
-    }
 
     @Override
     public void loadMore() {
@@ -558,11 +539,11 @@ public class ActionDetailActivity
             showLoginTip();
         } else {
             if (v == mLlDownload) {
-                if (mShopBean.hasAction.equals("false")) {
+                if (mActionDetailBean.hasAction.equals("false")) {
                     ToastUtils.showToast(R.string.support_preview);
                     return;
                 }
-                if (mDbHelper.isExistActionId(mShopBean.id)) {
+                if (mDbHelper.isExistActionId(id)) {
                     ToastUtils.showToast(R.string.downloaded);
                     return;
                 }
@@ -570,11 +551,11 @@ public class ActionDetailActivity
                     //不下载音频，直接保存数据
                     long result = mDbHelper.insertAction(mActionDetailBean, "false");
                     if (result != -1) {
-                        mShopBean.isdownload = "true";
+                        mActionDetailBean.isdownload = "true";
                         mIvDownload.setEnabled(false);
                         ToastUtils.showToast(R.string.success_download);
                     } else {
-                        mShopBean.isdownload = "false";
+                        mActionDetailBean.isdownload = "false";
                         mIvDownload.setEnabled(true);
                     }
                     loadDownLoadCountFromNet();
@@ -594,7 +575,7 @@ public class ActionDetailActivity
             } else if (v == mBtnSend) {
                 sendComment();
             } else if (v == mIvLeft) {
-                goBack();
+                finish();
             }
         }
 
@@ -620,7 +601,7 @@ public class ActionDetailActivity
                                   @Override
                                   public void run() {
                                       Map<String, String> params = new HashMap<String, String>();
-                                      params.put("goodsid", mShopBean.id);
+                                      params.put("goodsid", id);
                                       params.put("userid", mUser_id);
                                       params.put("content", comment);
                                       params.put("linkid", "");
@@ -663,7 +644,7 @@ public class ActionDetailActivity
                                   public void run() {
                                       Map<String, String> params = new HashMap<String, String>();
                                       params.put("userid", mUser_id);
-                                      params.put("goodsid", mShopBean.id);
+                                      params.put("goodsid", id);
                                       final String praiseData = HttpUtil.doPost("applaud", params);
                                       UIUtils.postTaskSafely(new Runnable() {
                                           @Override
@@ -720,7 +701,7 @@ public class ActionDetailActivity
                                   public void run() {
                                       Map<String, String> params = new HashMap<String, String>();
                                       params.put("id", mUser_id);
-                                      params.put("goodsid", mShopBean.id);
+                                      params.put("goodsid", id);
                                       final String collectData = HttpUtil.doPost("collect", params);
                                       LogUtils.d("collectdata = " + collectData);
                                       UIUtils.postTaskSafely(new Runnable() {
@@ -751,12 +732,12 @@ public class ActionDetailActivity
             String     collectCount    = jsonObject.getString("collectCount");
             mTvCollectCount.setText(collectCount);
             if (result.equals(success_collect)) {
-                mShopBean.iscollect = "true";
+                mActionDetailBean.iscollect = "true";
                 //ToastUtils.showToast(R.string.success_collect);
                 mIvCollect.setEnabled(false);
             } else {
-               // ToastUtils.showToast(R.string.cancel_collect);
-                mShopBean.iscollect = "false";
+                // ToastUtils.showToast(R.string.cancel_collect);
+                mActionDetailBean.iscollect = "false";
                 mIvCollect.setEnabled(true);
             }
         } catch (JSONException e) {
@@ -772,7 +753,7 @@ public class ActionDetailActivity
             Comment comment = mDatas.get(pos);
             intent.putExtra(ReplyCommentActivity.EXTRA_DATA, comment);
             intent.putExtra(ReplyCommentActivity.EXTRA_POS, pos);
-            intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID, mShopBean.id);
+            intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID, id);
             startActivityForResult(intent, REQUEST_COMMENT_CODE);
         }
 

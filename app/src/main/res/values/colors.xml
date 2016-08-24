@@ -38,5 +38,6 @@
     <color name="color_69">#696969</color>
     <color name="grid_state_pressed">#1Affffff</color>
     <color name="grid_state_focused">#80000000</color>
-
+    <color name="btn_gray_normal">#c0c0c0</color>
+    <color name="top_bar_normal_bg">#4ebcd3</color>
 </resources>

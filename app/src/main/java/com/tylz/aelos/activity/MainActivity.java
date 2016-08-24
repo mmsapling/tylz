@@ -270,7 +270,11 @@ public class MainActivity
                 }
                 break;
             case R.id.tv_upload:
-                skipActivity(MyUploadActivity.class);
+                if(isLogin()){
+                    skipActivity(MyUploadActivity.class);
+                }else{
+                    showLoginTip();
+                }
                 break;
             case R.id.iv_connect_robot:
                 skipActivity(ConnRobotActivity.class);
@@ -386,6 +390,7 @@ public class MainActivity
                                     } else if (x > 300) {
                                         //向右长滑
                                         mModelRightSpeed -= Constants.MODEL_REGULATION_SPEED;
+                                        mModelLeftSpeed = 0;
                                         mModelAnimTask.start(mModelRightSpeed);
                                     } else if (x < 300) { //向右短滑
                                             /*
@@ -401,8 +406,10 @@ public class MainActivity
                                     } else if (y < -100) {
                                         //向左上
                                     } else if (x > -300 && x < -100) { //向左短滑
+                                        mModelRightSpeed = 0;
                                         mModelLeftSpeed += Constants.MODEL_REGULATION_SPEED;
                                     } else if (x < -300) { //向左长滑
+                                        mModelRightSpeed = 0;
                                         //向左
                                         mModelLeftSpeed += Constants.MODEL_REGULATION_SPEED;
                                         mModelAnimTask.start(mModelLeftSpeed);

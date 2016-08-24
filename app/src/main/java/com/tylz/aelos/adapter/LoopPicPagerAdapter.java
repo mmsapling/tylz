@@ -1,12 +1,15 @@
 package com.tylz.aelos.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
+import com.tylz.aelos.activity.ActionIdDetailActivity;
+import com.tylz.aelos.activity.ActionSpecialActivity;
 import com.tylz.aelos.base.BasePageAdapter;
 import com.tylz.aelos.bean.LoopPicData;
 
@@ -48,7 +51,16 @@ public class LoopPicPagerAdapter
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ToastUtils.showToast(loopPicData.type);
+                if(loopPicData.type.equals("2")){
+                    Intent intent = new Intent(mContext, ActionSpecialActivity.class);
+                    intent.putExtra(ActionSpecialActivity.EXTRA_DATA,loopPicData);
+                    mContext.startActivity(intent);
+                }else if(loopPicData.type.equals("1")){
+                    Intent intent = new Intent(mContext, ActionIdDetailActivity.class);
+                    intent.putExtra(ActionIdDetailActivity.EXTRA_DATA,loopPicData.id);
+                    mContext.startActivity(intent);
+                }
+
             }
         });
         return view;

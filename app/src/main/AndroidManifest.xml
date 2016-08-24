@@ -6,7 +6,11 @@
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Required -->
     <permission android:name="com.tylz.aelos.permission.JPUSH_MESSAGE" android:protectionLevel="signature" />
 
@@ -172,7 +176,18 @@
         <activity android:name=".activity.MyUploadActivity"
                   android:screenOrientation="portrait"/>
 
-
+        <!--视频录制页面-->
+        <activity android:name=".activity.RecorderVideoActivity"
+                  android:screenOrientation="portrait"/>
+        <!--上传详情页面-->
+        <activity android:name=".activity.UploadActionDetailActivity"
+                  android:screenOrientation="portrait"/>
+        <!--动作专辑页面-->
+        <activity android:name=".activity.ActionSpecialActivity"
+                  android:screenOrientation="portrait"/>
+        <!--具体某一个动作页面-->
+        <activity android:name=".activity.ActionIdDetailActivity"
+                  android:screenOrientation="portrait"/>
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"

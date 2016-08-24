@@ -57,19 +57,21 @@ public interface Constants {
     /**是否是第一次启动主页*/
     String IS_FIRST_MAIN                = "is_first_main";
     /**是否是第一次启动遥控器*/
-    String IS_FIRST_REMOTE_CONTROL = "is_first_remote_control";
+    String IS_FIRST_REMOTE_CONTROL      = "is_first_remote_control";
     /**是否是第一次启动商城*/
-    String IS_FIRST_ACTION_SHOP    = "is_first_action_shop";
+    String IS_FIRST_ACTION_SHOP         = "is_first_action_shop";
     /** 发送指令期间睡眠时间*/
-    long   SEND_SLEEP_TIME         = 200;
+    long   SEND_SLEEP_TIME              = 200;
     /** 发送指令期间睡眠短时间*/
-    long   SEND_SLEEP_TIME_SHORT   = 80;
+    long   SEND_SLEEP_TIME_SHORT        = 80;
     /** 默认速度*/
-    int    DEFAULT_PRGRESS         = 15;
+    int    DEFAULT_PRGRESS              = 15;
     /** 播放动作时睡眠时间*/
-    long   PLAY_ACTION_SLEEP_TIME  = 500;
+    long   PLAY_ACTION_SLEEP_TIME       = 500;
     /** 下载动作等待时间*/
-    long   DOWNLOAD_WATING_TIME    = 220;
+    long   DOWNLOAD_WATING_TIME         = 220;
     /** 动画时长*/
-    long ANIM_DURATION              = 700;
+    long   ANIM_DURATION                = 700;
+    /** 视频录制时长*/
+    int    media_recorder_time          = 30000;
 }

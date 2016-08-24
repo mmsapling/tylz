@@ -18,8 +18,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.CommentAdapter;
 import com.tylz.aelos.base.BaseActivity;
+import com.tylz.aelos.bean.ActionDetailBean;
 import com.tylz.aelos.bean.Comment;
-import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.util.HttpUtil;
 import com.tylz.aelos.util.ToastUtils;
@@ -68,10 +68,10 @@ public class AllCommentActivity
     Button             mBtnSend;
     @Bind(R.id.et_content)
     EditText           mEtContent;
-    private int            mPage;
-    private List<Comment>  mDatas;
-    private CommentAdapter mAdapter;
-    private ShopBean       mShopBean;
+    private int              mPage;
+    private List<Comment>    mDatas;
+    private CommentAdapter   mAdapter;
+    private ActionDetailBean mActionDetailBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class AllCommentActivity
         setContentView(R.layout.activity_all_comment);
         ButterKnife.bind(this);
         mTvTitle.setText(R.string.comment);
-        mShopBean = (ShopBean) getIntent().getSerializableExtra(ActionDetailActivity.EXTRA_DATA);
+        mActionDetailBean = (ActionDetailBean) getIntent().getSerializableExtra(ActionDetailActivity.EXTRA_DATA);
         mDatas = new ArrayList<>();
         mAdapter = new CommentAdapter(this, mDatas);
         mListview.setAdapter(mAdapter);
@@ -119,7 +119,7 @@ public class AllCommentActivity
                                            @Override
                                            public void run() {
                                                Map<String, String> params = new HashMap<String, String>();
-                                               params.put("goodsid", mShopBean.id);
+                                               params.put("goodsid", mActionDetailBean.id);
                                                params.put("page", mPage + "");
                                         /*默认展示1000*/
                                                params.put("number", 1000 + "");
@@ -182,7 +182,7 @@ public class AllCommentActivity
                                   @Override
                                   public void run() {
                                       Map<String, String> params = new HashMap<String, String>();
-                                      params.put("goodsid", mShopBean.id);
+                                      params.put("goodsid", mActionDetailBean.id);
                                       params.put("userid", mUser_id);
                                       params.put("content", comment);
                                       params.put("linkid", "");
@@ -248,7 +248,7 @@ public class AllCommentActivity
         Comment comment = mDatas.get(position);
         intent.putExtra(ReplyCommentActivity.EXTRA_DATA,comment);
         intent.putExtra(ReplyCommentActivity.EXTRA_POS,position);
-        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID,mShopBean.id);
+        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID,mActionDetailBean.id);
         startActivityForResult(intent,REQUEST_COMMENT_CODE);
     }
     @Override

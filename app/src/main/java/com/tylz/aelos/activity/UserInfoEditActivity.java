@@ -371,7 +371,7 @@ public class UserInfoEditActivity
                    .url(HttpUrl.BASE + "getUserInfo")
                    .addParams("id", mUserInfo.id)
                    .build()
-                   .execute(new ResultCall() {
+                   .execute( new ResultCall() {
                        @Override
                        public void onResult(String response, int id) {
                            LogUtils.d("edit info = " + response);

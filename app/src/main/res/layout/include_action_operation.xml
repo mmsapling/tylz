@@ -56,8 +56,7 @@
                 android:src="@drawable/selector_action_download"/>
             <TextView
                 android:id="@+id/tv_download"
-                style="@style/ActionOperationStyle"
-                android:text="@string/download"/>
+                style="@style/ActionOperationStyle"/>
         </LinearLayout>
         <ImageView
             android:background="@mipmap/line_vertical"
@@ -75,8 +74,7 @@
                 android:src="@drawable/selector_action_heart"/>
             <TextView
                 android:id="@+id/tv_collect"
-                style="@style/ActionOperationStyle"
-                android:text="@string/download"/>
+                style="@style/ActionOperationStyle"/>
         </LinearLayout>
         <ImageView
             android:background="@mipmap/line_vertical"
@@ -93,8 +91,7 @@
                 android:src="@mipmap/talk"/>
             <TextView
                 android:id="@+id/tv_comment_count"
-                style="@style/ActionOperationStyle"
-                android:text="@string/comment"/>
+                style="@style/ActionOperationStyle"/>
         </LinearLayout>
         <ImageView
             android:background="@mipmap/line_vertical"
@@ -111,8 +108,7 @@
                 android:src="@drawable/selector_action_good"/>
             <TextView
                 android:id="@+id/tv_prise_count"
-                style="@style/ActionOperationStyle"
-                android:text="@string/comment"/>
+                style="@style/ActionOperationStyle"/>
         </LinearLayout>
     </LinearLayout>
     <ImageView

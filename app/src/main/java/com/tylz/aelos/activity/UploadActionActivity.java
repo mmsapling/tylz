@@ -1,10 +1,17 @@
 package com.tylz.aelos.activity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -62,10 +69,11 @@ import okhttp3.Response;
 public class UploadActionActivity
         extends BaseActivity
 {
-    public static final  String EXTRA_DATA           = "extra_data";
-    private static final int    REQUEST_LOCAL_VIDEO  = 1002;
-    private final        int    REQUEST_CODE_CAMERA  = 1000;
-    private final        int    REQUEST_CODE_GALLERY = 1001;
+    public static final  String EXTRA_DATA             = "extra_data";
+    private static final int    REQUEST_LOCAL_VIDEO    = 1002;
+    private static final int    REQUEST_RECORDER_VIDEO = 1003;
+    private final        int    REQUEST_CODE_CAMERA    = 1000;
+    private final        int    REQUEST_CODE_GALLERY   = 1001;
     @Bind(R.id.iv_left)
     ImageButton     mIvLeft;
     @Bind(R.id.tv_title)
@@ -90,6 +98,7 @@ public class UploadActionActivity
     private String             mActionName;
     private String             mActionDes;
     private DNumProgressDialog mNumProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +160,7 @@ public class UploadActionActivity
         } else if (mVideoEntity == null) {
             ToastUtils.showToast(R.string.please_select_video);
             return false;
-        }else if(TextUtils.isEmpty(mCustomAction.filestream)){
+        } else if (TextUtils.isEmpty(mCustomAction.filestream)) {
             ToastUtils.showToast(R.string.empty_action);
             return false;
         }
@@ -162,11 +171,12 @@ public class UploadActionActivity
         if (!checkUpload()) {
             return;
         }
-        File picFile   = new File(mPhotoInfos.get(0)
-                                             .getPhotoPath());
+        File picFile = new File(mPhotoInfos.get(0)
+                                           .getPhotoPath());
         LogUtils.d(picFile.getAbsolutePath());
         File videoFile = new File(mVideoEntity.filePath);
-        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoInfos.get(0).getPhotoPath());
+        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoInfos.get(0)
+                                                            .getPhotoPath());
         LogUtils.d("filestream = " + mCustomAction.filestream);
         showNumProcess();
         OkHttpUtils.post()
@@ -174,9 +184,9 @@ public class UploadActionActivity
                    .addParams("title", mActionName)
                    .addParams("content", mActionDes)
                    .addParams("type", mUploadType.title)
-                   .addParams("actionStream",mCustomAction.filestream)
+                   .addParams("actionStream", mCustomAction.filestream)
                    .addParams("userId", mUser_id)
-                   //.addFile("picurl", picFile.getName(), picFile)
+                   .addParams("titlestream", mCustomAction.titlestream)
                    .addParams("picurl", StringUtils.imgToBase64(bitmap))
                    .addFile("video", videoFile.getName(), videoFile)
                    .build()
@@ -197,6 +207,7 @@ public class UploadActionActivity
 
                        @Override
                        public void onError(Call call, Exception e, int id) {
+                           ToastUtils.showToast(R.string.error_upload);
                            LogUtils.d("onError = " + e.getMessage());
                            closeNumProcess();
                        }
@@ -306,13 +317,32 @@ public class UploadActionActivity
     private void selectVideo(int which) {
         switch (which) {
             case 1: //录制视频
-
+                if (checkPermission()) {
+                    Intent intent1 = new Intent(this, RecorderVideoActivity.class);
+                    startActivityForResult(intent1, REQUEST_RECORDER_VIDEO);
+                }
                 break;
             case 2: //本地视频
-                Intent intent = new Intent(this, ShowVideoActivity.class);
-                startActivityForResult(intent, REQUEST_LOCAL_VIDEO);
+                Intent intent2 = new Intent(this, ShowVideoActivity.class);
+                startActivityForResult(intent2, REQUEST_LOCAL_VIDEO);
                 break;
         }
+    }
+
+    private boolean checkPermission() {
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+        {
+            ToastUtils.showToast(R.string.please_open_camera_permission);
+            return false;
+        }
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
+            ToastUtils.showToast(R.string.please_open_record_audio_permission);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -323,6 +353,28 @@ public class UploadActionActivity
                 mVideoEntity = (VideoEntity) data.getSerializableExtra(ShowVideoActivity.EXTRA_DATA);
                 loadFisrtPhotoVideo(mVideoEntity);
             }
+        } else if (requestCode == REQUEST_RECORDER_VIDEO && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getParcelableExtra("uri");
+
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+            VideoEntity entity = new VideoEntity();
+            if (cursor.moveToFirst()) {
+                // 路径：MediaStore.Audio.Media.DATA
+                // 总播放时长：MediaStore.Audio.Media.DURATION
+                int    id       = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID));
+                String title    = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
+                String url      = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                int    duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                int    size     = (int) cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+                entity.id = id;
+                entity.title = title;
+                entity.filePath = url;
+                entity.duration = duration;
+                entity.size = size;
+            }
+            mVideoEntity = entity;
+            loadFisrtPhotoVideo(mVideoEntity);
         }
     }
 

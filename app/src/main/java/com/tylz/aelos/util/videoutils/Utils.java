@@ -9,6 +9,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.StrictMode;
 
 import com.tylz.aelos.activity.ShowVideoActivity;
+import com.tylz.aelos.util.LogUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -76,9 +77,22 @@ public class Utils {
 	{ 
 		Parameters parameters = camera.getParameters();
 		List<Size> previewSizes = parameters.getSupportedPreviewSizes();
+		List<Size> supportedVideoSizes = parameters.getSupportedVideoSizes();
+		for(Size size : supportedVideoSizes){
+			if(size != null){
+				LogUtils.d("widht = " + size.width + " height = " + size.height );
+
+			}
+		}
 		return previewSizes;
 	}
-	
+	public static List<Size> getVideoSizeList(Camera camera)
+	{
+		Parameters parameters = camera.getParameters();
+		List<Size> supportedVideoSizes = parameters.getSupportedVideoSizes();
+
+		return supportedVideoSizes;
+	}
 	public static class ResolutionComparator implements Comparator<Size>{
 
 		@Override

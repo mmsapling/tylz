@@ -251,6 +251,14 @@
     <string name="please_select_video">请选择视频</string>
     <string name="empty_action_des">动作描述不能为空！</string>
     <string name="success_upload">上传成功！</string>
+    <string name="error_upload">上传失败！</string>
+    <string name="tip_send">是否发送？</string>
+    <string name="error_open_device">打开设备失败！</string>
+    <string name="please_open_record_audio_permission">请打开录音权限！</string>
+    <string name="please_open_camera_permission">请打开录制视频权限！</string>
+    <string name="checking">审核中</string>
+    <string name="checked">审核通过</string>
+    <string name="checked_error">审核失败</string>
 
 
 </resources>
