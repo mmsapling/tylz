@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,7 +17,6 @@ import com.tylz.aelos.bean.User;
 import com.tylz.aelos.bean.UserBean;
 import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.CommomUtil;
-import com.tylz.aelos.util.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.lang.reflect.Type;
@@ -99,11 +97,11 @@ public class LoginActivity
         String pwd = mEtPwd.getText()
                            .toString();
         if(TextUtils.isEmpty(user)){
-            Toast.makeText(this,R.string.empty_username,Toast.LENGTH_SHORT).show();
+            mToastor.getSingletonToast(R.string.empty_username).show();
             return;
         }
         if(TextUtils.isEmpty(pwd)){
-            Toast.makeText(this,R.string.empty_password,Toast.LENGTH_SHORT).show();
+            mToastor.getSingletonToast(R.string.empty_password).show();
             return;
         }
         Map<String, String> params = new HashMap<>();
@@ -118,10 +116,10 @@ public class LoginActivity
                        @Override
                        public void onResult(String response, int id) {
                            if(response.equals("3") || response.equals("2")){
-                               ToastUtils.showToast(R.string.error_login);
+                               mToastor.getSingletonToast(R.string.error_login).show();
                            }else{
                                //跳入到扫描界面
-                               ToastUtils.showToast(R.string.success_login);
+                               mToastor.getSingletonToast(R.string.success_login).show();
                                processJson(response);
                            }
                        }

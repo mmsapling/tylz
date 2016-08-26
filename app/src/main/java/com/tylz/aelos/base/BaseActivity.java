@@ -17,7 +17,7 @@ import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.MD5Utils;
 import com.tylz.aelos.util.SPUtils;
-import com.tylz.aelos.util.ToastUtils;
+import com.tylz.aelos.util.Toastor;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DAlertDialog;
 import com.tylz.aelos.view.DProgressDialog;
@@ -47,13 +47,14 @@ public class BaseActivity
     private DProgressDialog mProgressDialog;
 
     // 再按一次退出应用程序
-    public long   mPreClickTime;
-    public String mUser_id;
+    public long    mPreClickTime;
+    public String  mUser_id;
+    public Toastor mToastor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mToastor = new Toastor(this);
         mSpUtils = new SPUtils(this);
         mUser_id = mSpUtils.getString(Constants.USER_ID, "");
         ((BaseApplication) getApplication()).addActivity(this);
@@ -189,7 +190,7 @@ public class BaseActivity
         @Override
         public void onError(Call call, Exception e, int id) {
             closeProgress();
-            ToastUtils.showToast(R.string.tip_check_net);
+            mToastor.getSingletonToast(R.string.tip_check_net).show();
         }
 
         @Override
@@ -232,24 +233,23 @@ public class BaseActivity
                 public void gotResult(int i, String s, Set<String> set) {
                     if (i != 0) {
                         LogUtils.d("设置别名失败");
-                    }else{
+                    } else {
                         LogUtils.d("设置别名成功");
                     }
                 }
             });
         }
     }
+
     public void setListViewHeightBasedOnChildren(ListView listView)
     {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-        {
+        if (listAdapter == null) {
             // pre-condition
             return;
         }
         int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++)
-        {
+        for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();

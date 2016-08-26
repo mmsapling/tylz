@@ -35,7 +35,6 @@ import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.service.BlueService;
 import com.tylz.aelos.util.CommUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DAlertDialog;
 
@@ -127,6 +126,12 @@ public class CustomActionActivity
         mLvListview.setOnItemLongClickListener(this);
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loadData();
+    }
+
     /**
      * 从数据库中加载数据
      */
@@ -140,6 +145,7 @@ public class CustomActionActivity
                                       UIUtils.postTaskSafely(new Runnable() {
                                           @Override
                                           public void run() {
+                                              mDatas.clear();
                                               mDatas.addAll(actions);
                                               mAdapter.notifyDataSetChanged();
                                               showOrNotAddActionView();
@@ -220,7 +226,7 @@ public class CustomActionActivity
                 String name = etActionName.getText()
                                           .toString();
                 if (TextUtils.isEmpty(name)) {
-                    ToastUtils.showToast(R.string.empty_action_name);
+                    mToastor.getSingletonToast(R.string.empty_action_name).show();
                     return;
                 }
                 dialog.dismiss();
@@ -324,7 +330,7 @@ public class CustomActionActivity
                                           UIUtils.postTaskSafely(new Runnable() {
                                               @Override
                                               public void run() {
-                                                  ToastUtils.showToast(R.string.not_status);
+                                                  mToastor.getSingletonToast(R.string.not_status).show();
                                               }
                                           });
                                       }

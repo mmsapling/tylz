@@ -356,7 +356,7 @@ public class UserInfoEditActivity
                                //修改成功 去后台拉取下数据
                                loadDataFromNet();
                            } else {
-                               ToastUtils.showToast(R.string.fail_edit);
+                               mToastor.getSingletonToast(R.string.fail_edit).show();
                            }
                        }
                    });

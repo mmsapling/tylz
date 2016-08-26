@@ -97,19 +97,19 @@ public class ForgetPwdActivity
         String verifycode = mEtCode.getText().toString();
         String pwd = mEtPwd.getText().toString();
         if (TextUtils.isEmpty(phone)) {
-            ToastUtils.showToast(R.string.empty_phone);
+            mToastor.getSingletonToast(R.string.empty_phone).show();
             return;
         }else if(TextUtils.isEmpty(verifycode)){
-            ToastUtils.showToast(R.string.empty_verify_code);
+            mToastor.getSingletonToast(R.string.empty_verify_code).show();
             return;
         }else if(TextUtils.isEmpty(pwd)){
-            ToastUtils.showToast(R.string.empty_password);
+            mToastor.getSingletonToast(R.string.empty_password).show();
             return;
         }else if(!verifycode.equals(mLocalVerifyCode)){
-            ToastUtils.showToast(R.string.error_verify_code);
+            mToastor.getSingletonToast(R.string.error_verify_code).show();
             return;
         }else if(!isEnable){
-            ToastUtils.showToast(R.string.error_verify_code);
+            mToastor.getSingletonToast(R.string.error_verify_code).show();
             return;
         }
         showProgress();
@@ -120,7 +120,7 @@ public class ForgetPwdActivity
             @Override
             public void onResult(String response, int id) {
                 if(response.equals("true")){
-                    ToastUtils.showToast(R.string.success_pwd_retake);
+                    mToastor.getSingletonToast(R.string.success_pwd_retake).show();
                     //重置密码后，如果本地存在该用户信息，那么清理掉
                     User user = mSpUtils.getUserInfoBySp();
                     if(!TextUtils.isEmpty(user.phone)){
@@ -129,7 +129,7 @@ public class ForgetPwdActivity
                         }
                     }
                 }else{
-                    ToastUtils.showToast(R.string.not_exist_phone);
+                    mToastor.getSingletonToast(R.string.not_exist_phone).show();
                 }
                 ForgetPwdActivity.this.finish();
             }
@@ -165,7 +165,7 @@ public class ForgetPwdActivity
                                mTimeCount.start();
                                mEtPhone.setEnabled(false);
                            } else {
-                               ToastUtils.showToast(R.string.tip_registed_phone);
+                               mToastor.getSingletonToast(R.string.tip_registed_phone).show();
                            }
                        }
                    });

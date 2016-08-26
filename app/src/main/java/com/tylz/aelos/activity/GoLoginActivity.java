@@ -15,7 +15,6 @@ import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.UserBean;
 import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.CommomUtil;
-import com.tylz.aelos.util.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.lang.reflect.Type;
@@ -88,7 +87,7 @@ public class GoLoginActivity
         mPwd = mEtPwd.getText()
                            .toString();
         if (TextUtils.isEmpty(account) || TextUtils.isEmpty(mPwd)) {
-            ToastUtils.showToast(R.string.empty_account_or_pwd);
+            mToastor.getSingletonToast(R.string.empty_account_or_pwd).show();
             return;
         }
         showProgress();
@@ -105,10 +104,10 @@ public class GoLoginActivity
                        @Override
                        public void onResult(String response, int id) {
                            if(response.equals("3") || response.equals("2")){
-                               ToastUtils.showToast(R.string.error_login);
+                               mToastor.getSingletonToast(R.string.error_login).show();
                            }else{
                                //跳入到扫描界面
-                               ToastUtils.showToast(R.string.success_login);
+                               mToastor.getSingletonToast(R.string.success_login).show();
                                processJson(response);
                            }
                        }

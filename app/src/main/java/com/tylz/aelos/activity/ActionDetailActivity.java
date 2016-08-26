@@ -300,11 +300,11 @@ public class ActionDetailActivity
             boolean result = jsonObject.getBoolean("result");
             mEtContent.setText("");
             if (result) {
-                ToastUtils.showToast(R.string.success_comment);
+                mToastor.getSingletonToast(R.string.success_comment).show();
                 KeyBoardUtils.closeKeybord(mEtContent, this);
                 loadCommentFroNet(0);
             } else {
-                ToastUtils.showToast(R.string.fail_comment);
+                mToastor.getSingletonToast(R.string.fail_comment).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -459,7 +459,7 @@ public class ActionDetailActivity
                        public void onError(Call call, Exception e, int id) {
                            closeProgress();
                            closeNumProcess();
-                           ToastUtils.showToast(R.string.tip_check_net);
+                           mToastor.getSingletonToast(R.string.tip_check_net).show();
                        }
 
                        @Override
@@ -472,7 +472,7 @@ public class ActionDetailActivity
                                    if (result != -1) {
                                        mShopBean.isdownload = "true";
                                        mIvDownload.setEnabled(false);
-                                       ToastUtils.showToast(R.string.success_download);
+                                       mToastor.getSingletonToast(R.string.success_download).show();
                                    } else {
                                        mShopBean.isdownload = "false";
                                        mIvDownload.setEnabled(true);
@@ -559,11 +559,11 @@ public class ActionDetailActivity
         } else {
             if (v == mLlDownload) {
                 if (mShopBean.hasAction.equals("false")) {
-                    ToastUtils.showToast(R.string.support_preview);
+                    mToastor.getSingletonToast(R.string.support_preview).show();
                     return;
                 }
                 if (mDbHelper.isExistActionId(mShopBean.id)) {
-                    ToastUtils.showToast(R.string.downloaded);
+                    mToastor.getSingletonToast(R.string.downloaded).show();
                     return;
                 }
                 if (TextUtils.isEmpty(mActionDetailBean.audio)) {
@@ -572,7 +572,7 @@ public class ActionDetailActivity
                     if (result != -1) {
                         mShopBean.isdownload = "true";
                         mIvDownload.setEnabled(false);
-                        ToastUtils.showToast(R.string.success_download);
+                        mToastor.getSingletonToast(R.string.success_download).show();
                     } else {
                         mShopBean.isdownload = "false";
                         mIvDownload.setEnabled(true);
@@ -611,7 +611,7 @@ public class ActionDetailActivity
         final String comment = mEtContent.getText()
                                          .toString();
         if (TextUtils.isEmpty(comment)) {
-            ToastUtils.showToast(R.string.empty_comment);
+            mToastor.getSingletonToast(R.string.empty_comment).show();
             return;
         }
         showProgress();
@@ -672,7 +672,7 @@ public class ActionDetailActivity
                                               if (!TextUtils.isEmpty(praiseData)) {
                                                   processPraiseData(praiseData);
                                               } else {
-                                                  ToastUtils.showToast(R.string.fail_praise);
+                                                  mToastor.getSingletonToast(R.string.fail_praise).show();
                                               }
                                           }
                                       });
@@ -730,7 +730,7 @@ public class ActionDetailActivity
                                               if (!TextUtils.isEmpty(collectData)) {
                                                   processCollectData(collectData);
                                               } else {
-                                                  ToastUtils.showToast(R.string.fail_operation);
+                                                  mToastor.getSingletonToast(R.string.fail_operation).show();
                                               }
                                           }
                                       });

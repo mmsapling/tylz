@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +35,6 @@ import com.tylz.aelos.object3d.MyRender;
 import com.tylz.aelos.service.LoadObject3DService;
 import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.LogUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -295,10 +293,7 @@ public class MainActivity
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - mPreClickTime > 2000) {// 两次连续点击的时间间隔>2s
-            Toast.makeText(getApplicationContext(),
-                           UIUtils.getString(R.string.exit_app),
-                           Toast.LENGTH_SHORT)
-                 .show();
+            mToastor.getSingletonToast(R.string.exit_app).show();
             mPreClickTime = System.currentTimeMillis();
             return;
         } else {   // 点的快 完全退出
@@ -352,7 +347,7 @@ public class MainActivity
                               .removeTexture(Constants.MODEL_TEXTURE_NAME);
             }
         } catch (Exception e) {
-            ToastUtils.showToast(R.string.FAIL_LOAD_MODEL);
+            mToastor.getSingletonToast(R.string.FAIL_LOAD_MODEL).show();
             e.printStackTrace();
         }
         if (mILoadModel != null) {

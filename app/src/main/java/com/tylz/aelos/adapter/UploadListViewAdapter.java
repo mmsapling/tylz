@@ -61,7 +61,7 @@ public class UploadListViewAdapter
         } else {
             holder.ivCollect.setSelected(true);
         }
-        holder.tvDownload.setText(UIUtils.getString(R.string.download) + " " + shopBean.downLoadCount);
+
         if (shopBean.isdownload.equals("false")) {
             holder.ivDownload.setSelected(false);
             holder.tvDownload.setSelected(false);
@@ -81,6 +81,8 @@ public class UploadListViewAdapter
             holder.tvDownload.setSelected(true);
             holder.ivDownload.setImageResource(R.drawable.selector_icon_prew);
             holder.ivDownload.setPressed(true);
+        }else{
+            holder.tvDownload.setText(UIUtils.getString(R.string.download) + " " + shopBean.downloadCount);
         }
         return convertView;
     }

@@ -11,14 +11,24 @@ import android.widget.Toast;
  *  @描述：    Toast封装工具
  */
 public class ToastUtils {
+    private static  Toast mToast;
     /**
      * 弹出短Toast
      * @param resId
      *          资源id
      */
     public static  void showToast(int resId){
-        Toast.makeText(UIUtils.getContext(), UIUtils.getString(resId), Toast.LENGTH_SHORT)
-             .show();
+        if(mToast == null){
+            mToast = Toast.makeText(UIUtils.getContext(),
+                                         UIUtils.getString(resId),
+                                         Toast.LENGTH_SHORT);
+          mToast.show();
+        }else{
+            mToast = Toast.makeText(UIUtils.getContext(),UIUtils.getString(resId),Toast.LENGTH_SHORT);
+            mToast.show();
+        }
+
+
     }
     public static  void showToast(String msg){
         Toast.makeText(UIUtils.getContext(), msg, Toast.LENGTH_SHORT)

@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -22,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tylz.aelos.R;
+import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.VideoEntity;
 import com.tylz.aelos.util.StringUtils;
 import com.tylz.aelos.util.ToastUtils;
@@ -47,7 +47,7 @@ import butterknife.OnClick;
  *  @描述：    从凡信上面搞过来的
  */
 public class ShowVideoActivity
-        extends FragmentActivity
+        extends BaseActivity
         implements AdapterView.OnItemClickListener
 {
     public static final int    RESULT_LOCAL_VIDEO = 2000;
@@ -187,7 +187,7 @@ public class ShowVideoActivity
         VideoEntity videoEntity = mDatas.get(position);
         // 限制大小不能超过10M
         if (videoEntity.size > 1024 * 1024 * 10) {
-            ToastUtils.showToast(R.string.video_not_supported);
+            mToastor.getSingletonToast(R.string.video_not_supported).show();
             return;
         }
         Intent intent = new Intent();

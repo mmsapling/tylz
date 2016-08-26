@@ -94,6 +94,7 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:gravity="left"
+                    android:inputType="textPassword"
                     android:text=""
                     android:textColor="#BDC7D8"
                     android:textSize="20sp"/>

@@ -21,29 +21,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.LeDeviceAdapter;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.base.BaseApplication;
 import com.tylz.aelos.base.IBluetooth;
-import com.tylz.aelos.bean.User;
-import com.tylz.aelos.bean.UserBean;
 import com.tylz.aelos.manager.Constants;
-import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.service.BlueService;
-import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.LogUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.GifView;
-import com.zhy.http.okhttp.OkHttpUtils;
-
-import java.lang.reflect.Type;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,7 +75,7 @@ public class ScanBleActivity
             switch (msg.what) {
                 case WHAT_CONNECT_WAITING_TIME:
                     closeProgress();
-                    ToastUtils.showToast(R.string.fail_connect_robot);
+                    mToastor.getSingletonToast(R.string.fail_connect_robot).show();
                     break;
             }
         }
@@ -171,6 +159,7 @@ public class ScanBleActivity
         }
         mBtScan.setText(SCANING);
         mBtScan.setClickable(false);
+
         scanLeDevice(true);
     }
 
@@ -241,7 +230,7 @@ public class ScanBleActivity
             } else if (intent.getAction()
                              .equals(BlueService.ACTION_UNCONNECT))
             {
-                ToastUtils.showToast(R.string.fail_connect_robot);
+                mToastor.getSingletonToast(R.string.fail_connect_robot).show();
                 closeProgress();
             }
         }
@@ -264,7 +253,7 @@ public class ScanBleActivity
     {
 
         @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord)
+        public void onLeScan(final BluetoothDevice device, int rssi, final byte[] scanRecord)
         {
             runOnUiThread(new Runnable() {
 
@@ -272,6 +261,7 @@ public class ScanBleActivity
                 public void run()
                 {
                     if (device != null) {
+                        LogUtils.d("name = " + device.getName() + " address = " + device.getAddress());
                         String deviceName = device.getName();
                         if (!TextUtils.isEmpty(deviceName)) {
                             if (deviceName.contains("AELOS") || deviceName.contains("aelos")) {
@@ -303,10 +293,7 @@ public class ScanBleActivity
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - mPreClickTime > 2000) {// 两次连续点击的时间间隔>2s
-            Toast.makeText(getApplicationContext(),
-                           UIUtils.getString(R.string.exit_app),
-                           Toast.LENGTH_SHORT)
-                 .show();
+            mToastor.getSingletonToast(R.string.exit_app).show();
             mPreClickTime = System.currentTimeMillis();
             return;
         } else {   // 点的快 完全退出
@@ -327,14 +314,12 @@ public class ScanBleActivity
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT)
-                 .show();
+            mToastor.getSingletonToast(R.string.ble_not_supported).show();
             return false;
         }
         // 检查设备是否支持蓝牙
         if (bluetoothAdapter == null) {
-            Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT)
-                 .show();
+            mToastor.getSingletonToast(R.string.error_bluetooth_not_supported).show();
             return false;
         }
         return true;

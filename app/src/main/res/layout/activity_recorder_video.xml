@@ -53,6 +53,17 @@
             android:gravity="center"
             android:src="@drawable/video_recorder_stop_btn"
             android:visibility="invisible" />
+        <Button
+            android:id="@+id/btn_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:background="@drawable/btn_bg_selector"
+            android:text="@string/play_action"
+            android:textColor="@color/blue"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -105,12 +105,13 @@ public class PhoneVerifyActivity
         String verifycode = mEtCode.getText().toString();
         if (TextUtils.isEmpty(phone)) {
             ToastUtils.showToast(R.string.empty_phone);
+            mToastor.getSingletonToast(R.string.empty_phone).show();
             return;
         }else if(TextUtils.isEmpty(verifycode)){
-            ToastUtils.showToast(R.string.empty_verify_code);
+            mToastor.getSingletonToast(R.string.empty_verify_code).show();
             return;
         }else if(!verifycode.equals(mLocalVerifyCode)){
-            ToastUtils.showToast(R.string.error_verify_code);
+            mToastor.getSingletonToast(R.string.error_verify_code).show();
             return;
         }
         //跳转注册界面
@@ -121,7 +122,7 @@ public class PhoneVerifyActivity
             startActivity(intent);
             finish();
         }else{
-            ToastUtils.showToast(R.string.error_verify_code);
+            mToastor.getSingletonToast(R.string.error_verify_code).show();
         }
     }
 
@@ -132,10 +133,10 @@ public class PhoneVerifyActivity
         String phone = mEtPhone.getText()
                                .toString();
         if (TextUtils.isEmpty(phone)) {
-            ToastUtils.showToast(R.string.empty_phone);
+            mToastor.getSingletonToast(R.string.empty_phone).show();
             return;
         } else if (!StringUtils.isMobileNO(phone)) {
-            ToastUtils.showToast(R.string.error_phone);
+            mToastor.getSingletonToast(R.string.error_phone).show();
             return;
         }
         setVerifyCode();
@@ -155,7 +156,7 @@ public class PhoneVerifyActivity
                                mEtPhone.setEnabled(false);
                                mTimeCount.start();
                            } else {
-                               ToastUtils.showToast(R.string.tip_registed_phone);
+                               mToastor.getSingletonToast(R.string.tip_registed_phone).show();
                            }
                        }
                    });

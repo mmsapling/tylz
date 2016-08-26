@@ -173,7 +173,7 @@ public class AllCommentActivity
         final String comment = mEtContent.getText()
                                          .toString();
         if (TextUtils.isEmpty(comment)) {
-            ToastUtils.showToast(R.string.empty_comment);
+            mToastor.getSingletonToast(R.string.empty_comment).show();
             return;
         }
         showProgress();
@@ -215,12 +215,12 @@ public class AllCommentActivity
             boolean result = jsonObject.getBoolean("result");
             mEtContent.setText("");
             if (result) {
-                ToastUtils.showToast(R.string.success_comment);
+                mToastor.getSingletonToast(R.string.success_comment).show();
                 mTvNothing.setVisibility(View.GONE);
                 mListview.setVisibility(View.VISIBLE);
                 loadCommentFroNet(0);
             } else {
-                ToastUtils.showToast(R.string.fail_comment);
+                mToastor.getSingletonToast(R.string.fail_comment).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -140,7 +140,7 @@ public class SettingActivity
     private void clearCache() {
 
         CacheClearUtils.clearAllCache(this);
-        ToastUtils.showToast(R.string.success_clear_cache);
+        mToastor.getSingletonToast(R.string.success_clear_cache).show();
         mTvCache.setText(getCacheSize2Str());
     }
 }

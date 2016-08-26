@@ -17,7 +17,6 @@ import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.HttpUtil;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
@@ -154,7 +153,7 @@ public class SearchActionActivity
                 String key = mEtSearch.getText()
                                     .toString();
                 if(TextUtils.isEmpty(key)){
-                    ToastUtils.showToast(R.string.hint_input_key_search);
+                    mToastor.getSingletonToast(R.string.hint_input_key_search).show();
                     return;
                 }
                 if(!isSearch){
@@ -162,7 +161,7 @@ public class SearchActionActivity
                     loadTypeData(0);
                     isSearch = true;
                 }else{
-                    ToastUtils.showToast(R.string.please_waiting_searching);
+                    mToastor.getSingletonToast(R.string.please_waiting_searching).show();
                 }
                 break;
         }

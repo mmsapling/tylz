@@ -33,7 +33,7 @@
     <string name="tip">提示</string>
     <string name="retry">重试</string>
     <!--遥控器-->
-    <string name="tip_quick_mode">快走模式下最好不要操作超过十分钟！\\n是否切换？</string>
+    <string name="tip_quick_mode">快走模式下最好不要操作超过十分钟！\n是否切换？</string>
     <string name="switch_quick_mode">已切换至快走模式</string>
     <string name="switch_normal_mode">已切换为正常模式</string>
     <string name="tip_open_tumbler">确定开启不倒翁模式？</string>
@@ -259,6 +259,13 @@
     <string name="checking">审核中</string>
     <string name="checked">审核通过</string>
     <string name="checked_error">审核失败</string>
+    <string name="play_action">播放动作</string>
+    <array name="tabs_upload">
+        <item>全部 </item>
+        <item>审核中</item>
+        <item>已审核</item>
+        <item>审核失败</item>
+    </array>
 
 
 </resources>

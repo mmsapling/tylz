@@ -110,16 +110,16 @@ public class RegisterActivity
         String pwd = mEtPwd.getText()
                            .toString();
         if (TextUtils.isEmpty(nickname)) {
-            ToastUtils.showToast(R.string.empty_nickname);
+            mToastor.getSingletonToast(R.string.empty_nickname).show();
             return;
         } else if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(confirmPwd)) {
-            ToastUtils.showToast(R.string.empty_password);
+            mToastor.getSingletonToast(R.string.empty_password).show();
             return;
         } else if (mPhotoInfos.size() == 0) {
-            ToastUtils.showToast(R.string.please_select_photo);
+            mToastor.getSingletonToast(R.string.please_select_photo).show();
             return;
         } else if (!pwd.equals(confirmPwd)) {
-            ToastUtils.showToast(R.string.error_pwd_twice);
+            mToastor.getSingletonToast(R.string.error_pwd_twice).show();
             return;
         }
         //参数
@@ -140,10 +140,10 @@ public class RegisterActivity
                        @Override
                        public void onResult(String response, int id) {
                            if(response.equals("1")){
-                               ToastUtils.showToast(R.string.success_regist);
+                               mToastor.getSingletonToast(R.string.success_regist).show();
                                RegisterActivity.this.finish();
                            }else{
-                               ToastUtils.showToast(R.string.username_repeat);
+                               mToastor.getSingletonToast(R.string.username_repeat).show();
                            }
                        }
                    });

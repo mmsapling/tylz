@@ -777,7 +777,7 @@ public class GameSettingActivity
     }
 
     /**
-     * 下载动作
+     * 配置动作
      */
     private void downloadSetting() {
         mWriteIndx = 0;
@@ -800,6 +800,7 @@ public class GameSettingActivity
                     if (mWriteIndx != 0 && mWriteIndx % 16 == 0) {
                         if ("8800000000000000".equals(mReturnData)) {
                             mWriteIndx -= 16;
+                            mOutOfTime -= 16;
                             mIBluetooth.callWrite(mTempData.get(mWriteIndx));
                             int     progress = (int) (100.00 / mTempData.size() * mWriteIndx);
                             Message msg      = Message.obtain();
@@ -808,7 +809,7 @@ public class GameSettingActivity
                             mHandler.sendMessage(msg);
                             m88Count++;
                             mWriteIndx++;
-                            if (m88Count == 2) {
+                            if (m88Count >= 2) {
                                 //两次88后退出
                                 mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
                                 mTimer.cancel();
@@ -846,8 +847,20 @@ public class GameSettingActivity
                         mHandler.sendEmptyMessage(WHAT_SETTING_SUCCESS);
                         mTimer.cancel();
                     } else if ("8800000000000000".equals(mReturnData)) {
-                        mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
-                        mTimer.cancel();
+                        mWriteIndx -= 16;
+                        mOutOfTime -= 16;
+                        mIBluetooth.callWrite(mTempData.get(mWriteIndx));
+                        int     progress = (int) (100.00 / mTempData.size() * mWriteIndx);
+                        Message msg      = Message.obtain();
+                        msg.what = WHAT_DOWLOAD_PROGRESS;
+                        msg.obj = progress;
+                        mHandler.sendMessage(msg);
+                        m88Count++;
+                        mWriteIndx++;
+                        if(m88Count >= 2){
+                            mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
+                            mTimer.cancel();
+                        }
                     } else if (mReturnData.length() == 18) {
                         if (mReturnData.substring(16, 18)
                                        .equals("cc"))
@@ -860,7 +873,7 @@ public class GameSettingActivity
                         }
                     }
                 }
-                if (mOutOfTime > mTempData.size() + 1) {
+                if (mOutOfTime > mTempData.size() * 2) {
                     mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
                     mTimer.cancel();
                 }
@@ -895,6 +908,13 @@ public class GameSettingActivity
                 if (mWriteIndx < mTempData.size()) {
                     if (mWriteIndx != 0 && mWriteIndx % 16 == 0) {
                         if ("8800000000000000".equals(mReturnData)) {
+                            m88Count++;
+                            if (m88Count >= 2) {
+                                //两次88后退出
+                                LogUtils.d("< 88");
+                                mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
+                                mTimer.cancel();
+                            }
                             mWriteIndx -= 16;
                             mIBluetooth.callWrite(mTempData.get(mWriteIndx));
                             int     progress = (int) (100.00 / mTempData.size() * mWriteIndx);
@@ -902,13 +922,9 @@ public class GameSettingActivity
                             msg.what = WHAT_DOWLOAD_PROGRESS;
                             msg.obj = progress;
                             mHandler.sendMessage(msg);
-                            m88Count++;
+
                             mWriteIndx++;
-                            if (m88Count == 2) {
-                                //两次88后退出
-                                mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
-                                mTimer.cancel();
-                            }
+
                         } else if ("8700000000000000".equals(mReturnData)) {
                             mIBluetooth.callWrite(mTempData.get(mWriteIndx));
                             mWriteIndx++;
@@ -942,8 +958,20 @@ public class GameSettingActivity
                         mHandler.sendEmptyMessage(WHAT_DOWNLOAD_SUCCESS);
                         mTimer.cancel();
                     } else if ("8800000000000000".equals(mReturnData)) {
-                        mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
-                        mTimer.cancel();
+                        mWriteIndx -= 16;
+                        mIBluetooth.callWrite(mTempData.get(mWriteIndx));
+                        int     progress = (int) (100.00 / mTempData.size() * mWriteIndx);
+                        Message msg      = Message.obtain();
+                        msg.what = WHAT_DOWLOAD_PROGRESS;
+                        msg.obj = progress;
+                        mHandler.sendMessage(msg);
+                        m88Count++;
+                        mWriteIndx++;
+                        if(m88Count >= 2){
+                            LogUtils.d("> 88");
+                            mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
+                            mTimer.cancel();
+                        }
                     } else if (mReturnData.length() == 18) {
                         if (mReturnData.substring(16, 18)
                                        .equals("cc"))
@@ -956,7 +984,8 @@ public class GameSettingActivity
                         }
                     }
                 }
-                if (mOutOfTime > mTempData.size() + 1) {
+                if (mOutOfTime > mTempData.size() + 32 + 32) {
+                    LogUtils.d("buzy");
                     mHandler.sendEmptyMessage(WHAT_ROBOT_BUZY);
                     mTimer.cancel();
                 }

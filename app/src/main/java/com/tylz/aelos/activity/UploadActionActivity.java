@@ -126,7 +126,11 @@ public class UploadActionActivity
                 finish();
                 break;
             case R.id.iv_right:
-                upload();
+                if(isLogin()){
+                    upload();
+                }else{
+                    showLoginTip();
+                }
                 break;
             case R.id.civ_type:
                 clickType();
@@ -146,22 +150,22 @@ public class UploadActionActivity
         mActionDes = mEtActionDes.getText()
                                  .toString();
         if (TextUtils.isEmpty(mActionName)) {
-            ToastUtils.showToast(R.string.empty_action_name);
+            mToastor.getSingletonToast(R.string.empty_action_name).show();
             return false;
         } else if (TextUtils.isEmpty(mActionDes)) {
-            ToastUtils.showToast(R.string.empty_action_des);
+            mToastor.getSingletonToast(R.string.empty_action_des).show();
             return false;
         } else if (mUploadType == null) {
-            ToastUtils.showToast(R.string.please_select_type);
+            mToastor.getSingletonToast(R.string.please_select_type).show();
             return false;
         } else if (mPhotoInfos.size() == 0) {
-            ToastUtils.showToast(R.string.please_select_photo);
+            mToastor.getSingletonToast(R.string.please_select_photo).show();
             return false;
         } else if (mVideoEntity == null) {
-            ToastUtils.showToast(R.string.please_select_video);
+            mToastor.getSingletonToast(R.string.please_select_video).show();
             return false;
         } else if (TextUtils.isEmpty(mCustomAction.filestream)) {
-            ToastUtils.showToast(R.string.empty_action);
+            mToastor.getSingletonToast(R.string.empty_action).show();
             return false;
         }
         return true;
@@ -177,9 +181,9 @@ public class UploadActionActivity
         File videoFile = new File(mVideoEntity.filePath);
         Bitmap bitmap = BitmapFactory.decodeFile(mPhotoInfos.get(0)
                                                             .getPhotoPath());
-        LogUtils.d("filestream = " + mCustomAction.filestream);
         showNumProcess();
         OkHttpUtils.post()
+
                    .url(HttpUrl.BASE + "uploadAction")
                    .addParams("title", mActionName)
                    .addParams("content", mActionDes)
@@ -215,7 +219,7 @@ public class UploadActionActivity
                        @Override
                        public void onResponse(Object response, int id) {
                            closeNumProcess();
-                           ToastUtils.showToast(R.string.success_upload);
+                           mToastor.getSingletonToast(R.string.success_upload).show();
                            UploadActionActivity.this.finish();
 
                        }
@@ -245,7 +249,7 @@ public class UploadActionActivity
         dialog.setContentView(R.layout.dialog_view_gridview);
         GridView          gridView = (GridView) dialog.findViewById(R.id.view_gridview);
         final TypeAdapter adapter  = new TypeAdapter(this);
-        //gridView.setLayoutAnimation(getAnimationController());
+       //  gridView.setLayoutAnimation(getAnimationController());
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -319,6 +323,7 @@ public class UploadActionActivity
             case 1: //录制视频
                 if (checkPermission()) {
                     Intent intent1 = new Intent(this, RecorderVideoActivity.class);
+                    intent1.putExtra(RecorderVideoActivity.EXTRA_DATA,mCustomAction);
                     startActivityForResult(intent1, REQUEST_RECORDER_VIDEO);
                 }
                 break;

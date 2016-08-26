@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -26,7 +27,6 @@ import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.service.BlueService;
 import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.MusicPlayerUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DAlertDialog;
 
@@ -129,6 +129,7 @@ public class GameActivity
     }
 
     private void init() {
+
         mDbHelper = new DbHelper(this);
         mPlayerUtils = new MusicPlayerUtils();
         mTvTitle.setText(R.string.remote_control);
@@ -175,6 +176,8 @@ public class GameActivity
             case R.id.ib_setting:
                 if (!isPlaying()) {
                     showProgress();
+                    mIBluetooth.callWrite("da");
+                    SystemClock.sleep(Constants.SEND_SLEEP_TIME_SHORT);
                     mEnterType = TYPE_SETTING;
                     mIBluetooth.callWrite("83");
                     mHandler.sendEmptyMessageDelayed(WHAT_FINISH_SYNCHRONIZATION,
@@ -184,6 +187,8 @@ public class GameActivity
             case R.id.ib_custom:
                 if (!isPlaying()) {
                     showProgress();
+                    mIBluetooth.callWrite("da");
+                    SystemClock.sleep(Constants.SEND_SLEEP_TIME_SHORT);
                     mEnterType = TYPE_CUSTOM;
                     mIBluetooth.callWrite("83");
                     mHandler.sendEmptyMessageDelayed(WHAT_FINISH_CHANGE,
@@ -203,7 +208,7 @@ public class GameActivity
             case R.id.ib_stop:
                 mIBluetooth.callWrite("da");
                 mPlayerUtils.clear();
-                CommomUtil.showToast(R.string.stop_action);
+                mToastor.getSingletonToast(R.string.stop_action);
                 break;
             case R.id.ib_tumbler:
                 openTumblerMode();
@@ -242,7 +247,7 @@ public class GameActivity
      */
     private boolean isPlaying() {
         if (mPlayerUtils.isPlaying()) {
-            ToastUtils.showToast(R.string.current_playing_action);
+            mToastor.getSingletonToast(R.string.current_playing_action).show();
             return true;
         }
         return false;
@@ -266,11 +271,11 @@ public class GameActivity
                                       UIUtils.postTaskSafely(new Runnable() {
                                           @Override
                                           public void run() {
-                                              ToastUtils.showToast(titles);
+                                              mToastor.getSingletonToast(titles).show();
                                           }
                                       });
                                       if (!titles.equals(notSetting)) {
-                                          List<String> musics = mDbHelper.findKeySettingMusic(ISql.T_Key_Setting.C1);
+                                          List<String> musics = mDbHelper.findKeySettingMusic(key);
                                           mIBluetooth.callWrite(key);
                                           mPlayerUtils.setMusics(musics);
                                           mPlayerUtils.play();
@@ -296,7 +301,7 @@ public class GameActivity
                                   public void onClick(View v) {
                                       mIbTumbler.setImageResource(R.mipmap.tumbler_on);
                                       mIBluetooth.callWrite("db");
-                                      CommomUtil.showToast(R.string.open_tumbler_mode);
+                                      mToastor.getSingletonToast(R.string.open_tumbler_mode).show();
                                   }
                               })
                               .setNegativeButton(new View.OnClickListener() {
@@ -355,7 +360,7 @@ public class GameActivity
                                   @Override
                                   public void onClick(View v) {
                                       mGameType = 2;
-                                      CommomUtil.showToast(R.string.switch_quick_mode);
+                                      mToastor.getSingletonToast(R.string.switch_quick_mode).show();
                                       mIbQuick.setImageResource(R.mipmap.kuaizou_on);
                                   }
                               })
@@ -369,7 +374,7 @@ public class GameActivity
             switch (v.getId()) {
                 case R.id.ib_left_turn:
                     mIBluetooth.callWrite("d5");
-                    CommomUtil.showToast(R.string.left_turn);
+                    mToastor.getSingletonToast(R.string.left_turn).show();
                     break;
                 case R.id.ib_top:
                     if (mGameType == 1) {
@@ -377,15 +382,15 @@ public class GameActivity
                     } else {
                         mIBluetooth.callWrite("d7");
                     }
-                    CommomUtil.showToast(R.string.advance);
+                    mToastor.getSingletonToast(R.string.advance).show();
                     break;
                 case R.id.ib_right_turn:
                     mIBluetooth.callWrite("d6");
-                    CommomUtil.showToast(R.string.right_turn);
+                    mToastor.getSingletonToast(R.string.right_turn).show();
                     break;
                 case R.id.ib_left:
                     mIBluetooth.callWrite("d3");
-                    CommomUtil.showToast(R.string.turn_left);
+                    mToastor.getSingletonToast(R.string.turn_left).show();
                     break;
                 case R.id.ib_bottom:
                     if (mGameType == 1) {
@@ -393,11 +398,11 @@ public class GameActivity
                     } else {
                         mIBluetooth.callWrite("d8");
                     }
-                    CommomUtil.showToast(R.string.back_coming);
+                    mToastor.getSingletonToast(R.string.back_coming).show();
                     break;
                 case R.id.ib_right:
                     mIBluetooth.callWrite("d4");
-                    CommomUtil.showToast(R.string.turn_right);
+                    mToastor.getSingletonToast(R.string.turn_right).show();
                     break;
                 default:
                     break;
@@ -420,13 +425,14 @@ public class GameActivity
                     if (!isRobotDirectory(mRobotDirectory)) {
                         closeProgress();
                         mIBluetooth.callWrite("cc");
-                        ToastUtils.showToast(R.string.fail_synchronization);
+                        mToastor.getSingletonToast(R.string.fail_synchronization).show();
                         mRobotDirectory = "";
                     }
                     break;
                 case WHAT_FINISH_CHANGE:
                     closeProgress();
-                    ToastUtils.showToast(R.string.fail_online);
+                    mIBluetooth.callWrite("cc");
+                    mToastor.getSingletonToast(R.string.fail_online).show();
                     break;
             }
         }

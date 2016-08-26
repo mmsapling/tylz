@@ -63,15 +63,19 @@ public interface Constants {
     /** 发送指令期间睡眠时间*/
     long   SEND_SLEEP_TIME              = 200;
     /** 发送指令期间睡眠短时间*/
-    long   SEND_SLEEP_TIME_SHORT        = 80;
+    long   SEND_SLEEP_TIME_SHORT        = 200;
     /** 默认速度*/
     int    DEFAULT_PRGRESS              = 15;
     /** 播放动作时睡眠时间*/
     long   PLAY_ACTION_SLEEP_TIME       = 500;
     /** 下载动作等待时间*/
-    long   DOWNLOAD_WATING_TIME         = 220;
+    long   DOWNLOAD_WATING_TIME         = 200;
     /** 动画时长*/
     long   ANIM_DURATION                = 700;
     /** 视频录制时长*/
     int    media_recorder_time          = 30000;
+    /** 添加状态的时间*/
+    long   ADD_STATUS_TIME              = 3000;
+    String WIFI_NAME                    = "wifi_name";
+    String WIFI_PWD                     = "wifi_pwd";
 }

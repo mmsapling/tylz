@@ -222,7 +222,7 @@ public class ReplyCommentActivity
      */
     private void processReplyData(String reply) {
         if (TextUtils.isEmpty(reply)) {
-            ToastUtils.showToast(R.string.tip_check_net);
+            mToastor.getSingletonToast(R.string.tip_check_net).show();
             return;
         }
         mEtContent.setText("");
@@ -232,10 +232,10 @@ public class ReplyCommentActivity
             String     result     = jsonObject.getString("result");
             if (result.equals("true")) {
                 KeyBoardUtils.closeKeybord(mEtContent, ReplyCommentActivity.this);
-                ToastUtils.showToast(R.string.success_reply);
+                mToastor.getSingletonToast(R.string.success_reply).show();
                 loadReplyFromNet(0);
             } else {
-                ToastUtils.showToast(R.string.fail_operation);
+                mToastor.getSingletonToast(R.string.success_reply).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -282,7 +282,7 @@ public class ReplyCommentActivity
         final String comment = mEtContent.getText()
                                          .toString();
         if (TextUtils.isEmpty(comment)) {
-            ToastUtils.showToast(R.string.empty_comment);
+            mToastor.getSingletonToast(R.string.empty_comment).show();
             return;
         }
         showProgress();

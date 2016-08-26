@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
@@ -53,6 +55,7 @@ public class AddStatusActivity
 {
     public static final  String EXTRA_DATA       = "extra_data";
     private static final String ORDER_ADD_STATUS = "a400000000000000";
+    private static final int WHAT_ADD_STATUS     = 1;
     @Bind(R.id.ib_hand_lock)
     ImageButton    mIbHandLock;
     @Bind(R.id.ib_leg_lock)
@@ -178,12 +181,23 @@ public class AddStatusActivity
             case R.id.ib_add_status:
             case R.id.ib_add_status1:
                 showProgress();
+                mHandler.removeMessages(WHAT_ADD_STATUS);
+                mHandler.sendEmptyMessageDelayed(WHAT_ADD_STATUS,Constants.ADD_STATUS_TIME);
                 mReturnStatus = "";
                 mIBluetooth.callWrite(ORDER_ADD_STATUS);
                 break;
         }
     }
-
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case WHAT_ADD_STATUS:
+                    closeProgress();
+                    break;
+            }
+        }
+    };
     /**
      * 保存数据
      */
@@ -264,6 +278,7 @@ public class AddStatusActivity
                     if (flag.equals(ORDER_ADD_STATUS) && !flag.equals(data)) {
                         if (isAddStatusSuccess(data)) {
                             closeProgress();
+                            mHandler.removeMessages(WHAT_ADD_STATUS);
                             processReturnData(mReturnStatus);
                         }
                     }
@@ -283,18 +298,18 @@ public class AddStatusActivity
      */
     private void processReturnData(String result) {
         if (TextUtils.isEmpty(result) || result.length() != 48) {
-            ToastUtils.showToast(R.string.timeout_get_status);
+            mToastor.getSingletonToast(R.string.timeout_get_status).show();
             return;
         }
         int[] actionResults = CommUtils.str2arr(result);
         if (actionResults == null) {
-            ToastUtils.showToast(R.string.timeout_get_status);
+            mToastor.getSingletonToast(R.string.timeout_get_status).show();
             return;
         }
         for (int i = 0; i < actionResults.length; i++) {
             if (0 == actionResults[i]) {
                 String info = UIUtils.getString(R.string.error_steering);
-                ToastUtils.showToast((i + 1) + info);
+                mToastor.getSingletonToast((i + 1) + info).show();
                 break;
             }
         }
@@ -369,7 +384,7 @@ public class AddStatusActivity
         if (isLocked) {
             // 解锁操作
             /*
-			 * 设置图片为加锁 isLocked = false; 调用工具类中解锁方法
+             * 设置图片为加锁 isLocked = false; 调用工具类中解锁方法
 			 * 全部解锁  腿和手也要解锁，并且图片变成加锁状态 且相应的count都变成1
 			 */
             count = 1;
@@ -403,7 +418,7 @@ public class AddStatusActivity
      * 改变加锁的UI
      * 还原到默认状态
      */
-    private void changAllLockUI(){
+    private void changAllLockUI() {
         count = 0;
         /******/
         handCount = 0;
@@ -417,6 +432,7 @@ public class AddStatusActivity
         isHandLocked = true;
         isLegLocked = true;
     }
+
     private void lockHand() {
         if (isHandLocked) {
             handCount = 1;
@@ -469,14 +485,11 @@ public class AddStatusActivity
      * 上半身解锁
      */
     public void handUnLock() {
-        try {
-            mIBluetooth.callWrite(
-                    "78000000000100000178000000000100000278000000000100000378000000000100000978000000000100000a");
-            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite("78000000000100000b780000000001000011");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mIBluetooth.callWrite("780000000001000001780000000001000002780000000001000003");
+        SystemClock.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+        mIBluetooth.callWrite("78000000000100000978000000000100000a78000000000100000b");
+        SystemClock.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+        mIBluetooth.callWrite("780000000001000011");
     }
 
     /**
@@ -484,10 +497,11 @@ public class AddStatusActivity
      */
     public void handLock() {
         try {
-            mIBluetooth.callWrite(
-                    "79000000000100000179000000000100000279000000000100000379000000000100000979000000000100000a");
+            mIBluetooth.callWrite("790000000001000001790000000001000002790000000001000003");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite("79000000000100000b790000000001000011");
+            mIBluetooth.callWrite("79000000000100000979000000000100000a79000000000100000b");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("790000000001000011");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -498,12 +512,13 @@ public class AddStatusActivity
      */
     public void legUnLock() {
         try {
-            mIBluetooth.callWrite(
-                    "780000000001000004780000000001000005780000000001000006780000000001000007780000000001000008");
+            mIBluetooth.callWrite("780000000001000004780000000001000005780000000001000006");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite(
-                    "78000000000100000c78000000000100000d78000000000100000e78000000000100000f780000000001000010");
+            mIBluetooth.callWrite("78000000000100000778000000000100000878000000000100000c");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("78000000000100000d78000000000100000e78000000000100000f");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("780000000001000010");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -514,12 +529,13 @@ public class AddStatusActivity
      */
     public void legLock() {
         try {
-            mIBluetooth.callWrite(
-                    "790000000001000004790000000001000005790000000001000006790000000001000007790000000001000008");
+            mIBluetooth.callWrite("790000000001000004790000000001000005790000000001000006");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite(
-                    "79000000000100000c79000000000100000d79000000000100000e79000000000100000f790000000001000010");
+            mIBluetooth.callWrite("79000000000100000779000000000100000879000000000100000c");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("79000000000100000d79000000000100000e79000000000100000f");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("790000000001000010");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -530,16 +546,17 @@ public class AddStatusActivity
 	 */
     public void allunlock() {
         try {
-
-            mIBluetooth.callWrite(
-                    "780000000001000001780000000001000002780000000001000003780000000001000004780000000001000005780000000001000006");
+            mIBluetooth.callWrite("780000000001000001780000000001000002780000000001000003");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite(
-                    "78000000000100000778000000000100000878000000000100000978000000000100000a78000000000100000b78000000000100000c");
+            mIBluetooth.callWrite("780000000001000004780000000001000005780000000001000006");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite(
-                    "78000000000100000d78000000000100000e78000000000100000f780000000001000010");
-
+            mIBluetooth.callWrite("780000000001000007780000000001000008780000000001000009");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("78000000000100000a78000000000100000b78000000000100000c");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("78000000000100000d78000000000100000e78000000000100000f");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("780000000001000010");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -550,17 +567,17 @@ public class AddStatusActivity
      */
     public void alllock() {
         try {
-
-            mIBluetooth.callWrite(
-                    "790000000001000001790000000001000002790000000001000003790000000001000004790000000001000005790000000001000006");
-            //
+            mIBluetooth.callWrite("790000000001000001790000000001000002790000000001000003");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite(
-                    "79000000000100000779000000000100000879000000000100000979000000000100000a79000000000100000b79000000000100000c");
+            mIBluetooth.callWrite("790000000001000004790000000001000005790000000001000006");
             Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
-            mIBluetooth.callWrite(
-                    "79000000000100000d79000000000100000e79000000000100000f790000000001000010");
-
+            mIBluetooth.callWrite("790000000001000007790000000001000008790000000001000009");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("79000000000100000a79000000000100000b79000000000100000c");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("79000000000100000d79000000000100000e79000000000100000f");
+            Thread.sleep(Constants.SEND_SLEEP_TIME_SHORT);
+            mIBluetooth.callWrite("790000000001000010");
         } catch (Exception e) {
             e.printStackTrace();
         }

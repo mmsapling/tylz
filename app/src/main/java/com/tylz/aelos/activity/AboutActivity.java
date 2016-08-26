@@ -65,7 +65,7 @@ public class AboutActivity
                 skipActivity(VersionIntroduceActivity.class);
                 break;
             case R.id.rl_check_update:
-                ToastUtils.showToast(R.string.latest_version);
+                mToastor.getSingletonToast(R.string.latest_version).show();
                 break;
             case R.id.rl_instructions:
                 skipActivity(InstructionsActivity.class);

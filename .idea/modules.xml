@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Aelos.iml" filepath="$PROJECT_DIR$/Aelos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Library_PagerSlidingTabStrip/Library_PagerSlidingTabStrip.iml" filepath="$PROJECT_DIR$/Library_PagerSlidingTabStrip/Library_PagerSlidingTabStrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/ToggleButtonLib/ToggleButtonLib.iml" filepath="$PROJECT_DIR$/ToggleButtonLib/ToggleButtonLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/pickview_library/pickview_library.iml" filepath="$PROJECT_DIR$/pickview_library/pickview_library.iml" />

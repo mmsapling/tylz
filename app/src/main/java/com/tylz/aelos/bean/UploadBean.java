@@ -11,7 +11,7 @@ import java.io.Serializable;
  *  @描述：    上传数据
  */
 public class UploadBean implements Serializable{
-    public String downLoadCount;//	0
+    public String downloadCount;//	0
     public String hasAction;//	false
     public String id;//	209
     public String iscollect;//	false

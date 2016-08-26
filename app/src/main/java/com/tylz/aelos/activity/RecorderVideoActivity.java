@@ -43,6 +43,7 @@ import android.widget.VideoView;
 
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.BaseActivity;
+import com.tylz.aelos.bean.CustomAction;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.FileUtils;
 import com.tylz.aelos.util.LogUtils;
@@ -58,6 +59,7 @@ public class RecorderVideoActivity
 {
 
     private final static String CLASS_LABEL = "RecordActivity";
+    public static final  String EXTRA_DATA  = "extra_data";
     private PowerManager.WakeLock mWakeLock;
     private ImageView             btnStart;// 开始录制按钮
     private ImageView             btnStop;// 停止录制按钮
@@ -76,6 +78,7 @@ public class RecorderVideoActivity
     private int defaultVideoFrameRate = -1;
     private ImageButton mIbLeft;
     private TextView    mTvTitle;
+    private CustomAction mCustomAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,13 @@ public class RecorderVideoActivity
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, CLASS_LABEL);
         mWakeLock.acquire();
+        mCustomAction = (CustomAction) getIntent().getSerializableExtra(EXTRA_DATA);
         initViews();
+        init();
+    }
+
+    private void init() {
+
     }
 
     private void initViews() {
@@ -106,6 +115,8 @@ public class RecorderVideoActivity
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
+        Button bt_play = (Button) findViewById(R.id.btn_play);
+        bt_play.setVisibility(View.GONE);
     }
 
     public void back() {
@@ -191,7 +202,7 @@ public class RecorderVideoActivity
                     hasSize = true;
                     break;
                 }
-//
+                //
             }
             // 如果不支持设为中间的那个
             if (!hasSize) {

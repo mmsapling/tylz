@@ -40,5 +40,5 @@ dependencies {
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
     compile files('libs/jpct_ae.jar')
     compile files('libs/jpush-android-2.1.7.jar')
-    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile project(':Library_PagerSlidingTabStrip')
 }

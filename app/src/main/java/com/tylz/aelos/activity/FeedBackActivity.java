@@ -72,7 +72,7 @@ public class FeedBackActivity
         String feedback = mEtContent.getText()
                              .toString();
         if(TextUtils.isEmpty(feedback)){
-            ToastUtils.showToast(R.string.empty_feedback);
+            mToastor.getSingletonToast(R.string.empty_feedback).show();
             return;
         }
         /*得到用户的id*/
@@ -90,7 +90,7 @@ public class FeedBackActivity
             @Override
             public void onResponse(String response, int id) {
                 closeProgress();
-                ToastUtils.showToast(R.string.tip_thanks_feedback);
+                mToastor.getSingletonToast(R.string.tip_thanks_feedback).show();
                 /*退出当前页面*/
                 FeedBackActivity.this.finish();
             }

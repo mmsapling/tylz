@@ -81,13 +81,13 @@ public class EditActivity
             @Override
             public void onResult(String response, int id) {
                 if(response.equals("true")){
-                    ToastUtils.showToast(R.string.success_edit);
+                    mToastor.getSingletonToast(R.string.success_edit).show();
                     //更新本地密码
                     mUserInfo.password = mNewPwd;
                     mSpUtils.saveUserInfo(mUserInfo);
                     EditActivity.this.finish();
                 }else{
-                    ToastUtils.showToast(R.string.error_original_pwd);
+                    mToastor.getSingletonToast(R.string.error_original_pwd).show();
                 }
             }
         });
@@ -106,19 +106,19 @@ public class EditActivity
         String confirmPwd = mEtConfrimPwd.getText()
                                          .toString();
         if (TextUtils.isEmpty(originalPwd)) {
-            ToastUtils.showToast(R.string.hint_input_original_pwd);
+            mToastor.getSingletonToast(R.string.hint_input_original_pwd).show();
             return false;
         } else if (TextUtils.isEmpty(mNewPwd)) {
-            ToastUtils.showToast(R.string.hint_input_new_pwd);
+            mToastor.getSingletonToast(R.string.hint_input_new_pwd).show();
             return false;
         } else if (TextUtils.isEmpty(confirmPwd)) {
-            ToastUtils.showToast(R.string.hint_input_confrim_new_pwd);
+            mToastor.getSingletonToast(R.string.hint_input_confrim_new_pwd).show();
             return false;
         } else if (!originalPwd.equals(mUserInfo.password)) {
-            ToastUtils.showToast(R.string.error_original_pwd);
+            mToastor.getSingletonToast(R.string.error_original_pwd).show();
             return false;
         }else if(!mNewPwd.equals(confirmPwd)){
-            ToastUtils.showToast(R.string.error_input_pwd_twice);
+            mToastor.getSingletonToast(R.string.error_input_pwd_twice).show();
             return false;
         }
         return true;

@@ -97,6 +97,11 @@ public class ConnRobotActivity
             mTvWifiname.setText(R.string.not_wifi_conn);
         } else {
             mTvWifiname.setText(mWifeName);
+            String name = mSpUtils.getString(Constants.WIFI_NAME, "");
+            if(!TextUtils.isEmpty(name) && name.equals(mWifeName)){
+                String pwd = mSpUtils.getString(Constants.WIFI_PWD, "");
+                mEtWifipassword.setText(pwd);
+            }
         }
     }
 
@@ -159,10 +164,17 @@ public class ConnRobotActivity
                                 .toString();
         String password = mEtWifipassword.getText()
                                   .toString();
+        String wifiname = mTvWifiname.getText().toString();
         if(TextUtils.isEmpty(password)){
             setNotWifiPwd();
         }
         if (btnName.equals(UIUtils.getString(R.string.next))) {
+            /*保存用户名和密码*/
+            if(!wifiname.equals(UIUtils.getString(R.string.not_wifi_conn))){
+                mSpUtils.putString(Constants.WIFI_NAME,wifiname);
+                mSpUtils.putString(Constants.WIFI_PWD,password);
+            }
+
             mLlImg.setVisibility(View.VISIBLE);
             mLlWifiInput.setVisibility(View.GONE);
             sendVoice();

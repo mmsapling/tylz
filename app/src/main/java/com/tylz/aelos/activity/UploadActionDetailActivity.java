@@ -240,7 +240,7 @@ public class UploadActionDetailActivity
         if (v == mIvLeft) {
             finish();
         } else {
-            ToastUtils.showToast(R.string.support_preview);
+            mToastor.getSingletonToast(R.string.support_preview).show();
         }
 
     }
