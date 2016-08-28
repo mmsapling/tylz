@@ -81,9 +81,8 @@ public class BaseActivity
             mProgressDialog = new DProgressDialog(this);
             mProgressDialog.setCancelable(false);
         }
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
+
+        mProgressDialog.show();
     }
 
     /**
@@ -190,7 +189,8 @@ public class BaseActivity
         @Override
         public void onError(Call call, Exception e, int id) {
             closeProgress();
-            mToastor.getSingletonToast(R.string.tip_check_net).show();
+            mToastor.getSingletonToast(R.string.tip_check_net)
+                    .show();
         }
 
         @Override

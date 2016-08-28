@@ -182,6 +182,7 @@ public class UploadActionActivity
         Bitmap bitmap = BitmapFactory.decodeFile(mPhotoInfos.get(0)
                                                             .getPhotoPath());
         showNumProcess();
+
         OkHttpUtils.post()
 
                    .url(HttpUrl.BASE + "uploadAction")

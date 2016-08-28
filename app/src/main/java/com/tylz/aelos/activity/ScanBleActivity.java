@@ -75,7 +75,8 @@ public class ScanBleActivity
             switch (msg.what) {
                 case WHAT_CONNECT_WAITING_TIME:
                     closeProgress();
-                    mToastor.getSingletonToast(R.string.fail_connect_robot).show();
+                    mToastor.getSingletonToast(R.string.fail_connect_robot)
+                            .show();
                     break;
             }
         }
@@ -105,8 +106,6 @@ public class ScanBleActivity
         registerReceiver(mReceiver, intentFilter);
 
     }
-
-
 
 
     /**
@@ -224,13 +223,15 @@ public class ScanBleActivity
                       .equals(BlueService.ACTION_CONNECTED))
             {
                 closeProgress();
+                mHandler.removeMessages(WHAT_CONNECT_WAITING_TIME);
                 Intent activity = new Intent(ScanBleActivity.this, MainActivity.class);
                 startActivity(activity);
                 ScanBleActivity.this.finish();
             } else if (intent.getAction()
                              .equals(BlueService.ACTION_UNCONNECT))
             {
-                mToastor.getSingletonToast(R.string.fail_connect_robot).show();
+                mToastor.getSingletonToast(R.string.fail_connect_robot)
+                        .show();
                 closeProgress();
             }
         }
@@ -244,6 +245,8 @@ public class ScanBleActivity
         BluetoothDevice device = mAdapter.getDevice(position);
         mSpUtils.putString(MainActivity.DEVICE_NAME, device.getName());
         mSpUtils.putString(MainActivity.DEVICE_ADDRESS, device.getAddress());
+        mHandler.sendEmptyMessageDelayed(WHAT_CONNECT_WAITING_TIME,
+                                         Constants.WAITING_CONN_ROBOT_TIME);
         mIBluetooth.callConnect(device.getAddress());
         scanLeDevice(false);
     }
@@ -293,7 +296,8 @@ public class ScanBleActivity
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - mPreClickTime > 2000) {// 两次连续点击的时间间隔>2s
-            mToastor.getSingletonToast(R.string.exit_app).show();
+            mToastor.getSingletonToast(R.string.exit_app)
+                    .show();
             mPreClickTime = System.currentTimeMillis();
             return;
         } else {   // 点的快 完全退出
@@ -314,12 +318,14 @@ public class ScanBleActivity
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            mToastor.getSingletonToast(R.string.ble_not_supported).show();
+            mToastor.getSingletonToast(R.string.ble_not_supported)
+                    .show();
             return false;
         }
         // 检查设备是否支持蓝牙
         if (bluetoothAdapter == null) {
-            mToastor.getSingletonToast(R.string.error_bluetooth_not_supported).show();
+            mToastor.getSingletonToast(R.string.error_bluetooth_not_supported)
+                    .show();
             return false;
         }
         return true;

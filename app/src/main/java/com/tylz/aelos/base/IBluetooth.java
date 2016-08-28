@@ -30,10 +30,7 @@ public interface IBluetooth {
      */
     void callClose();
 
-    /**
-     * 测试方法
-     */
-    void callTest();
+
 
     /**
      * 蓝牙是否连接
@@ -43,12 +40,6 @@ public interface IBluetooth {
     boolean callIsConnected();
 
 
-    /**
-     * 调用加载的3d模型
-     * @return
-     *  加载完返回3d模型，否则返回null
-     */
-    Object3D callLoad3DModel();
 
     /**
      *调用读取蓝牙信号

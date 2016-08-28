@@ -62,12 +62,14 @@
                   android:screenOrientation="portrait"/>
         <!--主页面-->
         <activity android:name=".activity.MainActivity"
+                  android:launchMode="singleTask"
                   android:screenOrientation="portrait"/>
         <!--蓝牙扫描-->
         <activity android:name=".activity.ScanBleActivity"
                   android:screenOrientation="portrait"/>
         <!--遥控器-->
         <activity android:name=".activity.GameActivity"
+                  android:launchMode="singleTask"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:screenOrientation="landscape"/>
         <!--动作商城-->

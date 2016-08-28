@@ -247,7 +247,8 @@ public class GameActivity
      */
     private boolean isPlaying() {
         if (mPlayerUtils.isPlaying()) {
-            mToastor.getSingletonToast(R.string.current_playing_action).show();
+            mToastor.getSingletonToast(R.string.current_playing_action)
+                    .show();
             return true;
         }
         return false;
@@ -271,7 +272,8 @@ public class GameActivity
                                       UIUtils.postTaskSafely(new Runnable() {
                                           @Override
                                           public void run() {
-                                              mToastor.getSingletonToast(titles).show();
+                                              mToastor.getSingletonToast(titles)
+                                                      .show();
                                           }
                                       });
                                       if (!titles.equals(notSetting)) {
@@ -301,7 +303,8 @@ public class GameActivity
                                   public void onClick(View v) {
                                       mIbTumbler.setImageResource(R.mipmap.tumbler_on);
                                       mIBluetooth.callWrite("db");
-                                      mToastor.getSingletonToast(R.string.open_tumbler_mode).show();
+                                      mToastor.getSingletonToast(R.string.open_tumbler_mode)
+                                              .show();
                                   }
                               })
                               .setNegativeButton(new View.OnClickListener() {
@@ -360,7 +363,8 @@ public class GameActivity
                                   @Override
                                   public void onClick(View v) {
                                       mGameType = 2;
-                                      mToastor.getSingletonToast(R.string.switch_quick_mode).show();
+                                      mToastor.getSingletonToast(R.string.switch_quick_mode)
+                                              .show();
                                       mIbQuick.setImageResource(R.mipmap.kuaizou_on);
                                   }
                               })
@@ -374,7 +378,8 @@ public class GameActivity
             switch (v.getId()) {
                 case R.id.ib_left_turn:
                     mIBluetooth.callWrite("d5");
-                    mToastor.getSingletonToast(R.string.left_turn).show();
+                    mToastor.getSingletonToast(R.string.left_turn)
+                            .show();
                     break;
                 case R.id.ib_top:
                     if (mGameType == 1) {
@@ -382,15 +387,18 @@ public class GameActivity
                     } else {
                         mIBluetooth.callWrite("d7");
                     }
-                    mToastor.getSingletonToast(R.string.advance).show();
+                    mToastor.getSingletonToast(R.string.advance)
+                            .show();
                     break;
                 case R.id.ib_right_turn:
                     mIBluetooth.callWrite("d6");
-                    mToastor.getSingletonToast(R.string.right_turn).show();
+                    mToastor.getSingletonToast(R.string.right_turn)
+                            .show();
                     break;
                 case R.id.ib_left:
                     mIBluetooth.callWrite("d3");
-                    mToastor.getSingletonToast(R.string.turn_left).show();
+                    mToastor.getSingletonToast(R.string.turn_left)
+                            .show();
                     break;
                 case R.id.ib_bottom:
                     if (mGameType == 1) {
@@ -398,11 +406,13 @@ public class GameActivity
                     } else {
                         mIBluetooth.callWrite("d8");
                     }
-                    mToastor.getSingletonToast(R.string.back_coming).show();
+                    mToastor.getSingletonToast(R.string.back_coming)
+                            .show();
                     break;
                 case R.id.ib_right:
                     mIBluetooth.callWrite("d4");
-                    mToastor.getSingletonToast(R.string.turn_right).show();
+                    mToastor.getSingletonToast(R.string.turn_right)
+                            .show();
                     break;
                 default:
                     break;
@@ -411,6 +421,7 @@ public class GameActivity
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             mIBluetooth.callWrite("da");
         }
+        mPlayerUtils.clear();
         return true;
     }
 
@@ -425,14 +436,16 @@ public class GameActivity
                     if (!isRobotDirectory(mRobotDirectory)) {
                         closeProgress();
                         mIBluetooth.callWrite("cc");
-                        mToastor.getSingletonToast(R.string.fail_synchronization).show();
+                        mToastor.getSingletonToast(R.string.fail_synchronization)
+                                .show();
                         mRobotDirectory = "";
                     }
                     break;
                 case WHAT_FINISH_CHANGE:
                     closeProgress();
                     mIBluetooth.callWrite("cc");
-                    mToastor.getSingletonToast(R.string.fail_online).show();
+                    mToastor.getSingletonToast(R.string.fail_online)
+                            .show();
                     break;
             }
         }
@@ -522,6 +535,7 @@ public class GameActivity
                                                        mRobotDirectory);
                             startActivity(gameSettingIntent);
                         }
+
                     }
                     break;
                 case BlueService.ACTION_RETURN_RSSI:
@@ -572,6 +586,10 @@ public class GameActivity
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
             mReceiver = null;
+        }
+        if(mBlueServiceConnection != null){
+            unbindService(mBlueServiceConnection);
+            mBlueServiceConnection = null;
         }
     }
 

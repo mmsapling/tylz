@@ -17,16 +17,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.threed.jpct.Loader;
-import com.threed.jpct.Object3D;
 import com.tylz.aelos.base.BaseService;
 import com.tylz.aelos.base.IBluetooth;
-import com.tylz.aelos.factory.ThreadPoolProxyFactory;
-import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.CommomUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 /*
@@ -61,30 +55,13 @@ public class BlueService
 
     /*写入标志*/
     private String mWriteFlag      = "tylz";
-    private String mRobotDirectory = "";
-    private Object3D mObject3D;
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return new BluetoothBinder();
     }
 
-    /**3D模型*/
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        /**加载模型*/
-        ThreadPoolProxyFactory.createNormalThreadPoolProxy()
-                              .execute(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      mObject3D = loadModel(Constants.MODEL_NAME, 1.2f);
-                                      //是否需要广播发送加载完毕
-                                      //                broadcastUpdate();
-                                  }
-                              });
-    }
+
 
     public class BluetoothBinder
             extends Binder
@@ -110,18 +87,9 @@ public class BlueService
         }
 
         @Override
-        public void callTest() {
-            test();
-        }
-
-        @Override
         public boolean callIsConnected() {
 
             return isConnected;
-        }
-        @Override
-        public Object3D callLoad3DModel() {
-            return getModel();
         }
 
         @Override
@@ -224,6 +192,9 @@ public class BlueService
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
         sendBroadcast(intent);
+        if(action.equals(ACTION_UNCONNECT)){
+            close();
+        }
     }
 
     private void broadcastUpdate(final String action, int rssi) {
@@ -253,47 +224,6 @@ public class BlueService
 
     }
 
-    /**
-     * 得到机器人3D模型
-     * @return
-     *      没有就返回null;
-     */
-    private Object3D getModel() {
-        if (mObject3D != null) {
-            return mObject3D;
-        }
-        return null;
-    }
 
-    /* 加载3ds模型
-    *
-    * @param filename
-    *      文件名称
-    * @param scale
-    *      缩放比例
-    * @return 返回3d模型
-    */
-    private Object3D loadModel(String filename, float scale)
-    {
-        InputStream is = null;
-        try {
-            is = getAssets().open(filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Object3D[] model = Loader.load3DS(is, scale);
-        Object3D   o3d   = new Object3D(0);
-//        Object3D   temp  = null;
-//        for (int i = 0; i < model.length; i++) {
-//            temp = model[i];
-//            temp.setCenter(SimpleVector.ORIGIN);
-//            temp.rotateX((float) (-.5 * Math.PI));
-//            temp.rotateMesh();
-//            temp.setRotationMatrix(new Matrix());
-//            o3d = Object3D.mergeObjects(o3d, temp);
-//            o3d.build();
-//        }
-        return model[0];
-    }
 
 }

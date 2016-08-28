@@ -23,7 +23,6 @@ import com.tylz.aelos.bean.UploadBean;
 import com.tylz.aelos.db.DbHelper;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.util.CommomUtil;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
@@ -143,6 +142,7 @@ public class UploadActionDetailActivity
         mTvTitle.setText(mUploadBean.title);
         mTvType.setText(mUploadBean.type);
         mTvTime.setText(mUploadBean.second);
+        mExpandTextView.setText(mUploadBean.content);
         /*是否收藏过*/
         if (mUploadBean.iscollect.equals("true")) {
             mIvCollect.setPressed(true);

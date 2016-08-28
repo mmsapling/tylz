@@ -23,4 +23,5 @@ public class UploadBean implements Serializable{
     public String title;//	哈哈
     public String type;//	自定义
     public String video;
+    public String content;
 }
