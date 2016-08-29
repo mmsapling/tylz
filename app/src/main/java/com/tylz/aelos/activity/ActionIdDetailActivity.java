@@ -37,7 +37,6 @@ import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.HttpUtil;
 import com.tylz.aelos.util.KeyBoardUtils;
 import com.tylz.aelos.util.LogUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DNumProgressDialog;
 import com.tylz.aelos.view.LoadMoreListView;
@@ -65,7 +64,7 @@ import okhttp3.Call;
  *  @文件名:   ActionDetailActivity
  *  @创建者:   陈选文
  *  @创建时间:  2016/7/27 18:03
- *  @描述：    动作详情界面
+ *  @描述：    动作详情界面，根据动作id来获取数据
  */
 public class ActionIdDetailActivity
         extends BaseActivity
