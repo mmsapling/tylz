@@ -42,7 +42,7 @@ import okhttp3.Call;
  *  @文件名:   AboutActivity
  *  @创建者:   陈选文
  *  @创建时间:  2016/8/7 14:19
- *  @描述：    关于界面
+ *  @描述：    我的消息
  */
 public class MsgActivity
         extends BaseActivity
