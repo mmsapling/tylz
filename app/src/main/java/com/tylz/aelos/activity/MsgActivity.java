@@ -1,9 +1,11 @@
 package com.tylz.aelos.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -13,11 +15,15 @@ import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.MsgAdapter;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.base.MsgBean;
+import com.tylz.aelos.bean.Comment;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
+import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.HttpUtil;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -28,6 +34,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
 
 /*
  *  @项目名：  Aelos 
@@ -39,7 +46,8 @@ import butterknife.OnClick;
  */
 public class MsgActivity
         extends BaseActivity
-        implements LoadMoreListView.OnLoadMore, SwipeRefreshLayout.OnRefreshListener
+        implements LoadMoreListView.OnLoadMore, SwipeRefreshLayout.OnRefreshListener,
+                   AdapterView.OnItemClickListener
 {
     @Bind(R.id.iv_left)
     ImageButton        mIvLeft;
@@ -68,6 +76,7 @@ public class MsgActivity
         mListview.setAdapter(mAdapter);
         mListview.setLoadMoreListen(this);
         mSwipeRefresh.setOnRefreshListener(this);
+        mListview.setOnItemClickListener(this);
         loadData(0);
     }
 
@@ -102,7 +111,6 @@ public class MsgActivity
                                                   }
                                                   mAdapter.notifyDataSetChanged();
                                               } else {
-
                                                   mTvNothing.setVisibility(View.GONE);
                                                   mListview.setVisibility(View.VISIBLE);
                                                   processData(data);
@@ -114,12 +122,17 @@ public class MsgActivity
     }
 
     private void processData(String data) {
-        LogUtils.d(data);
+        LogUtils.d(data);//"null"
         Type          type        = new TypeToken<List<MsgBean>>() {}.getType();
         Gson          gson        = new Gson();
         List<MsgBean> msgBeanList = gson.fromJson(data, type);
-        mDatas.addAll(msgBeanList);
-        mAdapter.notifyDataSetChanged();
+        if(msgBeanList != null){
+            mDatas.addAll(msgBeanList);
+            mAdapter.notifyDataSetChanged();
+        }else{
+            mPage--;
+        }
+
     }
 
     @Override
@@ -143,4 +156,49 @@ public class MsgActivity
                 break;
         }
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        MsgBean msgBean = mDatas.get(position);
+        if(msgBean.type == 0 || msgBean.type == 1){
+            Intent intent0 = new Intent(this, ActionIdDetailActivity.class);
+            intent0.putExtra(ActionIdDetailActivity.EXTRA_DATA,msgBean.goodsid);
+            startActivity(intent0);
+        }else if(msgBean.type == 2){
+            loadOneCommentData(msgBean);
+        }
+    }
+    private void loadOneCommentData(final MsgBean msgBean) {
+        showProgress();
+        OkHttpUtils.post().url(HttpUrl.BASE + "getOneComment").addParams("commentid", msgBean.commentid).build().execute(
+                new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        closeProgress();
+                        mToastor.getSingletonToast(R.string.tip_check_net).show();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        closeProgress();
+                        if(TextUtils.isEmpty(response)){
+
+                        }else{
+                            LogUtils.d(response);
+                            processData(msgBean,response);
+                        }
+                    }
+                });
+    }
+
+    private void processData(MsgBean msgBean, String response) {
+        Gson    gson    = new Gson();
+        Comment comment = gson.fromJson(response, Comment.class);
+        Intent  intent  = new Intent(this,ReplyCommentActivity.class);
+        intent.putExtra(ReplyCommentActivity.EXTRA_DATA,comment);
+        intent.putExtra(ReplyCommentActivity.EXTRA_POS,-1);
+        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID,msgBean.goodsid);
+        startActivity(intent);
+    }
+
 }

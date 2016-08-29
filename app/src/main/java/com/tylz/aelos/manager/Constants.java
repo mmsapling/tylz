@@ -51,7 +51,7 @@ public interface Constants {
     /** 模型转动等待时间*/
     long   MODEL_ANIM_WAIT_TIME         = 10;
     /** 同步等待时间*/
-    long   SYNCHRONIZATION_WAITING_TIME = 5000;
+    long   SYNCHRONIZATION_WAITING_TIME = 3000;
     /** 相隔多久读取蓝牙信号*/
     long   READ_RSSI_TIME               = 1000;
     /**是否是第一次启动主页*/

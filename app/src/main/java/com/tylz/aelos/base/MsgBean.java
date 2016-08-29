@@ -21,4 +21,5 @@ public class MsgBean {
     public String content;
     public String commented;
     public String updateTime;
+    public String commentid;
 }

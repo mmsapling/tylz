@@ -10,6 +10,6 @@ package com.tylz.aelos.manager;
  */
 public interface HttpUrl {
     //String BASE = "http://www.lejurobot.com/app/interface.php?func=";
-    String BASE = "http://192.168.1.137:8080/Workspace/network/app/interface.php?func=";
+    String BASE = "http://192.168.0.100:8080/Workspace/network/app/interface.php?func=";
 }
 

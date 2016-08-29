@@ -106,8 +106,8 @@ public class BaseApplication
     private void initOkHttp() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new LoggerInterceptor("okHttp"))
-                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
-                .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                .connectTimeout(5000L, TimeUnit.MILLISECONDS)
+                .readTimeout(5000L, TimeUnit.MILLISECONDS)
                 //其他配置
                 .build();
 

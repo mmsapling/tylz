@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.MyBaseApdater;
 import com.tylz.aelos.bean.Comment;
+import com.tylz.aelos.util.DateUtils;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class CommentAdapter
                .into(holder.civAvator);
         holder.tvComment.setText(comment.content, mCollapsedStatus, position);
         holder.tvNickName.setText(comment.nickname);
-        holder.tvTime.setText(comment.updateTime);
+        holder.tvTime.setText(DateUtils.formatStrDatetime(comment.updateTime));
         holder.tvReplyCount.setText("" + comment.replyCount);
         return convertView;
     }

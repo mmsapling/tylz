@@ -284,7 +284,6 @@ public class ActionShopActivity
                        @Override
                        public void onResult(String response, int id) {
                            LogUtils.d("loop_pic", response);
-
                            setupViewPager(response);
                        }
                    });

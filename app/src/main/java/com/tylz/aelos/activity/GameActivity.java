@@ -57,6 +57,7 @@ public class GameActivity
     /** 读取蓝牙信号*/
     private static final int    WHAT_READ_RSSI              = 2;
     private static final int    WHAT_FINISH_CHANGE          = 3;
+    private static final int WHAT_WSSB                      = 4;
     @Bind(R.id.iv_left)
     ImageButton mIvLeft;
     @Bind(R.id.tv_title)
@@ -193,6 +194,7 @@ public class GameActivity
                     mIBluetooth.callWrite("83");
                     mHandler.sendEmptyMessageDelayed(WHAT_FINISH_CHANGE,
                                                      Constants.SYNCHRONIZATION_WAITING_TIME);
+
                 }
                 break;
             case R.id.iv_left:
@@ -208,7 +210,7 @@ public class GameActivity
             case R.id.ib_stop:
                 mIBluetooth.callWrite("da");
                 mPlayerUtils.clear();
-                mToastor.getSingletonToast(R.string.stop_action);
+                mToastor.getSingletonToast(R.string.stop_action).show();
                 break;
             case R.id.ib_tumbler:
                 openTumblerMode();
@@ -288,32 +290,40 @@ public class GameActivity
 
 
     }
-
+    private boolean  isOpenTumblerMode = false;
     /**
      * 开启不倒翁模式
      * 弹出提示
      * 设置不倒翁图片
      */
     private void openTumblerMode() {
-        new DAlertDialog(this).builder()
-                              .setTitle(UIUtils.getString(R.string.tip))
-                              .setMsg(UIUtils.getString(R.string.tip_open_tumbler))
-                              .setPositiveButton(new View.OnClickListener() {
-                                  @Override
-                                  public void onClick(View v) {
-                                      mIbTumbler.setImageResource(R.mipmap.tumbler_on);
-                                      mIBluetooth.callWrite("db");
-                                      mToastor.getSingletonToast(R.string.open_tumbler_mode)
-                                              .show();
-                                  }
-                              })
-                              .setNegativeButton(new View.OnClickListener() {
-                                  @Override
-                                  public void onClick(View v) {
-                                      //空实现
-                                  }
-                              })
-                              .show();
+        if(!isOpenTumblerMode){
+            new DAlertDialog(this).builder()
+                                  .setTitle(UIUtils.getString(R.string.tip))
+                                  .setMsg(UIUtils.getString(R.string.tip_open_tumbler))
+                                  .setPositiveButton(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View v) {
+                                          isOpenTumblerMode = true;
+                                          mIbTumbler.setImageResource(R.mipmap.tumbler_on);
+                                          mIBluetooth.callWrite("db");
+                                          mToastor.getSingletonToast(R.string.open_tumbler_mode)
+                                                  .show();
+                                      }
+                                  })
+                                  .setNegativeButton(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View v) {
+                                          //空实现
+                                          isOpenTumblerMode = false;
+                                      }
+                                  })
+                                  .show();
+        }else{
+            setNormalTumbler();
+            mIBluetooth.callWrite("da");
+        }
+
     }
 
     /**
@@ -341,6 +351,7 @@ public class GameActivity
      */
     private void setNormalTumbler() {
         mIbTumbler.setImageResource(R.mipmap.tumbler);
+        isOpenTumblerMode = false;
     }
 
     /**
@@ -430,7 +441,6 @@ public class GameActivity
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-
                 case WHAT_FINISH_SYNCHRONIZATION:
                     /*如果目录同步失败*/
                     if (!isRobotDirectory(mRobotDirectory)) {
@@ -446,6 +456,9 @@ public class GameActivity
                     mIBluetooth.callWrite("cc");
                     mToastor.getSingletonToast(R.string.fail_online)
                             .show();
+                    break;
+                case WHAT_WSSB:
+                    mIBluetooth.callWrite("83");
                     break;
             }
         }

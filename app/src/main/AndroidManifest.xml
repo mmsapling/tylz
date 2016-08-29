@@ -136,8 +136,12 @@
         <!--修改密码页面-->
         <activity android:name=".activity.EditActivity"
                   android:screenOrientation="portrait"/>
-        <!--动作详情所有动作页面-->
+        <!--动作详情所有评论页面-->
         <activity android:name=".activity.AllCommentActivity"
+                  android:windowSoftInputMode="stateHidden|adjustResize"
+                  android:screenOrientation="portrait"/>
+        <!--动作详情所有评论页面ID-->
+        <activity android:name=".activity.AllCommentIdActivity"
                   android:windowSoftInputMode="stateHidden|adjustResize"
                   android:screenOrientation="portrait"/>
         <!--评论回复页面-->

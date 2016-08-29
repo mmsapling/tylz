@@ -16,6 +16,7 @@ import com.tylz.aelos.R;
 import com.tylz.aelos.base.MyBaseApdater;
 import com.tylz.aelos.bean.Reply;
 import com.tylz.aelos.bean.User;
+import com.tylz.aelos.util.DateUtils;
 import com.tylz.aelos.util.SPUtils;
 import com.tylz.aelos.util.UIUtils;
 
@@ -66,7 +67,8 @@ public class ReplyAdapter
                .placeholder(R.mipmap.defaultavatar)
                .into(holder.civAvator);
         holder.tvNickName.setText(reply.nickname);
-        holder.tvTime.setText(reply.updateTime);
+
+        holder.tvTime.setText(DateUtils.formatStrDatetime(reply.updateTime));
         if (reply.linkid != 0) {
             String replyText = UIUtils.getString(R.string.reply);
             String replyName = reply.linkidNickname;
