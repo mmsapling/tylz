@@ -26,6 +26,7 @@ import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.UIUtils;
+import com.tylz.aelos.view.DAlertDialog;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -177,12 +178,26 @@ public class ConnRobotActivity
 
             mLlImg.setVisibility(View.VISIBLE);
             mLlWifiInput.setVisibility(View.GONE);
-            sendVoice();
+            showSendVoiceTip();
+
         } else if (btnName.equals(UIUtils.getString(R.string.confirm))) {
             finish();
         } else if (btnName.equals(UIUtils.getString(R.string.retry))) {
             sendVoice();
         }
+    }
+
+    private void showSendVoiceTip() {
+        new DAlertDialog(this).builder()
+                              .setTitle(UIUtils.getString(R.string.tip))
+                              .setCancelable(false)
+                              .setMsg(UIUtils.getString(R.string.tip_connect_robot))
+                              .setPositiveButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+                                      sendVoice();
+                                  }
+                              }).show();
     }
 
     /**

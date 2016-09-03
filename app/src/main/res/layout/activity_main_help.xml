@@ -1,163 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFF"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_topmenu"/>
+
+    <TextView
+        android:id="@+id/help_tv_detail"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:gravity="center"
+        android:text="@string/mainhelp_tip"
+        android:textColor="#02b1e6"
+        android:textSize="14sp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFF"
+        android:scrollbars="none">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff" >
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-       <include layout="@layout/include_topmenu"/>
-
-        <TextView
-            android:id="@+id/help_tv_detail"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:gravity="center"
-            android:text="@string/mainhelp_tip"
-            android:textColor="#02b1e6"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/line_between20px" />
-
-        <LinearLayout
-            android:id="@+id/ll_help1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="16dp"
-                android:text="@string/mainhelp_q1"
-                android:textColor="@color/help_title_color"
-                android:textSize="16sp" />
+                android:src="@mipmap/line_between20px"/>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/ll_help1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="@string/mainhelp_a1"
-                android:textColor="@color/help_title_color"
-                android:textSize="12sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/mainhelp_q1"
+                    android:textColor="@color/help_title_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:text="@string/mainhelp_a1"
+                    android:textColor="@color/help_title_color"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <!-- 2 -->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between20px"/>
+
+            <LinearLayout
+                android:id="@+id/ll_help2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/mainhelp_q2"
+                    android:textColor="@color/help_title_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:text="@string/mainhelp_a2"
+                    android:textColor="@color/help_content_color"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <!-- 3 -->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between20px"/>
+
+            <LinearLayout
+                android:id="@+id/ll_help3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/mainhelp_q3"
+                    android:textColor="@color/help_title_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:text="@string/mainhelp_a3"
+                    android:textColor="@color/help_content_color"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <!-- 4 -->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between20px"/>
+
+            <LinearLayout
+                android:id="@+id/ll_help4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/mainhelp_q4"
+                    android:textColor="@color/help_title_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:text="@string/mainhelp_a4"
+                    android:textColor="@color/help_content_color"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+            <!-- 5 -->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/line_between20px"/>
+
+            <LinearLayout
+                android:id="@+id/ll_help5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/mainhelp_q5"
+                    android:textColor="@color/help_title_color"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:text="@string/mainhelp_a5"
+                    android:textColor="@color/help_content_color"
+                    android:textSize="12sp"/>
+            </LinearLayout>
         </LinearLayout>
-        <!-- 2 -->
+    </ScrollView>
+</LinearLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/line_between20px" />
-
-        <LinearLayout
-            android:id="@+id/ll_help2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="16dp"
-                android:text="@string/mainhelp_q2"
-                android:textColor="@color/help_title_color"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="@string/mainhelp_a2"
-                android:textColor="@color/help_content_color"
-                android:textSize="12sp" />
-        </LinearLayout>
-        <!-- 3 -->
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/line_between20px" />
-
-        <LinearLayout
-            android:id="@+id/ll_help3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="16dp"
-                android:text="@string/mainhelp_q3"
-                android:textColor="@color/help_title_color"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="@string/mainhelp_a3"
-                android:textColor="@color/help_content_color"
-                android:textSize="12sp" />
-        </LinearLayout>
-        <!-- 4 -->
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/line_between20px" />
-
-        <LinearLayout
-            android:id="@+id/ll_help4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="16dp"
-                android:text="@string/mainhelp_q4"
-                android:textColor="@color/help_title_color"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingBottom="16dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:text="@string/mainhelp_a4"
-                android:textColor="@color/help_content_color"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-</ScrollView>

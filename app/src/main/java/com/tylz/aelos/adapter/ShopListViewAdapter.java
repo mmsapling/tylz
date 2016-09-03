@@ -6,12 +6,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.MyBaseApdater;
 import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.db.DbHelper;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /*
  *  @项目名：  Aelos 
@@ -44,13 +47,14 @@ public class ShopListViewAdapter
             holder.tvType = (TextView) convertView.findViewById(R.id.item_tv_type);
             holder.ivDownload = (ImageView) convertView.findViewById(R.id.item_iv_download);
             holder.ivCollect = (ImageView) convertView.findViewById(R.id.item_ib_collect);
+            holder.civRobot = (CircleImageView) convertView.findViewById(R.id.item_civ_robot);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         ShopBean shopBean = mDataSource.get(position);
         //LogUtils.d("is= " +  shopBean.isdownload);
-
+        Picasso.with(mContext).load(shopBean.picurl).placeholder(R.mipmap.noimg).into(holder.civRobot);
         holder.tvType.setText(shopBean.type);
         holder.tvTime.setText(shopBean.second);
         holder.tvName.setText(shopBean.title);
@@ -89,5 +93,6 @@ public class ShopListViewAdapter
         TextView  tvDownload;
         ImageView ivDownload;
         ImageView ivCollect;
+        CircleImageView civRobot;
     }
 }

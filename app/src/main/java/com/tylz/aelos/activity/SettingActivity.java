@@ -11,12 +11,12 @@ import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.CacheClearUtils;
 import com.tylz.aelos.util.LogUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.zcw.togglebutton.ToggleButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.android.api.JPushInterface;
 
 /*
  *  @项目名：  Aelos 
@@ -130,6 +130,11 @@ public class SettingActivity
                  * 2.false 消息不提醒，写入到sp
                  * */
                 mSpUtils.putBoolean(Constants.IS_NOTIFICATION, on);
+                if(!on){
+                    JPushInterface.setSilenceTime(SettingActivity.this,0,0,23,59);
+                }else{
+                    JPushInterface.setSilenceTime(SettingActivity.this,0,0,0,0);
+                }
             }
         });
     }

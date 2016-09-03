@@ -16,4 +16,5 @@ public class LoopPicData implements Serializable{
     public String picurl;//	http://www.lejurobot.com/uploads/image/20160811/1470910620.png
     public String type;//	2
     public String name;
+    public String url;
 }

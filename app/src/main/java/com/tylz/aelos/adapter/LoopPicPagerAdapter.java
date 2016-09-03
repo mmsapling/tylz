@@ -2,6 +2,7 @@ package com.tylz.aelos.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -57,7 +58,12 @@ public class LoopPicPagerAdapter
                     mContext.startActivity(intent);
                 }else if(loopPicData.type.equals("1")){
                     Intent intent = new Intent(mContext, ActionIdDetailActivity.class);
-                    intent.putExtra(ActionIdDetailActivity.EXTRA_DATA,loopPicData.id);
+                    intent.putExtra(ActionIdDetailActivity.EXTRA_DATA,loopPicData.ids);
+                    mContext.startActivity(intent);
+                }else if(loopPicData.type.equals("3")){
+                    //跳网页
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(loopPicData.url));
                     mContext.startActivity(intent);
                 }
 

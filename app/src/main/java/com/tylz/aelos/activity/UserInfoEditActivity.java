@@ -352,6 +352,7 @@ public class UserInfoEditActivity
                    .execute(new ResultCall() {
                        @Override
                        public void onResult(String response, int id) {
+                           LogUtils.d("edit info = " + response);
                            if (response.equals("true")) {
                                //修改成功 去后台拉取下数据
                                loadDataFromNet();

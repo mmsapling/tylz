@@ -219,6 +219,9 @@ public class UploadActionActivity
 
                        @Override
                        public void onResponse(Object response, int id) {
+                           if(null != response){
+                               LogUtils.d("upload = " + response.toString());
+                           }
                            closeNumProcess();
                            mToastor.getSingletonToast(R.string.success_upload).show();
                            UploadActionActivity.this.finish();

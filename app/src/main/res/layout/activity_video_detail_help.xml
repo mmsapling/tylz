@@ -8,12 +8,31 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
+        android:background="@color/black"
         android:orientation="vertical" >
         <VideoView
             android:id="@+id/help_vv"
             android:layout_width="match_parent"
-            android:layout_height="220dp" />
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/iv_bg_video"
+            android:src="@mipmap/applogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ProgressBar
+            android:id="@+id/pb_progress"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <ImageButton
+            android:id="@+id/ib_video_play"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:src="@mipmap/icon_video_play"
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
     </FrameLayout>
     <ImageView
         android:layout_marginTop="40dp"

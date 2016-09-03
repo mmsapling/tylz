@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/include_topmenu"/>
 
     <ScrollView
-        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,28 +26,43 @@
                 android:layout_margin="20dp"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <FrameLayout
                     android:id="@+id/fl_avator"
                     android:layout_width="100dp"
                     android:layout_height="100dp">
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/civ_avator"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:src="@mipmap/defaultavatar"/>
+
                     <ImageView
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:src="@mipmap/picture"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:src="@mipmap/picture"/>
                 </FrameLayout>
+
+                <EditText
+                    android:id="@+id/et_nickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@null"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/username"/>
+                    android:text="@string/username"
+                    android:visibility="gone"/>
             </LinearLayout>
             <!--大条目分割线-->
             <ImageView
@@ -63,14 +78,15 @@
                 <!--昵称-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp">
+                    android:layout_height="60dp"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/UserInfoLeftStyle"
                         android:text="@string/nickname"/>
 
                     <EditText
-                        android:id="@+id/et_nickname"
+                        android:id="@+id/et_nickname1"
                         style="@style/UserInfoEditStyle"/>
                 </LinearLayout>
 
@@ -79,9 +95,9 @@
                 <!--性别-->
                 <LinearLayout
                     android:id="@+id/ll_sex"
-                    android:background="@drawable/btn_wg_selector"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp">
+                    android:layout_height="60dp"
+                    android:background="@drawable/btn_wg_selector">
 
                     <TextView
                         style="@style/UserInfoLeftStyle"
@@ -173,9 +189,9 @@
                 <!--生日-->
                 <LinearLayout
                     android:id="@+id/ll_birthday"
-                    android:background="@drawable/btn_wg_selector"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp">
+                    android:layout_height="60dp"
+                    android:background="@drawable/btn_wg_selector">
 
                     <TextView
                         style="@style/UserInfoLeftStyle"

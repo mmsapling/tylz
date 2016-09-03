@@ -79,6 +79,12 @@
 	    A:在动作商城的动作下载到手机端的前提下，进入操控器界面，点击右上角的设置按钮，同步完成后点击红色的下载按钮
 	    可以将手机端的动作包下载到机器人，然后点击左侧的按键，再次点击刚刚下载到机器人中的动作，点击“保存”按钮保存设置。
 	</string>
+    <string name="mainhelp_q5">Q:如何连接蓝牙音箱</string>
+    <string name="mainhelp_a5">
+	    A:先通过Aelos软件扫描并确认您的机器人批号（如：AELOS0000001)
+        然后进入手机设置 -> 蓝牙 -> 搜索并找到对应批号的蓝牙音箱设备（AMUSIC0000001）
+        点击并连接该蓝牙音箱设备，之后小艾就可以用美妙动听的声音和您互动了
+	</string>
     <string name="help_detail">帮助详情</string>
     <!--关于-->
     <string name="version_introduce">版本介绍</string>
@@ -260,8 +266,13 @@
     <string name="checked">审核通过</string>
     <string name="checked_error">审核失败</string>
     <string name="play_action">播放动作</string>
+    <string name="tip_app_update">当前已有最新版本，是否立即更新?</string>
+    <string name="tip_connect_robot">请把手机靠近机器人！</string>
+    <string name="not_wifi_conn_play">当前在非wifi环境下，是否继续播放？</string>
+    <string name="empty_video_path">视频路径为空！</string>
+
     <array name="tabs_upload">
-        <item>全部 </item>
+        <item>全部</item>
         <item>审核中</item>
         <item>已审核</item>
         <item>审核失败</item>

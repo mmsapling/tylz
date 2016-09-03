@@ -46,7 +46,8 @@ import okhttp3.Call;
  */
 public class MsgActivity
         extends BaseActivity
-        implements LoadMoreListView.OnLoadMore, SwipeRefreshLayout.OnRefreshListener,
+        implements LoadMoreListView.OnLoadMore,
+                   SwipeRefreshLayout.OnRefreshListener,
                    AdapterView.OnItemClickListener
 {
     @Bind(R.id.iv_left)
@@ -122,16 +123,24 @@ public class MsgActivity
     }
 
     private void processData(String data) {
-        LogUtils.d(data);//"null"
-        Type          type        = new TypeToken<List<MsgBean>>() {}.getType();
-        Gson          gson        = new Gson();
-        List<MsgBean> msgBeanList = gson.fromJson(data, type);
-        if(msgBeanList != null){
-            mDatas.addAll(msgBeanList);
-            mAdapter.notifyDataSetChanged();
-        }else{
+        if(data.equals("null")){
+            if(mDatas != null && mDatas.size() == 0){
+                mTvNothing.setVisibility(View.VISIBLE);
+                mListview.setVisibility(View.GONE);
+            }
             mPage--;
+        }else{
+            Type          type        = new TypeToken<List<MsgBean>>() {}.getType();
+            Gson          gson        = new Gson();
+            List<MsgBean> msgBeanList = gson.fromJson(data, type);
+            if (msgBeanList != null) {
+                mDatas.addAll(msgBeanList);
+                mAdapter.notifyDataSetChanged();
+            } else {
+                mPage--;
+            }
         }
+
 
     }
 
@@ -160,44 +169,67 @@ public class MsgActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         MsgBean msgBean = mDatas.get(position);
-        if(msgBean.type == 0 || msgBean.type == 1){
+        msgBean.state = "1";
+        mDatas.set(position, msgBean);
+        mAdapter.notifyDataSetChanged();
+        recorder(msgBean);
+        if (msgBean.type == 0 || msgBean.type == 1) {
             Intent intent0 = new Intent(this, ActionIdDetailActivity.class);
-            intent0.putExtra(ActionIdDetailActivity.EXTRA_DATA,msgBean.goodsid);
+            intent0.putExtra(ActionIdDetailActivity.EXTRA_DATA, msgBean.goodsid);
             startActivity(intent0);
-        }else if(msgBean.type == 2){
+        } else if (msgBean.type == 2) {
             loadOneCommentData(msgBean);
         }
     }
+
+    private void recorder(final MsgBean msgBean) {
+        ThreadPoolProxyFactory.createNormalThreadPoolProxy()
+                              .execute(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      Map<String, String> params = new HashMap<>();
+                                      params.put("pushid", msgBean.id);
+                                      HttpUtil.doPost("readUserPush", params);
+                                  }
+                              });
+
+
+    }
+
     private void loadOneCommentData(final MsgBean msgBean) {
         showProgress();
-        OkHttpUtils.post().url(HttpUrl.BASE + "getOneComment").addParams("commentid", msgBean.commentid).build().execute(
-                new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        closeProgress();
-                        mToastor.getSingletonToast(R.string.tip_check_net).show();
-                    }
+        OkHttpUtils.post()
+                   .url(HttpUrl.BASE + "getOneComment")
+                   .addParams("commentid", msgBean.commentid)
+                   .build()
+                   .execute(new StringCallback() {
+                       @Override
+                       public void onError(Call call, Exception e, int id) {
+                           closeProgress();
+                           mToastor.getSingletonToast(R.string.tip_check_net)
+                                   .show();
+                       }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        closeProgress();
-                        if(TextUtils.isEmpty(response)){
+                       @Override
+                       public void onResponse(String response, int id) {
+                           closeProgress();
+                           if (TextUtils.isEmpty(response)) {
 
-                        }else{
-                            LogUtils.d(response);
-                            processData(msgBean,response);
-                        }
-                    }
-                });
+                           } else {
+                               LogUtils.d(response);
+                               processData(msgBean, response);
+                           }
+                       }
+                   });
     }
 
     private void processData(MsgBean msgBean, String response) {
         Gson    gson    = new Gson();
         Comment comment = gson.fromJson(response, Comment.class);
-        Intent  intent  = new Intent(this,ReplyCommentActivity.class);
-        intent.putExtra(ReplyCommentActivity.EXTRA_DATA,comment);
-        intent.putExtra(ReplyCommentActivity.EXTRA_POS,-1);
-        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID,msgBean.goodsid);
+        Intent  intent  = new Intent(this, ReplyCommentActivity.class);
+        intent.putExtra(ReplyCommentActivity.EXTRA_DATA, comment);
+        intent.putExtra(ReplyCommentActivity.EXTRA_POS, -1);
+        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID, msgBean.goodsid);
         startActivity(intent);
     }
 

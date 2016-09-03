@@ -11,8 +11,6 @@ import com.tylz.aelos.R;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.MainHelpData;
 
-import java.io.Serializable;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,9 +42,11 @@ public class MainHelpActivity
     LinearLayout mLlHelp3;
     @Bind(R.id.ll_help4)
     LinearLayout mLlHelp4;
+    @Bind(R.id.ll_help5)
+    LinearLayout mLlHelp5;
     TextView tvQuestion = null;
     TextView tvAnswer   = null;
-
+    String url = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +66,10 @@ public class MainHelpActivity
               R.id.ll_help1,
               R.id.ll_help2,
               R.id.ll_help3,
-              R.id.ll_help4})
+              R.id.ll_help4,
+              R.id.ll_help5})
     public void onClick(View view) {
-
+        // http://www.lejurobot.com/uploads/video/蓝牙音响.mp4
         switch (view.getId()) {
             case R.id.iv_left:
                 finish();
@@ -76,38 +77,52 @@ public class MainHelpActivity
             case R.id.ll_help1:
                 tvQuestion = (TextView) mLlHelp1.getChildAt(0);
                 tvAnswer = (TextView) mLlHelp1.getChildAt(1);
+                url = "http://www.lejurobot.com/uploads/video/连接机器人.mp4";
                 enterDetail(new MainHelpData(1,
                                              tvQuestion.getText()
                                                        .toString(),
                                              tvAnswer.getText()
-                                                     .toString()));
+                                                     .toString(),url));
                 break;
             case R.id.ll_help2:
                 tvQuestion = (TextView) mLlHelp2.getChildAt(0);
                 tvAnswer = (TextView) mLlHelp2.getChildAt(1);
+                url ="http://www.lejurobot.com/uploads/video/控制机器人.mp4";
                 enterDetail(new MainHelpData(2,
                                          tvQuestion.getText()
                                                    .toString(),
                                          tvAnswer.getText()
-                                                 .toString()));
+                                                 .toString(),url));
                 break;
             case R.id.ll_help3:
                 tvQuestion = (TextView) mLlHelp3.getChildAt(0);
                 tvAnswer = (TextView) mLlHelp3.getChildAt(1);
+                url = "http://www.lejurobot.com/uploads/video/收藏下载.mp4";
                 enterDetail(new MainHelpData(3,
                                          tvQuestion.getText()
                                                    .toString(),
                                          tvAnswer.getText()
-                                                 .toString()));
+                                                 .toString(),url));
                 break;
             case R.id.ll_help4:
-                tvQuestion = (TextView) mLlHelp3.getChildAt(0);
-                tvAnswer = (TextView) mLlHelp3.getChildAt(1);
+                tvQuestion = (TextView) mLlHelp4.getChildAt(0);
+                tvAnswer = (TextView) mLlHelp4.getChildAt(1);
+                url = "http://www.lejurobot.com/uploads/video/按键01改_0.mp4";
                 enterDetail(new MainHelpData(4,
                                          tvQuestion.getText()
                                                    .toString(),
                                          tvAnswer.getText()
-                                                 .toString()));
+                                                 .toString(),url));
+                break;
+            case R.id.ll_help5:
+                tvQuestion = (TextView) mLlHelp5.getChildAt(0);
+                tvAnswer = (TextView) mLlHelp5.getChildAt(1);
+                url = "http://www.lejurobot.com/uploads/video/蓝牙音响.mp4";
+                enterDetail(new MainHelpData(5,
+                                             tvQuestion.getText()
+                                                       .toString(),
+                                             tvAnswer.getText()
+                                                     .toString(),url));
                 break;
         }
     }

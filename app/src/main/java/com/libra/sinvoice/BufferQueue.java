@@ -11,6 +11,8 @@ public class BufferQueue {
     private BufferData[] mBufferData;
 
     public BufferQueue(int bufferCount, int bufferSize) {
+
+
         if (bufferCount > 0 && bufferSize > 0) {
             mBufferData = new BufferData[bufferCount];
             for (int i = 0; i < bufferCount; ++i) {

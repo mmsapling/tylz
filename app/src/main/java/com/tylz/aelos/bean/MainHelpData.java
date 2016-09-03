@@ -15,10 +15,11 @@ public class MainHelpData
     public int    index;
     public String question;
     public String answer;
-
-    public MainHelpData(int index, String question, String answer) {
+    public String url;
+    public MainHelpData(int index, String question, String answer,String url) {
         this.index = index;
         this.question = question;
         this.answer = answer;
+        this.url = url;
     }
 }

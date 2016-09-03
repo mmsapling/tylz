@@ -34,12 +34,14 @@ import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.db.DbHelper;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
+import com.tylz.aelos.util.CommUtils;
 import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.HttpUtil;
 import com.tylz.aelos.util.KeyBoardUtils;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
+import com.tylz.aelos.view.DAlertDialog;
 import com.tylz.aelos.view.DNumProgressDialog;
 import com.tylz.aelos.view.LoadMoreListView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -367,21 +369,59 @@ public class ActionDetailActivity
         mIbVideoPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPbProgress.setVisibility(View.VISIBLE);
-                mIbVideoPlay.setVisibility(View.GONE);
-                mVideoview.setVideoPath(mActionDetailBean.video);
-                mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mIvBgVideo.setVisibility(View.GONE);
-                        mPbProgress.setVisibility(View.GONE);
-                        mVideoview.start();
-                    }
-                });
+                if(TextUtils.isEmpty(mActionDetailBean.video)){
+                    mToastor.getSingletonToast(R.string.empty_video_path);
+                    return;
+                }
+                boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
+                boolean wifi   = CommUtils.isWifi(getApplicationContext());
+                if(!wifi && isWifi){
+                    showPlayTip();
+                }else{
+                    mPbProgress.setVisibility(View.VISIBLE);
+                    mIbVideoPlay.setVisibility(View.GONE);
+                    mVideoview.setVideoPath(mActionDetailBean.video);
+                    mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            mIvBgVideo.setVisibility(View.GONE);
+                            mPbProgress.setVisibility(View.GONE);
+                            mVideoview.start();
+                        }
+                    });
+                }
             }
         });
     }
+    private void showPlayTip() {
+        new DAlertDialog(this).builder()
+                              .setTitle(UIUtils.getString(R.string.tip))
+                              .setMsg(UIUtils.getString(R.string.not_wifi_conn_play))
+                              .setNegativeButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
 
+                                  }
+                              })
+                              .setPositiveButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+                                      mPbProgress.setVisibility(View.VISIBLE);
+                                      mIbVideoPlay.setVisibility(View.GONE);
+                                      mVideoview.setVideoPath(mActionDetailBean.video);
+                                      mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                          @Override
+                                          public void onPrepared(MediaPlayer mp) {
+                                              mIvBgVideo.setVisibility(View.GONE);
+                                              mPbProgress.setVisibility(View.GONE);
+                                              mVideoview.start();
+                                          }
+                                      });
+                                  }
+                              })
+                              .show();
+
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -557,6 +597,11 @@ public class ActionDetailActivity
         if (!isLogin() && v != mIvLeft) {
             showLoginTip();
         } else {
+            if(mActionDetailBean == null){
+                mToastor.getSingletonToast(R.string.fail_operation).show();
+                return;
+            }
+
             if (v == mLlDownload) {
                 if (mShopBean.hasAction.equals("false")) {
                     mToastor.getSingletonToast(R.string.support_preview).show();

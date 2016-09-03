@@ -52,7 +52,7 @@ public class MsgAdapter
         holder.tvTime.setText(DateUtils.formatStrDatetime(msgBean.updateTime));
         holder.tvTitle.setText(type2Str(msgBean));
         holder.tvContent.setText(msgBean.content,mCollapsedStatus,position);
-        if(msgBean.type == 1 || msgBean.type == 2){
+         if(msgBean.state.equals("0")){
             holder.ivFlag.setImageResource(R.mipmap.msg_red);
         }else{
             holder.ivFlag.setImageResource(R.mipmap.msg_blue);

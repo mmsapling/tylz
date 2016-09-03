@@ -9,7 +9,11 @@ package com.tylz.aelos.manager;
  *  @描述：    TODO
  */
 public interface HttpUrl {
-    //String BASE = "http://www.lejurobot.com/app/interface.php?func=";
-    String BASE = "http://192.168.0.100:8080/Workspace/network/app/interface.php?func=";
+
+    String BASE_IP                  = "192.168.1.92:8080";
+    String BASE                     = "http://" + BASE_IP + "/Workspace/network/app/interface.php?func=";
+    /**版本更新地址*/
+    String VERSION_UPDATE_URL       = "http://www.lejurobot.com/app/version.xml";
+    String LOCAL_VERSION_UPDATE_URL = "http://" + BASE_IP + "/Workspace/network/app/version.xml";
 }
 

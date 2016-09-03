@@ -22,4 +22,6 @@ public class MsgBean {
     public String commented;
     public String updateTime;
     public String commentid;
+    public String state;//0 未读，1已读
+    public String id;
 }

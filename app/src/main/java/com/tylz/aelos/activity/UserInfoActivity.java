@@ -96,7 +96,7 @@ public class UserInfoActivity
         mTvBirthday.setText(user.birth);
         mTvAge.setText(user.age);
         mTvHobby.setText(user.hobby);
-        mTvUsername.setText(user.phone);
+        mTvUsername.setText(user.nickname);
     }
 
     @OnClick({R.id.iv_left,

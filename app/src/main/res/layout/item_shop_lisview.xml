@@ -83,6 +83,7 @@
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/item_civ_robot"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentRight="true"
