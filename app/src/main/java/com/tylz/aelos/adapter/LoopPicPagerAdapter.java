@@ -52,19 +52,23 @@ public class LoopPicPagerAdapter
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(loopPicData.type.equals("2")){
-                    Intent intent = new Intent(mContext, ActionSpecialActivity.class);
-                    intent.putExtra(ActionSpecialActivity.EXTRA_DATA,loopPicData);
-                    mContext.startActivity(intent);
-                }else if(loopPicData.type.equals("1")){
-                    Intent intent = new Intent(mContext, ActionIdDetailActivity.class);
-                    intent.putExtra(ActionIdDetailActivity.EXTRA_DATA,loopPicData.ids);
-                    mContext.startActivity(intent);
-                }else if(loopPicData.type.equals("3")){
-                    //跳网页
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(loopPicData.url));
-                    mContext.startActivity(intent);
+                try{
+                    if(loopPicData.type.equals("2")){
+                        Intent intent = new Intent(mContext, ActionSpecialActivity.class);
+                        intent.putExtra(ActionSpecialActivity.EXTRA_DATA,loopPicData);
+                        mContext.startActivity(intent);
+                    }else if(loopPicData.type.equals("1")){
+                        Intent intent = new Intent(mContext, ActionIdDetailActivity.class);
+                        intent.putExtra(ActionIdDetailActivity.EXTRA_DATA,loopPicData.ids);
+                        mContext.startActivity(intent);
+                    }else if(loopPicData.type.equals("3")){
+                        //跳网页
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(loopPicData.url));
+                        mContext.startActivity(intent);
+                    }
+                }catch (Exception e){
+
                 }
 
             }

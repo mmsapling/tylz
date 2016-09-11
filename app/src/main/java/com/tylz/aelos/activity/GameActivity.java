@@ -57,7 +57,7 @@ public class GameActivity
     /** 读取蓝牙信号*/
     private static final int    WHAT_READ_RSSI              = 2;
     private static final int    WHAT_FINISH_CHANGE          = 3;
-    private static final int WHAT_WSSB                      = 4;
+    private static final int    WHAT_WSSB                   = 4;
     @Bind(R.id.iv_left)
     ImageButton mIvLeft;
     @Bind(R.id.tv_title)
@@ -127,6 +127,16 @@ public class GameActivity
         mIbLeft.setOnTouchListener(this);
         mIbRight.setOnTouchListener(this);
         mIbBottom.setOnTouchListener(this);
+    }
+
+    private void setPressFalse() {
+        mIbLeftTurn.setPressed(false);
+        mIbTop.setPressed(false);
+        mIbRight.setPressed(false);
+        mIbRightTurn.setPressed(false);
+        mIbLeft.setPressed(false);
+        mIbBottom.setPressed(false);
+
     }
 
     private void init() {
@@ -210,7 +220,8 @@ public class GameActivity
             case R.id.ib_stop:
                 mIBluetooth.callWrite("da");
                 mPlayerUtils.clear();
-                mToastor.getSingletonToast(R.string.stop_action).show();
+                mToastor.getSingletonToast(R.string.stop_action)
+                        .show();
                 break;
             case R.id.ib_tumbler:
                 openTumblerMode();
@@ -265,10 +276,14 @@ public class GameActivity
         if (isPlaying()) {
             return;
         }
+        mPlayerUtils.clear();
+        mIBluetooth.callWrite("da");
+        SystemClock.sleep(80);
         ThreadPoolProxyFactory.createNormalThreadPoolProxy()
                               .execute(new Runnable() {
                                   @Override
                                   public void run() {
+
                                       final String titles     = mDbHelper.findTitleStrByKey(key);
                                       String       notSetting = UIUtils.getString(R.string.not_setting);
                                       UIUtils.postTaskSafely(new Runnable() {
@@ -290,14 +305,16 @@ public class GameActivity
 
 
     }
-    private boolean  isOpenTumblerMode = false;
+
+    private boolean isOpenTumblerMode = false;
+
     /**
      * 开启不倒翁模式
      * 弹出提示
      * 设置不倒翁图片
      */
     private void openTumblerMode() {
-        if(!isOpenTumblerMode){
+        if (!isOpenTumblerMode) {
             new DAlertDialog(this).builder()
                                   .setTitle(UIUtils.getString(R.string.tip))
                                   .setMsg(UIUtils.getString(R.string.tip_open_tumbler))
@@ -319,7 +336,7 @@ public class GameActivity
                                       }
                                   })
                                   .show();
-        }else{
+        } else {
             setNormalTumbler();
             mIBluetooth.callWrite("da");
         }
@@ -388,11 +405,13 @@ public class GameActivity
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             switch (v.getId()) {
                 case R.id.ib_left_turn:
+                    mIbLeftTurn.setPressed(true);
                     mIBluetooth.callWrite("d5");
                     mToastor.getSingletonToast(R.string.left_turn)
                             .show();
                     break;
                 case R.id.ib_top:
+                    mIbTop.setPressed(true);
                     if (mGameType == 1) {
                         mIBluetooth.callWrite("d1");
                     } else {
@@ -402,16 +421,19 @@ public class GameActivity
                             .show();
                     break;
                 case R.id.ib_right_turn:
+                   mIbRightTurn.setPressed(true);
                     mIBluetooth.callWrite("d6");
                     mToastor.getSingletonToast(R.string.right_turn)
                             .show();
                     break;
                 case R.id.ib_left:
+                    mIbLeft.setPressed(true);
                     mIBluetooth.callWrite("d3");
                     mToastor.getSingletonToast(R.string.turn_left)
                             .show();
                     break;
                 case R.id.ib_bottom:
+                    mIbBottom.setPressed(true);
                     if (mGameType == 1) {
                         mIBluetooth.callWrite("d2");
                     } else {
@@ -421,6 +443,7 @@ public class GameActivity
                             .show();
                     break;
                 case R.id.ib_right:
+                    mIbRight.setPressed(true);
                     mIBluetooth.callWrite("d4");
                     mToastor.getSingletonToast(R.string.turn_right)
                             .show();
@@ -431,6 +454,7 @@ public class GameActivity
             setNormalTumbler();
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             mIBluetooth.callWrite("da");
+            setPressFalse();
         }
         mPlayerUtils.clear();
         return true;
@@ -600,7 +624,7 @@ public class GameActivity
             unregisterReceiver(mReceiver);
             mReceiver = null;
         }
-        if(mBlueServiceConnection != null){
+        if (mBlueServiceConnection != null) {
             unbindService(mBlueServiceConnection);
             mBlueServiceConnection = null;
         }

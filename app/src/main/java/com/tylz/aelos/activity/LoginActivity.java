@@ -17,6 +17,7 @@ import com.tylz.aelos.bean.User;
 import com.tylz.aelos.bean.UserBean;
 import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.CommomUtil;
+import com.tylz.aelos.util.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.lang.reflect.Type;
@@ -141,6 +142,7 @@ public class LoginActivity
                                           mEtPwd.getText()
                                                 .toString());
         mSpUtils.saveUserInfo(userInfo);
+        LogUtils.d("id = " + userInfo.id);
         setAligs();
         //跳转到扫描界面
         skipActivityF(ScanBleActivity.class);

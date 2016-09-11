@@ -43,7 +43,7 @@ public interface Constants {
     /** 模型名称*/
     String MODEL_NAME                   = "android_z_1.3ds";
     /** 模型使用的纹理*/
-    int    MODEL_TEXTURE                = R.mipmap.texture_512_aoyun;
+    int    MODEL_TEXTURE                = R.mipmap.texture1024;
     /** 模型使用的纹理名称*/
     String MODEL_TEXTURE_NAME           = "texture_aoyun";
     /** 模型增减速度*/

@@ -215,17 +215,16 @@ public class ActionDetailActivity
         mListview.setLoadMoreListen(this);
         mListview.setOnItemClickListener(this);
     }
+
     public void setListViewHeightBasedOnChildren(ListView listView)
     {
         ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-        {
+        if (listAdapter == null) {
             // pre-condition
             return;
         }
         int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++)
-        {
+        for (int i = 0; i < listAdapter.getCount(); i++) {
             View listItem = listAdapter.getView(i, null, listView);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
@@ -234,6 +233,7 @@ public class ActionDetailActivity
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+
     /**
      * 初始化数据
      * 1.设置标题
@@ -248,7 +248,10 @@ public class ActionDetailActivity
         mTvTime.setText(mShopBean.second);
         /*是否收藏过*/
         if (mShopBean.iscollect.equals("true")) {
-            mIvCollect.setPressed(true);
+            // mIvCollect.setPressed(true);
+            mIvCollect.setImageResource(R.mipmap.heart_press);
+        } else {
+            mIvCollect.setImageResource(R.mipmap.heart_normal);
         }
         /*是否下载，需要从本地判断，暂时没做*/
         if (mDbHelper.isExistActionId(mShopBean.id)) {
@@ -302,11 +305,13 @@ public class ActionDetailActivity
             boolean result = jsonObject.getBoolean("result");
             mEtContent.setText("");
             if (result) {
-                mToastor.getSingletonToast(R.string.success_comment).show();
+                mToastor.getSingletonToast(R.string.success_comment)
+                        .show();
                 KeyBoardUtils.closeKeybord(mEtContent, this);
                 loadCommentFroNet(0);
             } else {
-                mToastor.getSingletonToast(R.string.fail_comment).show();
+                mToastor.getSingletonToast(R.string.fail_comment)
+                        .show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -369,15 +374,15 @@ public class ActionDetailActivity
         mIbVideoPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(mActionDetailBean.video)){
+                if (TextUtils.isEmpty(mActionDetailBean.video)) {
                     mToastor.getSingletonToast(R.string.empty_video_path);
                     return;
                 }
                 boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
                 boolean wifi   = CommUtils.isWifi(getApplicationContext());
-                if(!wifi && isWifi){
+                if (!wifi && isWifi) {
                     showPlayTip();
-                }else{
+                } else {
                     mPbProgress.setVisibility(View.VISIBLE);
                     mIbVideoPlay.setVisibility(View.GONE);
                     mVideoview.setVideoPath(mActionDetailBean.video);
@@ -393,6 +398,7 @@ public class ActionDetailActivity
             }
         });
     }
+
     private void showPlayTip() {
         new DAlertDialog(this).builder()
                               .setTitle(UIUtils.getString(R.string.tip))
@@ -422,13 +428,14 @@ public class ActionDetailActivity
                               .show();
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if(mVideoviewCurrentPosition != -1){
-            if(mVideoview != null && mVideoview.isPlaying()){
+        if (mVideoviewCurrentPosition != -1) {
+            if (mVideoview != null && mVideoview.isPlaying()) {
                 mVideoview.seekTo(mVideoviewCurrentPosition);
-            }else {
+            } else {
                 mVideoview.seekTo(mVideoviewCurrentPosition);
             }
         }
@@ -437,7 +444,7 @@ public class ActionDetailActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if(mVideoview != null && mVideoview.isPlaying()){
+        if (mVideoview != null && mVideoview.isPlaying()) {
             /*记录当前位置*/
             mVideoviewCurrentPosition = mVideoview.getCurrentPosition();
             mVideoview.pause();
@@ -452,9 +459,11 @@ public class ActionDetailActivity
         /*如果当前用户赞过，那么设置点赞按压下过，显示点赞数量，否则显示数量*/
         mTvPraiseCount.setText(mActionDetailBean.applaudCount);
         if (mActionDetailBean.isApplaud.equals("true")) {
-            mTvPraiseCount.setPressed(true);
+            // mIvPraise.setPressed(true);
+            mIvPraise.setImageResource(R.mipmap.good_press);
         } else {
-            mTvPraiseCount.setPressed(false);
+            // mIvPraise.setPressed(false);
+            mIvPraise.setImageResource(R.mipmap.good_normal);
         }
         mTvCommentCount.setText(mActionDetailBean.commentCount);
         mTvCollectCount.setText(mActionDetailBean.collectCount);
@@ -499,7 +508,8 @@ public class ActionDetailActivity
                        public void onError(Call call, Exception e, int id) {
                            closeProgress();
                            closeNumProcess();
-                           mToastor.getSingletonToast(R.string.tip_check_net).show();
+                           mToastor.getSingletonToast(R.string.tip_check_net)
+                                   .show();
                        }
 
                        @Override
@@ -512,7 +522,8 @@ public class ActionDetailActivity
                                    if (result != -1) {
                                        mShopBean.isdownload = "true";
                                        mIvDownload.setEnabled(false);
-                                       mToastor.getSingletonToast(R.string.success_download).show();
+                                       mToastor.getSingletonToast(R.string.success_download)
+                                               .show();
                                    } else {
                                        mShopBean.isdownload = "false";
                                        mIvDownload.setEnabled(true);
@@ -596,19 +607,24 @@ public class ActionDetailActivity
     public void onClick(View v) {
         if (!isLogin() && v != mIvLeft) {
             showLoginTip();
+        } else if (v == mIvLeft) {
+            goBack();
         } else {
-            if(mActionDetailBean == null){
-                mToastor.getSingletonToast(R.string.fail_operation).show();
+            if (mActionDetailBean == null) {
+                mToastor.getSingletonToast(R.string.fail_operation)
+                        .show();
                 return;
             }
 
             if (v == mLlDownload) {
                 if (mShopBean.hasAction.equals("false")) {
-                    mToastor.getSingletonToast(R.string.support_preview).show();
+                    mToastor.getSingletonToast(R.string.support_preview)
+                            .show();
                     return;
                 }
                 if (mDbHelper.isExistActionId(mShopBean.id)) {
-                    mToastor.getSingletonToast(R.string.downloaded).show();
+                    mToastor.getSingletonToast(R.string.downloaded)
+                            .show();
                     return;
                 }
                 if (TextUtils.isEmpty(mActionDetailBean.audio)) {
@@ -617,7 +633,8 @@ public class ActionDetailActivity
                     if (result != -1) {
                         mShopBean.isdownload = "true";
                         mIvDownload.setEnabled(false);
-                        mToastor.getSingletonToast(R.string.success_download).show();
+                        mToastor.getSingletonToast(R.string.success_download)
+                                .show();
                     } else {
                         mShopBean.isdownload = "false";
                         mIvDownload.setEnabled(true);
@@ -638,8 +655,6 @@ public class ActionDetailActivity
                 praise();
             } else if (v == mBtnSend) {
                 sendComment();
-            } else if (v == mIvLeft) {
-                goBack();
             }
         }
 
@@ -656,7 +671,8 @@ public class ActionDetailActivity
         final String comment = mEtContent.getText()
                                          .toString();
         if (TextUtils.isEmpty(comment)) {
-            mToastor.getSingletonToast(R.string.empty_comment).show();
+            mToastor.getSingletonToast(R.string.empty_comment)
+                    .show();
             return;
         }
         showProgress();
@@ -717,7 +733,8 @@ public class ActionDetailActivity
                                               if (!TextUtils.isEmpty(praiseData)) {
                                                   processPraiseData(praiseData);
                                               } else {
-                                                  mToastor.getSingletonToast(R.string.fail_praise).show();
+                                                  mToastor.getSingletonToast(R.string.fail_praise)
+                                                          .show();
                                               }
                                           }
                                       });
@@ -738,12 +755,14 @@ public class ActionDetailActivity
             mTvPraiseCount.setText(applaudCount);
             if (result) {
                 if (mActionDetailBean.isApplaud.equals("true")) {
-                    mIvPraise.setEnabled(true);
+                    //                    mIvPraise.setEnabled(true);
                     //ToastUtils.showToast(R.string.cancel_praise);
                     mActionDetailBean.isApplaud = "false";
+                    mIvPraise.setImageResource(R.mipmap.good_normal);
                 } else {
-                    mIvPraise.setEnabled(false);
+                    //                    mIvPraise.setEnabled(false);
                     mActionDetailBean.isApplaud = "true";
+                    mIvPraise.setImageResource(R.mipmap.good_press);
                     //ToastUtils.showToast(R.string.success_praise);
                 }
             } else {
@@ -775,7 +794,8 @@ public class ActionDetailActivity
                                               if (!TextUtils.isEmpty(collectData)) {
                                                   processCollectData(collectData);
                                               } else {
-                                                  mToastor.getSingletonToast(R.string.fail_operation).show();
+                                                  mToastor.getSingletonToast(R.string.fail_operation)
+                                                          .show();
                                               }
                                           }
                                       });
@@ -798,11 +818,13 @@ public class ActionDetailActivity
             if (result.equals(success_collect)) {
                 mShopBean.iscollect = "true";
                 //ToastUtils.showToast(R.string.success_collect);
-                mIvCollect.setEnabled(false);
+                //                mIvCollect.setEnabled(false);
+                mIvCollect.setImageResource(R.mipmap.heart_press);
             } else {
-               // ToastUtils.showToast(R.string.cancel_collect);
+                // ToastUtils.showToast(R.string.cancel_collect);
                 mShopBean.iscollect = "false";
-                mIvCollect.setEnabled(true);
+                //                mIvCollect.setEnabled(true);
+                mIvCollect.setImageResource(R.mipmap.heart_normal);
             }
         } catch (JSONException e) {
             e.printStackTrace();

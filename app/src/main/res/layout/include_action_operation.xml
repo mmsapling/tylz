@@ -71,7 +71,7 @@
                 android:id="@+id/iv_collect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/selector_action_heart"/>
+                android:src="@mipmap/heart_normal"/>
             <TextView
                 android:id="@+id/tv_collect"
                 style="@style/ActionOperationStyle"/>

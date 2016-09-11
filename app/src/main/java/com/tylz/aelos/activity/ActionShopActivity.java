@@ -141,7 +141,7 @@ public class ActionShopActivity
      *      从网络加载过来json字符串
      */
     private void setupViewPager(String data) {
-        if (TextUtils.isEmpty(data)) {
+        if (TextUtils.isEmpty(data) || "null".equals(data)) {
             return;
         }
         Type                    type         = new TypeToken<List<LoopPicData>>() {}.getType();

@@ -159,7 +159,10 @@ public class MyUploadActivity
                    .execute(new ResultCall() {
                        @Override
                        public void onResult(String response, int id) {
-                           processData(response);
+                           if(response.equals("null")){
+                           }else{
+                            processData(response);
+                           }
                        }
                    });
     }

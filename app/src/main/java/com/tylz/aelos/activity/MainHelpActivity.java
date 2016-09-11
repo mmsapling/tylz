@@ -1,6 +1,7 @@
 package com.tylz.aelos.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -10,6 +11,11 @@ import android.widget.TextView;
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.MainHelpData;
+import com.tylz.aelos.manager.Constants;
+import com.tylz.aelos.manager.HttpUrl;
+import com.tylz.aelos.util.CommUtils;
+import com.tylz.aelos.util.UIUtils;
+import com.tylz.aelos.view.DAlertDialog;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -75,58 +81,58 @@ public class MainHelpActivity
                 finish();
                 break;
             case R.id.ll_help1:
-                tvQuestion = (TextView) mLlHelp1.getChildAt(0);
-                tvAnswer = (TextView) mLlHelp1.getChildAt(1);
-                url = "http://www.lejurobot.com/uploads/video/连接机器人.mp4";
-                enterDetail(new MainHelpData(1,
-                                             tvQuestion.getText()
-                                                       .toString(),
-                                             tvAnswer.getText()
-                                                     .toString(),url));
+                clickPlay(HttpUrl.CONNECT_TO_ROBOT);
                 break;
             case R.id.ll_help2:
-                tvQuestion = (TextView) mLlHelp2.getChildAt(0);
-                tvAnswer = (TextView) mLlHelp2.getChildAt(1);
-                url ="http://www.lejurobot.com/uploads/video/控制机器人.mp4";
-                enterDetail(new MainHelpData(2,
-                                         tvQuestion.getText()
-                                                   .toString(),
-                                         tvAnswer.getText()
-                                                 .toString(),url));
+                clickPlay(HttpUrl.HOW_TO_CONTROL_ROBOT);
                 break;
             case R.id.ll_help3:
-                tvQuestion = (TextView) mLlHelp3.getChildAt(0);
-                tvAnswer = (TextView) mLlHelp3.getChildAt(1);
-                url = "http://www.lejurobot.com/uploads/video/收藏下载.mp4";
-                enterDetail(new MainHelpData(3,
-                                         tvQuestion.getText()
-                                                   .toString(),
-                                         tvAnswer.getText()
-                                                 .toString(),url));
+                clickPlay(HttpUrl.COLLECTION_AND_DOWNLOAD);
                 break;
             case R.id.ll_help4:
-                tvQuestion = (TextView) mLlHelp4.getChildAt(0);
-                tvAnswer = (TextView) mLlHelp4.getChildAt(1);
-                url = "http://www.lejurobot.com/uploads/video/按键01改_0.mp4";
-                enterDetail(new MainHelpData(4,
-                                         tvQuestion.getText()
-                                                   .toString(),
-                                         tvAnswer.getText()
-                                                 .toString(),url));
+                clickPlay(HttpUrl.SETUP_KEY);
                 break;
             case R.id.ll_help5:
-                tvQuestion = (TextView) mLlHelp5.getChildAt(0);
-                tvAnswer = (TextView) mLlHelp5.getChildAt(1);
-                url = "http://www.lejurobot.com/uploads/video/蓝牙音响.mp4";
-                enterDetail(new MainHelpData(5,
-                                             tvQuestion.getText()
-                                                       .toString(),
-                                             tvAnswer.getText()
-                                                     .toString(),url));
+                clickPlay(HttpUrl.BLUETOOTH_SPEAKER);
                 break;
         }
     }
 
+    private void clickPlay(String url) {
+        boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
+        boolean wifi   = CommUtils.isWifi(getApplicationContext());
+        if(!wifi && isWifi){
+            showPlayTip(url);
+        }else{
+            Intent it  = new Intent(Intent.ACTION_VIEW);
+            Uri    uri = Uri.parse(url);
+            it.setDataAndType(uri, "video/mp4");
+            startActivity(it);
+        }
+    }
+
+    private void showPlayTip(final String url) {
+        new DAlertDialog(this).builder()
+                              .setTitle(UIUtils.getString(R.string.tip))
+                              .setMsg(UIUtils.getString(R.string.not_wifi_conn_play))
+                              .setNegativeButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+
+                                  }
+                              })
+                              .setPositiveButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+                                      Intent it  = new Intent(Intent.ACTION_VIEW);
+                                      Uri    uri = Uri.parse(url);
+                                      it.setDataAndType(uri, "video/mp4");
+                                      startActivity(it);
+                                  }
+                              })
+                              .show();
+
+    }
 
     /**
      * 进入视频详情帮助

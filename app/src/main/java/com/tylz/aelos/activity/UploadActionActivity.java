@@ -3,7 +3,10 @@ package com.tylz.aelos.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -35,6 +38,7 @@ import com.tylz.aelos.bean.UploadType;
 import com.tylz.aelos.bean.VideoEntity;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.HttpUrl;
+import com.tylz.aelos.service.BlueService;
 import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.StringUtils;
@@ -91,13 +95,14 @@ public class UploadActionActivity
     @Bind(R.id.et_action_des)
     EditText        mEtActionDes;
     /*下面四个为上传的数据*/
-    private CustomAction       mCustomAction;
-    private List<PhotoInfo>    mPhotoInfos;
-    private VideoEntity        mVideoEntity;
-    private UploadType         mUploadType;
-    private String             mActionName;
-    private String             mActionDes;
-    private DNumProgressDialog mNumProgressDialog;
+    private CustomAction             mCustomAction;
+    private List<PhotoInfo>          mPhotoInfos;
+    private VideoEntity              mVideoEntity;
+    private UploadType               mUploadType;
+    private String                   mActionName;
+    private String                   mActionDes;
+    private DNumProgressDialog       mNumProgressDialog;
+    private ConnectBroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +110,33 @@ public class UploadActionActivity
         setContentView(R.layout.activity_upload_action);
         ButterKnife.bind(this);
         initData();
+        mReceiver = new ConnectBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BlueService.ACTION_UNCONNECT);
+        intentFilter.addAction(BlueService.ACTION_CONNECTED);
+        intentFilter.addAction(BlueService.ACTION_RETURN_RSSI);
+        intentFilter.addAction(BlueService.ACTION_RETURN_DATA);
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    /**
+     * 蓝牙连接相关广播接受者
+     */
+    private class ConnectBroadcastReceiver
+            extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case BlueService.ACTION_UNCONNECT:
+                    skipScanUI();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
     }
 
     private void initData() {
@@ -126,9 +158,9 @@ public class UploadActionActivity
                 finish();
                 break;
             case R.id.iv_right:
-                if(isLogin()){
+                if (isLogin()) {
                     upload();
-                }else{
+                } else {
                     showLoginTip();
                 }
                 break;
@@ -150,22 +182,28 @@ public class UploadActionActivity
         mActionDes = mEtActionDes.getText()
                                  .toString();
         if (TextUtils.isEmpty(mActionName)) {
-            mToastor.getSingletonToast(R.string.empty_action_name).show();
+            mToastor.getSingletonToast(R.string.empty_action_name)
+                    .show();
             return false;
         } else if (TextUtils.isEmpty(mActionDes)) {
-            mToastor.getSingletonToast(R.string.empty_action_des).show();
+            mToastor.getSingletonToast(R.string.empty_action_des)
+                    .show();
             return false;
         } else if (mUploadType == null) {
-            mToastor.getSingletonToast(R.string.please_select_type).show();
+            mToastor.getSingletonToast(R.string.please_select_type)
+                    .show();
             return false;
         } else if (mPhotoInfos.size() == 0) {
-            mToastor.getSingletonToast(R.string.please_select_photo).show();
+            mToastor.getSingletonToast(R.string.please_select_photo)
+                    .show();
             return false;
         } else if (mVideoEntity == null) {
-            mToastor.getSingletonToast(R.string.please_select_video).show();
+            mToastor.getSingletonToast(R.string.please_select_video)
+                    .show();
             return false;
         } else if (TextUtils.isEmpty(mCustomAction.filestream)) {
-            mToastor.getSingletonToast(R.string.empty_action).show();
+            mToastor.getSingletonToast(R.string.empty_action)
+                    .show();
             return false;
         }
         return true;
@@ -219,11 +257,12 @@ public class UploadActionActivity
 
                        @Override
                        public void onResponse(Object response, int id) {
-                           if(null != response){
+                           if (null != response) {
                                LogUtils.d("upload = " + response.toString());
                            }
                            closeNumProcess();
-                           mToastor.getSingletonToast(R.string.success_upload).show();
+                           mToastor.getSingletonToast(R.string.success_upload)
+                                   .show();
                            UploadActionActivity.this.finish();
 
                        }
@@ -253,7 +292,7 @@ public class UploadActionActivity
         dialog.setContentView(R.layout.dialog_view_gridview);
         GridView          gridView = (GridView) dialog.findViewById(R.id.view_gridview);
         final TypeAdapter adapter  = new TypeAdapter(this);
-       //  gridView.setLayoutAnimation(getAnimationController());
+        //  gridView.setLayoutAnimation(getAnimationController());
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -325,17 +364,41 @@ public class UploadActionActivity
     private void selectVideo(int which) {
         switch (which) {
             case 1: //录制视频
-                if (checkPermission()) {
-                    Intent intent1 = new Intent(this, RecorderVideoActivity.class);
-                    intent1.putExtra(RecorderVideoActivity.EXTRA_DATA,mCustomAction);
-                    startActivityForResult(intent1, REQUEST_RECORDER_VIDEO);
-                }
+
+                    if (checkPermission()) {
+                        Intent intent1 = new Intent(UploadActionActivity.this,
+                                                    RecorderVideoActivity.class);
+                        intent1.putExtra(RecorderVideoActivity.EXTRA_DATA, mCustomAction);
+                        startActivityForResult(intent1, REQUEST_RECORDER_VIDEO);
+                    }
+
+
                 break;
             case 2: //本地视频
                 Intent intent2 = new Intent(this, ShowVideoActivity.class);
                 startActivityForResult(intent2, REQUEST_LOCAL_VIDEO);
                 break;
         }
+    }
+
+    private boolean checkRecord23() {
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED)
+        {
+            ToastUtils.showToast(R.string.please_open_record_audio_permission);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkCamera23() {
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
+        {
+            ToastUtils.showToast(R.string.please_open_camera_permission);
+            return false;
+        }
+        return true;
     }
 
     private boolean checkPermission() {
@@ -352,6 +415,35 @@ public class UploadActionActivity
             return false;
         }
         return true;
+    }
+
+    private boolean checkCamera() {
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
+        {
+            ToastUtils.showToast(R.string.please_open_camera_permission);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean checkRecord() {
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED)
+        {
+            ToastUtils.showToast(R.string.please_open_record_audio_permission);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
     }
 
     @Override
@@ -397,7 +489,8 @@ public class UploadActionActivity
                               .execute(new Runnable() {
                                   @Override
                                   public void run() {
-                                      int size = UIUtils.dp2Px(80);
+                                      int size = UIUtils.dp2Px(100);
+                                      LogUtils.d("filepath =" + videoEntity.filePath);
                                       final Bitmap bitmap = CommomUtil.createVideoThumbnail(
                                               videoEntity.filePath,
                                               size,
@@ -405,7 +498,11 @@ public class UploadActionActivity
                                       UIUtils.postTaskSafely(new Runnable() {
                                           @Override
                                           public void run() {
-                                              mCivVideo.setImageBitmap(bitmap);
+                                              if(bitmap == null){
+                                                 mCivVideo.setImageResource(R.mipmap.help_play);
+                                              }else{
+                                                mCivVideo.setImageBitmap(bitmap);
+                                              }
                                           }
                                       });
 
@@ -445,7 +542,13 @@ public class UploadActionActivity
     private void selectIcon(int which) {
         switch (which) {
             case 1: //拍照
-                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                try {
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 break;
             case 2: //打开相册
                 GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
@@ -459,15 +562,18 @@ public class UploadActionActivity
     private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            if (resultList != null) {
-                mPhotoInfos.clear();
-                mPhotoInfos.addAll(resultList);
-                PhotoInfo photoInfo = resultList.get(0);
+            try {
+                if (resultList != null && resultList.size() != 0) {
+                    mPhotoInfos.clear();
+                    mPhotoInfos.addAll(resultList);
+                    PhotoInfo photoInfo = resultList.get(0);
 
-                Picasso.with(UploadActionActivity.this)
-                       .load(new File(photoInfo.getPhotoPath()))
-                       .into(mCivPhoto);
-            }
+                    Picasso.with(UploadActionActivity.this)
+                           .load(new File(photoInfo.getPhotoPath()))
+                           .into(mCivPhoto);
+                }
+            } catch (Exception e) {}
+
         }
 
         @Override

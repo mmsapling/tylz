@@ -11,7 +11,7 @@ import android.text.TextUtils;
 
 import com.threed.jpct.Object3D;
 import com.tylz.aelos.R;
-import com.tylz.aelos.base.BaseActivity;
+import com.tylz.aelos.base.BaseCheckActivity;
 import com.tylz.aelos.base.ILoadModel;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
@@ -25,7 +25,7 @@ import cn.jpush.android.api.JPushInterface;
  */
 
 public class SplashActivity
-        extends BaseActivity
+        extends BaseCheckActivity
 {
 
 

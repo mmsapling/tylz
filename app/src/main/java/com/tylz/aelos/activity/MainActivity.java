@@ -403,6 +403,7 @@ public class MainActivity
                                     } else if (x > -300 && x < -100) { //向左短滑
                                         mModelRightSpeed = 0;
                                         mModelLeftSpeed += Constants.MODEL_REGULATION_SPEED;
+                                        mModelAnimTask.start(mModelLeftSpeed);
                                     } else if (x < -300) { //向左长滑
                                         mModelRightSpeed = 0;
                                         //向左
@@ -465,7 +466,7 @@ public class MainActivity
             mModelAnimTask = null;
             mModelRightSpeed = 0;
             mModelLeftSpeed = 0;
-            initObject3D();
+           // initObject3D();
         }
 
     }

@@ -1,9 +1,11 @@
 package com.tylz.aelos.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.HttpUtil;
+import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
@@ -40,7 +43,8 @@ import butterknife.OnClick;
  */
 public class SearchActionActivity
         extends BaseActivity
-        implements LoadMoreListView.OnLoadMore, SwipeRefreshLayout.OnRefreshListener
+        implements LoadMoreListView.OnLoadMore, SwipeRefreshLayout.OnRefreshListener,
+                   AdapterView.OnItemClickListener
 {
     @Bind(R.id.iv_left)
     ImageButton        mIvLeft;
@@ -72,6 +76,7 @@ public class SearchActionActivity
         mAdapter = new ShopListViewAdapter(this, mDatas);
         mListView.setAdapter(mAdapter);
         mListView.setLoadMoreListen(this);
+        mListView.setOnItemClickListener(this);
         mSwipeRefresh.setOnRefreshListener(this);
         mSwipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light,
                                               android.R.color.holo_red_light,
@@ -88,10 +93,10 @@ public class SearchActionActivity
         if (mPage == 0) {
             mDatas.clear();
         }
-        final Map<String, String> params  = new HashMap<String, String>();
-        String                    id      = mSpUtils.getString(Constants.USER_ID, "");
-        String                    keyword = mEtSearch.getText()
-                                                     .toString();
+        final Map<String, String> params = new HashMap<String, String>();
+        String                    id     = mSpUtils.getString(Constants.USER_ID, "");
+        String keyword = mEtSearch.getText()
+                                  .toString();
         params.put("id", id);
         params.put("keyword", keyword);
         params.put("page", String.valueOf(page));
@@ -107,10 +112,11 @@ public class SearchActionActivity
                                               mSwipeRefresh.setRefreshing(false);
                                               mListView.onLoadComplete();
                                               isSearch = false;
-                                              if (TextUtils.isEmpty(data)) {
+                                              LogUtils.d(data);
+                                              if (TextUtils.isEmpty(data) || "null".equals(data)) {
                                                   if (mPage != 0) {
                                                       mPage--;
-                                                  } else if(mPage == 0 && mDatas.size() == 0){
+                                                  } else if (mPage == 0 && mDatas.size() == 0) {
                                                       mTvNothing.setVisibility(View.VISIBLE);
                                                       mListView.setVisibility(View.GONE);
                                                   }
@@ -131,14 +137,19 @@ public class SearchActionActivity
      * @param data
      */
     private void processData(String data) {
-
-        Gson           gson         = new Gson();
-        Type           type         = new TypeToken<List<ShopBean>>() {}.getType();
-        List<ShopBean> shopBeanList = gson.fromJson(data, type);
-        if (shopBeanList != null && shopBeanList.size() > 0) {
-            mDatas.addAll(shopBeanList);
-            mAdapter.notifyDataSetChanged();
+        try {
+            Gson           gson         = new Gson();
+            Type           type         = new TypeToken<List<ShopBean>>() {}.getType();
+            List<ShopBean> shopBeanList = gson.fromJson(data, type);
+            if (shopBeanList != null && shopBeanList.size() > 0) {
+                mDatas.addAll(shopBeanList);
+                mAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            mTvNothing.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
         }
+
 
     }
 
@@ -151,17 +162,19 @@ public class SearchActionActivity
                 break;
             case R.id.iv_right:
                 String key = mEtSearch.getText()
-                                    .toString();
-                if(TextUtils.isEmpty(key)){
-                    mToastor.getSingletonToast(R.string.hint_input_key_search).show();
+                                      .toString();
+                if (TextUtils.isEmpty(key)) {
+                    mToastor.getSingletonToast(R.string.hint_input_key_search)
+                            .show();
                     return;
                 }
-                if(!isSearch){
+                if (!isSearch) {
                     showProgress();
                     loadTypeData(0);
                     isSearch = true;
-                }else{
-                    mToastor.getSingletonToast(R.string.please_waiting_searching).show();
+                } else {
+                    mToastor.getSingletonToast(R.string.please_waiting_searching)
+                            .show();
                 }
                 break;
         }
@@ -175,5 +188,28 @@ public class SearchActionActivity
     @Override
     public void onRefresh() {
         loadTypeData(0);
+    }
+    private static final int REQUEST_CODE_DETAIL = 2000;
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ShopBean shopBean = mDatas.get(position);
+        Intent   intent   = new Intent(this, ActionDetailActivity.class);
+        intent.putExtra(ActionDetailActivity.EXTRA_POS, position);
+        intent.putExtra(ActionDetailActivity.EXTRA_DATA, shopBean);
+        startActivityForResult(intent, REQUEST_CODE_DETAIL);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == requestCode && resultCode == ActionDetailActivity.RESULT_CODE_RETURN) {
+            if (data != null) {
+                ShopBean shopBean = (ShopBean) data.getSerializableExtra(ActionDetailActivity.EXTRA_DATA);
+                int      postion  = data.getIntExtra(ActionDetailActivity.EXTRA_POS, -1);
+                if (postion != -1) {
+                    mDatas.set(postion, shopBean);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 }

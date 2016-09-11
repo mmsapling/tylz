@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -33,6 +34,7 @@ import com.tylz.aelos.bean.Status;
 import com.tylz.aelos.db.DbHelper;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
+import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.service.BlueService;
 import com.tylz.aelos.util.CommUtils;
 import com.tylz.aelos.util.UIUtils;
@@ -83,6 +85,8 @@ public class CustomActionActivity
     ListView       mHelpListview;
     @Bind(R.id.fl_help)
     FrameLayout    mFlHelp;
+    @Bind(R.id.iv_right)
+    ImageButton    mIvRight;
     private List<CustomAction>       mDatas;
     private CustomActionAdapter      mAdapter;
     private DbHelper                 mDbHelper;
@@ -116,6 +120,7 @@ public class CustomActionActivity
         mPlayStatusOrder = "9200000000100000";
         mDbHelper = new DbHelper(this);
         mTvTitle.setText(R.string.custom_action);
+        mIvRight.setImageResource(R.mipmap.help_play);
         mDatas = new ArrayList<>();
         mHelpListview.setAdapter(new ImgAdapter(this));
         mAdapter = new CustomActionAdapter(this, mDatas);
@@ -190,11 +195,13 @@ public class CustomActionActivity
             mIvHelp.setImageResource(R.mipmap.help_normal);
             mFlAction.setVisibility(View.VISIBLE);
             mFlHelp.setVisibility(View.GONE);
+            mIvRight.setVisibility(View.GONE);
         } else {
             mIvHelp.setImageResource(R.mipmap.help_select);
             mIvNewAction.setImageResource(R.mipmap.new_action_normal);
             mFlAction.setVisibility(View.GONE);
             mFlHelp.setVisibility(View.VISIBLE);
+            mIvRight.setVisibility(View.VISIBLE);
         }
     }
 
@@ -226,7 +233,8 @@ public class CustomActionActivity
                 String name = etActionName.getText()
                                           .toString();
                 if (TextUtils.isEmpty(name)) {
-                    mToastor.getSingletonToast(R.string.empty_action_name).show();
+                    mToastor.getSingletonToast(R.string.empty_action_name)
+                            .show();
                     return;
                 }
                 dialog.dismiss();
@@ -330,7 +338,8 @@ public class CustomActionActivity
                                           UIUtils.postTaskSafely(new Runnable() {
                                               @Override
                                               public void run() {
-                                                  mToastor.getSingletonToast(R.string.not_status).show();
+                                                  mToastor.getSingletonToast(R.string.not_status)
+                                                          .show();
                                               }
                                           });
                                       }
@@ -364,7 +373,8 @@ public class CustomActionActivity
                                   public void onClick(View v) {
                                       deleteAction(customAction);
                                   }
-                              }).show();
+                              })
+                              .show();
         return true;
     }
 
@@ -376,25 +386,61 @@ public class CustomActionActivity
     private void deleteAction(final CustomAction customAction) {
         showProgress();
         ThreadPoolProxyFactory.createNormalThreadPoolProxy()
-                                                       .execute(new Runnable() {
-                                                           @Override
-                                                           public void run() {
-                                                               mDbHelper.deleteActionByTitleStream(
-                                                                       customAction.titlestream);
-                                                               mDbHelper.deleteStatusByActionId(
-                                                                       customAction.id + "");
-                                                               mDatas.remove(customAction);
-                                                               UIUtils.postTaskSafely(new Runnable() {
-                                                                   @Override
-                                                                   public void run() {
-                                                                       closeProgress();
-                                                                       mAdapter.notifyDataSetChanged();
-                                                                   }
-                                                               });
-                                                           }
-                                                       });
+                              .execute(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      mDbHelper.deleteActionByTitleStream(customAction.titlestream);
+                                      mDbHelper.deleteStatusByActionId(customAction.id + "");
+                                      mDatas.remove(customAction);
+                                      UIUtils.postTaskSafely(new Runnable() {
+                                          @Override
+                                          public void run() {
+                                              closeProgress();
+                                              mAdapter.notifyDataSetChanged();
+                                          }
+                                      });
+                                  }
+                              });
     }
 
+    @OnClick(R.id.iv_right)
+    public void onClick() {
+        clickPlay(HttpUrl.ACTION_CUSTOM);
+    }
+    private void clickPlay(String url) {
+        boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
+        boolean wifi   = CommUtils.isWifi(getApplicationContext());
+        if(!wifi && isWifi){
+            showPlayTip(url);
+        }else{
+            Intent it  = new Intent(Intent.ACTION_VIEW);
+            Uri    uri = Uri.parse(url);
+            it.setDataAndType(uri, "video/mp4");
+            startActivity(it);
+        }
+    }
+    private void showPlayTip(final String url) {
+        new DAlertDialog(this).builder()
+                              .setTitle(UIUtils.getString(R.string.tip))
+                              .setMsg(UIUtils.getString(R.string.not_wifi_conn_play))
+                              .setNegativeButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+
+                                  }
+                              })
+                              .setPositiveButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+                                      Intent it  = new Intent(Intent.ACTION_VIEW);
+                                      Uri    uri = Uri.parse(url);
+                                      it.setDataAndType(uri, "video/mp4");
+                                      startActivity(it);
+                                  }
+                              })
+                              .show();
+
+    }
     /**
      * 蓝牙连接相关广播接受者
      */

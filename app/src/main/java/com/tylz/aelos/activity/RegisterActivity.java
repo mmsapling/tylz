@@ -184,7 +184,9 @@ public class RegisterActivity
     private void selectIcon(int which) {
         switch (which) {
             case 1: //拍照
-                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                try{
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                }catch (Exception e){}
                 break;
             case 2: //打开相册
                 GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
@@ -198,15 +200,18 @@ public class RegisterActivity
     private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            if (resultList != null) {
-                mPhotoInfos.clear();
-                mPhotoInfos.addAll(resultList);
-                PhotoInfo photoInfo = resultList.get(0);
+            try{
+                if (resultList != null && resultList.size() != 0) {
+                    mPhotoInfos.clear();
+                    mPhotoInfos.addAll(resultList);
+                    PhotoInfo photoInfo = resultList.get(0);
 
-                Picasso.with(RegisterActivity.this)
-                       .load(new File(photoInfo.getPhotoPath()))
-                       .into(mCivAvator);
-            }
+                    Picasso.with(RegisterActivity.this)
+                           .load(new File(photoInfo.getPhotoPath()))
+                           .into(mCivAvator);
+                }
+            }catch (Exception e){}
+
         }
 
         @Override

@@ -260,8 +260,8 @@
     <string name="error_upload">上传失败！</string>
     <string name="tip_send">是否发送？</string>
     <string name="error_open_device">打开设备失败！</string>
-    <string name="please_open_record_audio_permission">请打开录音权限！</string>
-    <string name="please_open_camera_permission">请打开录制视频权限！</string>
+    <string name="please_open_record_audio_permission">请权限中心打开录音权限！</string>
+    <string name="please_open_camera_permission">请去权限中心打开录制视频权限！</string>
     <string name="checking">审核中</string>
     <string name="checked">审核通过</string>
     <string name="checked_error">审核失败</string>
@@ -270,6 +270,10 @@
     <string name="tip_connect_robot">请把手机靠近机器人！</string>
     <string name="not_wifi_conn_play">当前在非wifi环境下，是否继续播放？</string>
     <string name="empty_video_path">视频路径为空！</string>
+    <string name="empty_wifi_pwd">WIFI密码不能为空！</string>
+    <string name="empty_wifi_name">WIFI名称不能为空！</string>
+    <string name="please_open_ACCESS_COARSE_LOCATION">请去权限中心打开位置权限！</string>
+    <string name="not_wifi">当前没有wifi！</string>
 
     <array name="tabs_upload">
         <item>全部</item>

@@ -1,8 +1,8 @@
 package com.tylz.aelos.activity;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
-import android.net.wifi.WifiConfiguration;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -24,6 +24,8 @@ import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.WifiHelpAdapter;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.manager.Constants;
+import com.tylz.aelos.manager.HttpUrl;
+import com.tylz.aelos.util.CommUtils;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DAlertDialog;
@@ -68,6 +70,9 @@ public class ConnRobotActivity
         System.loadLibrary("sinvoice");
     }
 
+    @Bind(R.id.iv_right)
+    ImageButton mIvRight;
+
 
     private SinVoicePlayer      mSinVoicePlayer;
     private SinVoiceRecognition mSinVoiceRecognition;
@@ -81,10 +86,12 @@ public class ConnRobotActivity
     }
 
     private void init() {
+        mIvRight.setImageResource(R.mipmap.help_play);
         //默认选中wifi配置
-        mTvTitle.setText(R.string.connect_robot);
+        mTvTitle.setText(R.string.voice_control);
         mBtnWifiConfig.setBackgroundColor(Color.rgb(2, 177, 230));
         mBtnWifiHelp.setBackgroundColor(Color.rgb(193, 193, 193));
+        mIvRight.setVisibility(View.GONE);
         //设置ListView
         mListview.setAdapter(new WifiHelpAdapter(this));
         mSinVoicePlayer = new SinVoicePlayer();
@@ -99,7 +106,7 @@ public class ConnRobotActivity
         } else {
             mTvWifiname.setText(mWifeName);
             String name = mSpUtils.getString(Constants.WIFI_NAME, "");
-            if(!TextUtils.isEmpty(name) && name.equals(mWifeName)){
+            if (!TextUtils.isEmpty(name) && name.equals(mWifeName)) {
                 String pwd = mSpUtils.getString(Constants.WIFI_PWD, "");
                 mEtWifipassword.setText(pwd);
             }
@@ -129,12 +136,14 @@ public class ConnRobotActivity
                 mBtnWifiHelp.setBackgroundColor(Color.rgb(193, 193, 193));
                 mLlConfig.setVisibility(View.VISIBLE);
                 mLlHelp.setVisibility(View.GONE);
+                mIvRight.setVisibility(View.GONE);
                 break;
             case R.id.btn_wifi_help:
                 mBtnWifiConfig.setBackgroundColor(Color.rgb(193, 193, 193));
                 mBtnWifiHelp.setBackgroundColor(Color.rgb(2, 177, 230));
                 mLlConfig.setVisibility(View.GONE);
                 mLlHelp.setVisibility(View.VISIBLE);
+                mIvRight.setVisibility(View.VISIBLE);
                 break;
             case R.id.bt_next:
                 processClick();
@@ -144,19 +153,21 @@ public class ConnRobotActivity
                 break;
         }
     }
-    private void setNotWifiPwd(){
-        WifiConfiguration config = new WifiConfiguration();
-        config.allowedAuthAlgorithms.clear();
-        config.allowedGroupCiphers.clear();
-        config.allowedKeyManagement.clear();
-        config.allowedPairwiseCiphers.clear();
-        config.allowedProtocols.clear();
-        config.SSID = "\"" + getWifissid() + "\"";
-        // 没有密码
-        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        wifiManager.enableNetwork(wifiManager.addNetwork(config), true);
+
+    private void setNotWifiPwd() {
+//        WifiConfiguration config = new WifiConfiguration();
+//        config.allowedAuthAlgorithms.clear();
+//        config.allowedGroupCiphers.clear();
+//        config.allowedKeyManagement.clear();
+//        config.allowedPairwiseCiphers.clear();
+//        config.allowedProtocols.clear();
+//        config.SSID = "\"" + getWifissid() + "\"";
+//        // 没有密码
+//        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+//        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+//        wifiManager.enableNetwork(wifiManager.addNetwork(config), true);
     }
+
     /**
      * 处理点击事件
      */
@@ -164,16 +175,29 @@ public class ConnRobotActivity
         String btnName = mBtNext.getText()
                                 .toString();
         String password = mEtWifipassword.getText()
-                                  .toString();
-        String wifiname = mTvWifiname.getText().toString();
-        if(TextUtils.isEmpty(password)){
-            setNotWifiPwd();
+                                         .toString();
+        String wifiname = mTvWifiname.getText()
+                                     .toString();
+        if(TextUtils.isEmpty(wifiname)){
+            mToastor.getSingletonToast(R.string.empty_wifi_name).show();
+            return;
+        }
+        String name = UIUtils.getString(R.string.not_wifi_conn);
+
+        if(name.equals(wifiname)){
+            mToastor.getSingletonToast(R.string.not_wifi).show();
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+           // setNotWifiPwd();
+            mToastor.getSingletonToast(R.string.empty_wifi_pwd).show();
+            return;
         }
         if (btnName.equals(UIUtils.getString(R.string.next))) {
             /*保存用户名和密码*/
-            if(!wifiname.equals(UIUtils.getString(R.string.not_wifi_conn))){
-                mSpUtils.putString(Constants.WIFI_NAME,wifiname);
-                mSpUtils.putString(Constants.WIFI_PWD,password);
+            if (!wifiname.equals(UIUtils.getString(R.string.not_wifi_conn))) {
+                mSpUtils.putString(Constants.WIFI_NAME, wifiname);
+                mSpUtils.putString(Constants.WIFI_PWD, password);
             }
 
             mLlImg.setVisibility(View.VISIBLE);
@@ -197,7 +221,8 @@ public class ConnRobotActivity
                                   public void onClick(View v) {
                                       sendVoice();
                                   }
-                              }).show();
+                              })
+                              .show();
     }
 
     /**
@@ -263,5 +288,41 @@ public class ConnRobotActivity
 
     }
 
+
+    @OnClick(R.id.iv_right)
+    public void onClick() {
+        boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
+        boolean wifi   = CommUtils.isWifi(getApplicationContext());
+        if(!wifi && isWifi){
+            showPlayTip();
+        }else{
+            Intent it  = new Intent(Intent.ACTION_VIEW);
+            Uri    uri = Uri.parse(HttpUrl.VOICE_CONTROL);
+            it.setDataAndType(uri, "video/mp4");
+            startActivity(it);
+        }
+    }
+    private void showPlayTip() {
+        new DAlertDialog(this).builder()
+                              .setTitle(UIUtils.getString(R.string.tip))
+                              .setMsg(UIUtils.getString(R.string.not_wifi_conn_play))
+                              .setNegativeButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+
+                                  }
+                              })
+                              .setPositiveButton(new View.OnClickListener() {
+                                  @Override
+                                  public void onClick(View v) {
+                                      Intent it  = new Intent(Intent.ACTION_VIEW);
+                                      Uri    uri = Uri.parse(HttpUrl.VOICE_CONTROL);
+                                      it.setDataAndType(uri, "video/mp4");
+                                      startActivity(it);
+                                  }
+                              })
+                              .show();
+
+    }
 
 }

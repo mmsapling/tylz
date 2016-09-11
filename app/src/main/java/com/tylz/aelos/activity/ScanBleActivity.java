@@ -1,5 +1,6 @@
 package com.tylz.aelos.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,10 +12,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -119,6 +122,10 @@ public class ScanBleActivity
         context.bindService(service, mBlueServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @OnClick({R.id.tv_scan,
               R.id.tv_no_sacn})
@@ -130,6 +137,26 @@ public class ScanBleActivity
             case R.id.tv_no_sacn:
                 skipActivityF(MainActivity.class);
                 break;
+        }
+    }
+
+    private boolean checkPermission() {
+        if (ActivityCompat.checkSelfPermission(this,
+                                               Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED || ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            showPPP();
+            mToastor.getSingletonToast(R.string.please_open_camera_permission)
+                    .show();
+            return false;
+        }
+        return true;
+    }
+
+    private void showPPP() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION);
         }
     }
 

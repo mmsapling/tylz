@@ -3,6 +3,7 @@ package com.tylz.aelos.activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -30,7 +31,9 @@ import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +170,11 @@ public class UserInfoEditActivity
     private void selectIcon(int which) {
         switch (which) {
             case 1: //拍照
-                GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                try{
+                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case 2: //打开相册
                 GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
@@ -181,15 +188,20 @@ public class UserInfoEditActivity
     private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            if (resultList != null) {
-                mPhotoInfos.clear();
-                mPhotoInfos.addAll(resultList);
-                PhotoInfo photoInfo = resultList.get(0);
+            try{
+                if (resultList != null && resultList.size() != 0) {
+                    mPhotoInfos.clear();
+                    mPhotoInfos.addAll(resultList);
+                    PhotoInfo photoInfo = resultList.get(0);
 
-                Picasso.with(UserInfoEditActivity.this)
-                       .load(new File(photoInfo.getPhotoPath()))
-                       .into(mCivAvator);
+                    Picasso.with(UserInfoEditActivity.this)
+                           .load(new File(photoInfo.getPhotoPath()))
+                           .into(mCivAvator);
+                }
+            }catch (Exception e){
+
             }
+
         }
 
         @Override
@@ -270,13 +282,13 @@ public class UserInfoEditActivity
     private void selectSex(int index) {
         switch (index) {
             case 1: //女人
-                mTvSex.setText(R.string.woman);
+                mTvSex.setText(R.string.keep_secret);
                 break;
             case 2: //男人
                 mTvSex.setText(R.string.man);
                 break;
             case 3: //保密
-                mTvSex.setText(R.string.keep_secret);
+                mTvSex.setText(R.string.woman);
                 break;
             default:
                 break;
@@ -296,6 +308,15 @@ public class UserInfoEditActivity
                                                                                  int day,
                                                                                  String dateDesc)
                                                                          {
+                                                                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                                                             try {
+                                                                                 Date date = sdf.parse(
+                                                                                         dateDesc);
+                                                                                 mEtAge.setText("" + CommomUtil.getAge(date));
+                                                                             } catch (Exception e) {
+                                                                                 mEtAge.setText("0");
+                                                                                 e.printStackTrace();
+                                                                             }
                                                                              mTvBirthday.setText(
                                                                                      dateDesc);
                                                                          }
@@ -326,7 +347,10 @@ public class UserInfoEditActivity
                            .toString();
         String hobby = mEtHobby.getText()
                                .toString();
-
+        if(TextUtils.isEmpty(nickname)){
+            mToastor.getSingletonToast(R.string.empty_nickname).show();
+            return;
+        }
         //请求参数
         Map<String, String> params = new HashMap<>();
         params.put("id", mUserInfo.id);

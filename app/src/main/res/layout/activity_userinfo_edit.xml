@@ -68,6 +68,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scaleType="fitXY"
                 android:src="@mipmap/line_between_2px"/>
             <!--基本信息条目-->
             <LinearLayout
@@ -147,6 +148,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:scaleType="fitXY"
                 android:src="@mipmap/line_between20px"/>
             <!--其他条目-->
             <LinearLayout
@@ -165,6 +167,7 @@
 
                     <EditText
                         android:id="@+id/et_qq"
+                        android:inputType="number"
                         style="@style/UserInfoEditStyle"/>
                 </LinearLayout>
 
@@ -181,6 +184,7 @@
 
                     <EditText
                         android:id="@+id/et_email"
+                        android:inputType="textEmailAddress"
                         style="@style/UserInfoEditStyle"/>
                 </LinearLayout>
 
@@ -215,6 +219,7 @@
 
                     <EditText
                         android:id="@+id/et_age"
+                        android:enabled="false"
                         style="@style/UserInfoEditStyle"/>
                 </LinearLayout>
 

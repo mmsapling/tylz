@@ -84,6 +84,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="fitXY"
         android:src="@mipmap/line_between_6px"/>
     <ImageView
         android:layout_width="match_parent"
