@@ -37,6 +37,7 @@ import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.service.BlueService;
 import com.tylz.aelos.util.CommUtils;
+import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DAlertDialog;
 
@@ -318,9 +319,14 @@ public class CustomActionActivity
         intent.putExtra(AddStatusActivity.EXTRA_DATA, customAction);
         startActivity(intent);
     }
-
+    private long mCurrentTime;
+    private boolean isFirst = true;
+    private boolean isSecond;
     @Override
     public void onClickPlay(final CustomAction action) {
+        mCurrentTime = System.currentTimeMillis();
+        LogUtils.d("mCurrentTime = " + System.currentTimeMillis());
+        //得到速度
         ThreadPoolProxyFactory.createNormalThreadPoolProxy()
                               .execute(new Runnable() {
                                   @Override
@@ -328,10 +334,23 @@ public class CustomActionActivity
                                       //CustomAction customAction = mDbHelper.findCustomAction(action.titlestream);
                                       List<Status> statusList = mDbHelper.findStatussByActionId(
                                               action.id + "");
+                                      long playTime = CommUtils.getTotalPlayTime(statusList);
+                                      long totalTime = playTime + Constants.PLAY_ACTION_SLEEP_TIME * statusList.size() - 1;
+                                      LogUtils.d("totalTime = " + totalTime);
+                                      LogUtils.d("CurrentTime = " + System.currentTimeMillis());
+                                      if(!isFirst){
+                                          if(System.currentTimeMillis() - mCurrentTime < totalTime){
+                                              LogUtils.d("返回");
+                                              ThreadPoolProxyFactory.createNormalThreadPoolProxy().remove(this);
+                                              return;
+                                          }
+                                      }
+                                      isFirst = false;
                                       if (statusList != null && statusList.size() != 0) {
                                           for (int i = 0; i < statusList.size(); i++) {
-                                              playStatus(statusList.get(i).arr,
-                                                         statusList.get(i).progress);
+                                              Status status = statusList.get(i);
+                                              playStatus(status.arr,
+                                                         status.progress);
                                               SystemClock.sleep(Constants.PLAY_ACTION_SLEEP_TIME);
                                           }
                                       } else {
@@ -343,6 +362,7 @@ public class CustomActionActivity
                                               }
                                           });
                                       }
+                                      isFirst = true;
                                   }
                               });
     }

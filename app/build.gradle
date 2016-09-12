@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
@@ -41,4 +42,6 @@ dependencies {
     compile files('libs/jpct_ae.jar')
     compile files('libs/jpush-android-2.1.7.jar')
     compile project(':Library_PagerSlidingTabStrip')
+    compile 'com.github.hotchemi:permissionsdispatcher:2.1.3'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.1.3'
 }

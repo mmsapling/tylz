@@ -1,8 +1,13 @@
 package com.tylz.aelos.activity;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +38,11 @@ import butterknife.OnClick;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /*
  *  @项目名：  Aelos 
@@ -42,6 +52,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  *  @创建时间:  2016/8/9 17:27
  *  @描述：    注册界面
  */
+@RuntimePermissions
 public class RegisterActivity
         extends BaseActivity
 {
@@ -184,9 +195,7 @@ public class RegisterActivity
     private void selectIcon(int which) {
         switch (which) {
             case 1: //拍照
-                try{
-                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
-                }catch (Exception e){}
+               RegisterActivityPermissionsDispatcher.showOpenCameraWithCheck(this);
                 break;
             case 2: //打开相册
                 GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
@@ -194,6 +203,49 @@ public class RegisterActivity
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RegisterActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+     void showOpenCamera() {
+        try{
+            GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+        }catch (Exception e){}
+    }
+    @OnShowRationale(Manifest.permission.CAMERA)
+    void showRationaleForScan(PermissionRequest request) {
+        showRationaleDialog(R.string.permission_camera_rationale,request);
+    }
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void onCameraDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        mToastor.getSingletonToast(R.string.deny_camera_please_open).show();
+    }
+    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setPositiveButton(R.string.button_allow, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(@NonNull DialogInterface dialog, int which) {
+                        request.proceed();
+                    }
+                })
+                .setNegativeButton(R.string.button_deny, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(@NonNull DialogInterface dialog, int which) {
+                        request.cancel();
+                    }
+                })
+                .setCancelable(false)
+                .setMessage(messageResId)
+                .show();
+    }
     /**
      * 处理图片结果
      */

@@ -5,16 +5,18 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -61,6 +63,11 @@ import cn.finalteam.galleryfinal.model.PhotoInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Response;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /*
  *  @项目名：  Aelos 
@@ -70,6 +77,7 @@ import okhttp3.Response;
  *  @创建时间:  2016/8/19 19:20
  *  @描述：    上传动作界面
  */
+@RuntimePermissions
 public class UploadActionActivity
         extends BaseActivity
 {
@@ -364,15 +372,7 @@ public class UploadActionActivity
     private void selectVideo(int which) {
         switch (which) {
             case 1: //录制视频
-
-                    if (checkPermission()) {
-                        Intent intent1 = new Intent(UploadActionActivity.this,
-                                                    RecorderVideoActivity.class);
-                        intent1.putExtra(RecorderVideoActivity.EXTRA_DATA, mCustomAction);
-                        startActivityForResult(intent1, REQUEST_RECORDER_VIDEO);
-                    }
-
-
+                UploadActionActivityPermissionsDispatcher.showOpenCarmeraAndRecordWithCheck(this);
                 break;
             case 2: //本地视频
                 Intent intent2 = new Intent(this, ShowVideoActivity.class);
@@ -381,61 +381,85 @@ public class UploadActionActivity
         }
     }
 
-    private boolean checkRecord23() {
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED)
-        {
-            ToastUtils.showToast(R.string.please_open_record_audio_permission);
-            return false;
+    @NeedsPermission(Manifest.permission.CAMERA)
+    void showOpenCarmera() {
+        try {
+            GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return true;
+
     }
 
-    private boolean checkCamera23() {
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
-        {
-            ToastUtils.showToast(R.string.please_open_camera_permission);
-            return false;
-        }
-        return true;
+    @NeedsPermission(Manifest.permission.CAMERA)
+    void showOpenCarmeraAndRecord() {
+        UploadActionActivityPermissionsDispatcher.showOpenRecorderWithCheck(this);
     }
 
-    private boolean checkPermission() {
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-        {
-            ToastUtils.showToast(R.string.please_open_camera_permission);
-            return false;
-        }
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
-        {
-            ToastUtils.showToast(R.string.please_open_record_audio_permission);
-            return false;
-        }
-        return true;
+    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
+    void showOpenRecorder() {
+        Intent intent1 = new Intent(UploadActionActivity.this, RecorderVideoActivity.class);
+        intent1.putExtra(RecorderVideoActivity.EXTRA_DATA, mCustomAction);
+        startActivityForResult(intent1, REQUEST_RECORDER_VIDEO);
     }
 
-    private boolean checkCamera() {
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
-        {
-            ToastUtils.showToast(R.string.please_open_camera_permission);
-            return false;
-        }
 
-        return true;
+    @OnShowRationale(Manifest.permission.CAMERA)
+    void showRationaleForCamera(PermissionRequest request) {
+        showRationaleDialog(R.string.permission_camera_rationale, request);
     }
 
-    private boolean checkRecord() {
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED)
-        {
-            ToastUtils.showToast(R.string.please_open_record_audio_permission);
-            return false;
-        }
-        return true;
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void onCameraDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        mToastor.getSingletonToast(R.string.deny_camera_please_open)
+                .show();
+    }
+    @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
+    void onRecorderDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        mToastor.getSingletonToast(R.string.deny_recorder_please_open)
+                .show();
+    }
+    @OnShowRationale(Manifest.permission.RECORD_AUDIO)
+    void showRationaleForRecorder(PermissionRequest request) {
+        showRationaleDialog(R.string.permission_recorder_rationale, request);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        UploadActionActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+    }
+
+    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
+        new AlertDialog.Builder(this).setPositiveButton(R.string.button_allow,
+                                                        new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(@NonNull DialogInterface dialog,
+                                                                                int which)
+                                                            {
+                                                                request.proceed();
+                                                            }
+                                                        })
+                                     .setNegativeButton(R.string.button_deny,
+                                                        new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(@NonNull DialogInterface dialog,
+                                                                                int which)
+                                                            {
+                                                                request.cancel();
+                                                            }
+                                                        })
+                                     .setCancelable(false)
+                                     .setMessage(messageResId)
+                                     .show();
     }
 
     @Override
@@ -498,10 +522,10 @@ public class UploadActionActivity
                                       UIUtils.postTaskSafely(new Runnable() {
                                           @Override
                                           public void run() {
-                                              if(bitmap == null){
-                                                 mCivVideo.setImageResource(R.mipmap.help_play);
-                                              }else{
-                                                mCivVideo.setImageBitmap(bitmap);
+                                              if (bitmap == null) {
+                                                  mCivVideo.setImageResource(R.mipmap.help_play);
+                                              } else {
+                                                  mCivVideo.setImageBitmap(bitmap);
                                               }
                                           }
                                       });
@@ -542,13 +566,7 @@ public class UploadActionActivity
     private void selectIcon(int which) {
         switch (which) {
             case 1: //拍照
-                try {
-                    GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                UploadActionActivityPermissionsDispatcher.showOpenCarmeraWithCheck(this);
                 break;
             case 2: //打开相册
                 GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);

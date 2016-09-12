@@ -463,14 +463,13 @@ public class MainActivity
         if (mRender != null) {
             mRender.onResume();
         }else{
-            mModelAnimTask = null;
+            //mModelAnimTask = null;
             mModelRightSpeed = 0;
             mModelLeftSpeed = 0;
-           // initObject3D();
+            //initObject3D();
         }
 
     }
-
     @Override
     protected void onPause() {
         super.onPause();

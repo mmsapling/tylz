@@ -8,16 +8,18 @@ import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,6 +41,11 @@ import com.tylz.aelos.view.GifView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /*
  *  @项目名：  Aelos 
@@ -48,6 +55,7 @@ import butterknife.OnClick;
  *  @创建时间:  2016/7/24 21:14
  *  @描述：    TODO
  */
+@RuntimePermissions
 public class ScanBleActivity
         extends BaseActivity
         implements AdapterView.OnItemClickListener
@@ -132,7 +140,7 @@ public class ScanBleActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_scan:
-                scan();
+                ScanBleActivityPermissionsDispatcher.showScanWithCheck(this);
                 break;
             case R.id.tv_no_sacn:
                 skipActivityF(MainActivity.class);
@@ -140,25 +148,15 @@ public class ScanBleActivity
         }
     }
 
-    private boolean checkPermission() {
-        if (ActivityCompat.checkSelfPermission(this,
-                                               Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            showPPP();
-            mToastor.getSingletonToast(R.string.please_open_camera_permission)
-                    .show();
-            return false;
-        }
-        return true;
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ScanBleActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
     }
 
-    private void showPPP() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION);
-        }
-    }
 
     private class BlueServiceConnection
             implements ServiceConnection
@@ -174,8 +172,8 @@ public class ScanBleActivity
 
         }
     }
-
-    private void scan() {
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void showScan() {
         if (!checkBlueSupport()) { return; }
         // 检查蓝牙权限
         if (!mBluetoothAdapter.isEnabled()) {
@@ -188,7 +186,16 @@ public class ScanBleActivity
 
         scanLeDevice(true);
     }
-
+    @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void showRationaleForScan(PermissionRequest request) {
+        showRationaleDialog(R.string.permission_location_rationale,request);
+    }
+    @OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void onCameraDenied() {
+        // NOTE: Deal with a denied permission, e.g. by showing specific UI
+        // or disabling certain functionality
+        mToastor.getSingletonToast(R.string.deny_location_please_open).show();
+    }
     @Override
     protected void onPause() {
         scanLeDevice(false);
@@ -207,7 +214,24 @@ public class ScanBleActivity
             mBtScan.setClickable(true);
         }
     }
-
+    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setPositiveButton(R.string.button_allow, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(@NonNull DialogInterface dialog, int which) {
+                        request.proceed();
+                    }
+                })
+                .setNegativeButton(R.string.button_deny, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(@NonNull DialogInterface dialog, int which) {
+                        request.cancel();
+                    }
+                })
+                .setCancelable(false)
+                .setMessage(messageResId)
+                .show();
+    }
     /**
      * 扫描设备
      * @param enable

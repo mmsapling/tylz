@@ -274,6 +274,14 @@
     <string name="empty_wifi_name">WIFI名称不能为空！</string>
     <string name="please_open_ACCESS_COARSE_LOCATION">请去权限中心打开位置权限！</string>
     <string name="not_wifi">当前没有wifi！</string>
+    <string name="permission_location_rationale">同意获取位置权限吗？</string>
+    <string name="button_allow">允许</string>
+    <string name="button_deny">拒绝</string>
+    <string name="deny_location_please_open">位置权限被拒绝，请前往权限中心打开！</string>
+    <string name="deny_camera_please_open">相机权限被拒绝，请前往权限中心打开！</string>
+    <string name="deny_recorder_please_open">录音权限被拒绝，请前往权限中心打开！</string>
+    <string name="permission_camera_rationale">同意使用相机权限吗？</string>
+    <string name="permission_recorder_rationale">同意使用录音权限吗？</string>
 
     <array name="tabs_upload">
         <item>全部</item>
