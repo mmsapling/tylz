@@ -8,8 +8,12 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -36,7 +40,8 @@ import butterknife.OnClick;
 
 public class ConnRobotActivity
         extends BaseActivity
-        implements SinVoicePlayer.Listener, SinVoiceRecognition.Listener
+        implements SinVoicePlayer.Listener, SinVoiceRecognition.Listener,
+                   CompoundButton.OnCheckedChangeListener
 {
 
     @Bind(R.id.btn_wifi_config)
@@ -64,6 +69,10 @@ public class ConnRobotActivity
     TextView    mTvTitle;
     @Bind(R.id.listview)
     ListView    mListview;
+    @Bind(R.id.cb_select)
+    CheckBox mCbSelect;
+    @Bind(R.id.iv_select)
+    ImageButton mIbSelect;
     String mWifeName;
 
     static {
@@ -82,6 +91,13 @@ public class ConnRobotActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conn_robot);
         ButterKnife.bind(this);
+        mCbSelect.setOnCheckedChangeListener(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         init();
     }
 
@@ -105,13 +121,12 @@ public class ConnRobotActivity
             mTvWifiname.setText(R.string.not_wifi_conn);
         } else {
             mTvWifiname.setText(mWifeName);
-            String name = mSpUtils.getString(Constants.WIFI_NAME, "");
-            if (!TextUtils.isEmpty(name) && name.equals(mWifeName)) {
-                String pwd = mSpUtils.getString(Constants.WIFI_PWD, "");
-                mEtWifipassword.setText(pwd);
-            }
+            String pwd = mSpUtils.getString(mWifeName, "");
+            LogUtils.d("wifiname = " + mWifeName + "---pwd =" + pwd);
+            mEtWifipassword.setText(pwd);
         }
-    }
+        mEtWifipassword.setSelection(mEtWifipassword.getText().length());
+}
 
     /**
      * 获取wifi信息
@@ -128,7 +143,8 @@ public class ConnRobotActivity
     @OnClick({R.id.btn_wifi_config,
               R.id.bt_next,
               R.id.btn_wifi_help,
-              R.id.iv_left})
+              R.id.iv_left,
+             R.id.iv_select})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_wifi_config:
@@ -151,21 +167,41 @@ public class ConnRobotActivity
             case R.id.iv_left:
                 finish();
                 break;
+            case R.id.iv_select:
+                select();
+                break;
         }
     }
+    private boolean isSelect = false;
+    private void select() {
+        isSelect = !isSelect;
+        if(isSelect){
+            //明文显示
+            mEtWifipassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        }else{
+            mEtWifipassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        }
+        mIbSelect.setImageResource(isSelect?R.mipmap.eye_open:R.mipmap.eye_close);
+        //保证每次切换光标都在最后面
+        mEtWifipassword.setSelection(mEtWifipassword.getText().length());
 
+    }
+
+    /**
+     * 设置无wifi密码配置
+     */
     private void setNotWifiPwd() {
-//        WifiConfiguration config = new WifiConfiguration();
-//        config.allowedAuthAlgorithms.clear();
-//        config.allowedGroupCiphers.clear();
-//        config.allowedKeyManagement.clear();
-//        config.allowedPairwiseCiphers.clear();
-//        config.allowedProtocols.clear();
-//        config.SSID = "\"" + getWifissid() + "\"";
-//        // 没有密码
-//        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-//        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-//        wifiManager.enableNetwork(wifiManager.addNetwork(config), true);
+        //        WifiConfiguration config = new WifiConfiguration();
+        //        config.allowedAuthAlgorithms.clear();
+        //        config.allowedGroupCiphers.clear();
+        //        config.allowedKeyManagement.clear();
+        //        config.allowedPairwiseCiphers.clear();
+        //        config.allowedProtocols.clear();
+        //        config.SSID = "\"" + getWifissid() + "\"";
+        //        // 没有密码
+        //        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        //        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        //        wifiManager.enableNetwork(wifiManager.addNetwork(config), true);
     }
 
     /**
@@ -178,26 +214,30 @@ public class ConnRobotActivity
                                          .toString();
         String wifiname = mTvWifiname.getText()
                                      .toString();
-        if(TextUtils.isEmpty(wifiname)){
-            mToastor.getSingletonToast(R.string.empty_wifi_name).show();
+        if (TextUtils.isEmpty(wifiname)) {
+            mToastor.getSingletonToast(R.string.empty_wifi_name)
+                    .show();
             return;
         }
         String name = UIUtils.getString(R.string.not_wifi_conn);
 
-        if(name.equals(wifiname)){
-            mToastor.getSingletonToast(R.string.not_wifi).show();
+        if (name.equals(wifiname)) {
+            mToastor.getSingletonToast(R.string.not_wifi)
+                    .show();
             return;
         }
         if (TextUtils.isEmpty(password)) {
-           // setNotWifiPwd();
-            mToastor.getSingletonToast(R.string.empty_wifi_pwd).show();
+            // setNotWifiPwd();
+            mToastor.getSingletonToast(R.string.empty_wifi_pwd)
+                    .show();
             return;
         }
         if (btnName.equals(UIUtils.getString(R.string.next))) {
             /*保存用户名和密码*/
             if (!wifiname.equals(UIUtils.getString(R.string.not_wifi_conn))) {
-                mSpUtils.putString(Constants.WIFI_NAME, wifiname);
-                mSpUtils.putString(Constants.WIFI_PWD, password);
+                //组成规则 key = wifiname ;value = wifipassword
+                mSpUtils.putString(wifiname, password);
+                LogUtils.d("put --wifiname = " + mWifeName + "---pwd =" + password);
             }
 
             mLlImg.setVisibility(View.VISIBLE);
@@ -293,15 +333,16 @@ public class ConnRobotActivity
     public void onClick() {
         boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
         boolean wifi   = CommUtils.isWifi(getApplicationContext());
-        if(!wifi && isWifi){
+        if (!wifi && isWifi) {
             showPlayTip();
-        }else{
+        } else {
             Intent it  = new Intent(Intent.ACTION_VIEW);
             Uri    uri = Uri.parse(HttpUrl.VOICE_CONTROL);
             it.setDataAndType(uri, "video/mp4");
             startActivity(it);
         }
     }
+
     private void showPlayTip() {
         new DAlertDialog(this).builder()
                               .setTitle(UIUtils.getString(R.string.tip))
@@ -325,4 +366,15 @@ public class ConnRobotActivity
 
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked){
+            //明文显示
+            mEtWifipassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        }else{
+            mEtWifipassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        }
+        //保证每次切换光标都在最后面
+        mEtWifipassword.setSelection(mEtWifipassword.getText().length());
+    }
 }

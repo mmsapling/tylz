@@ -24,7 +24,7 @@ public interface Constants {
     /** 启动页等待时间 */
     long   LAUNCH_TIME                  = 4000;
     /** 启动页睡眠时间*/
-    long   LAUNCH_SLEEP_TIME            = 500;
+    long   LAUNCH_SLEEP_TIME            = 200;
     /** 用户id */
     String USER_ID                      = "user_id";
     /** 音频目录 */

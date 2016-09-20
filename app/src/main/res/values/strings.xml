@@ -282,6 +282,7 @@
     <string name="deny_recorder_please_open">录音权限被拒绝，请前往权限中心打开！</string>
     <string name="permission_camera_rationale">同意使用相机权限吗？</string>
     <string name="permission_recorder_rationale">同意使用录音权限吗？</string>
+    <string name="show_pwd">显示密码</string>
 
     <array name="tabs_upload">
         <item>全部</item>

@@ -305,7 +305,7 @@ public class ActionShopActivity
                    .execute(new ResultCall(isShow) {
                        @Override
                        public void onResult(String response, int id) {
-                           LogUtils.d("loop_pic", response);
+                           LogUtils.d("goodslist=" + response);
                            setupListView(response);
                        }
                    });

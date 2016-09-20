@@ -126,7 +126,7 @@ public class RegisterActivity
         } else if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(confirmPwd)) {
             mToastor.getSingletonToast(R.string.empty_password).show();
             return;
-        } else if (mPhotoInfos.size() == 0) {
+        } else if (mPhotoInfos == null || mPhotoInfos.size() == 0) {
             mToastor.getSingletonToast(R.string.please_select_photo).show();
             return;
         } else if (!pwd.equals(confirmPwd)) {

@@ -77,7 +77,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
@@ -87,23 +88,49 @@
                     android:text="@string/wifi_pwd"
                     android:textColor="#BDC7D8"
                     android:textSize="20sp"/>
-
-                <EditText
-                    android:id="@+id/et_wifipassword"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="left"
-                    android:inputType="textPassword"
-                    android:text=""
-                    android:textColor="#BDC7D8"
-                    android:textSize="20sp"/>
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/iv_select"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@null"
+                        android:src="@mipmap/eye_close"/>
+                    <EditText
+                        android:id="@+id/et_wifipassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="left"
+                        android:layout_toLeftOf="@+id/iv_select"
+                        android:inputType="textPassword"
+                        android:text=""
+                        android:textColor="#BDC7D8"
+                        android:textSize="20sp"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="#BDC7D8"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+            <!--显示密码-->
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/cb_select"
+                    android:textColor="@color/color_66"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="@string/show_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
 
