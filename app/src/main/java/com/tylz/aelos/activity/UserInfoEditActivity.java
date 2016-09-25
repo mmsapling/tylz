@@ -2,8 +2,9 @@ package com.tylz.aelos.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -15,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bruce.pickerview.popwindow.DatePickerPopWin;
 import com.google.gson.Gson;
@@ -29,12 +31,15 @@ import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.CommomUtil;
 import com.tylz.aelos.util.LogUtils;
 import com.tylz.aelos.util.StringUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DActionSheetDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 
-import java.io.File;
+import org.hybridsquad.android.library.BitmapUtil;
+import org.hybridsquad.android.library.CropHandler;
+import org.hybridsquad.android.library.CropHelper;
+import org.hybridsquad.android.library.CropParams;
+
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +51,6 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import permissions.dispatcher.NeedsPermission;
@@ -66,6 +70,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class UserInfoEditActivity
         extends BaseActivity
+        implements CropHandler
 {
     private final int REQUEST_CODE_CAMERA  = 1000;
     private final int REQUEST_CODE_GALLERY = 1001;
@@ -109,8 +114,9 @@ public class UserInfoEditActivity
     FrameLayout  mFlAvator;
 
     private List<PhotoInfo> mPhotoInfos;
+    private Bitmap   mBitmap;
     private User            mUserInfo;
-
+    CropParams mCropParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +124,7 @@ public class UserInfoEditActivity
         setContentView(R.layout.activity_userinfo_edit);
         ButterKnife.bind(this);
         mPhotoInfos = new ArrayList<>();
+        mCropParams = new CropParams(this);
         initData();
     }
 
@@ -182,12 +189,27 @@ public class UserInfoEditActivity
         switch (which) {
             case 1: //拍照
 
-               UserInfoEditActivityPermissionsDispatcher.showCameraWithCheck(this);
+                UserInfoEditActivityPermissionsDispatcher.showCameraWithCheck(this);
                 break;
             case 2: //打开相册
-                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+                mCropParams.refreshUri();
+                mCropParams.enable = true;
+                mCropParams.compress = false;
+                Intent intent2 = CropHelper.buildGalleryIntent(mCropParams);
+                startActivityForResult(intent2, CropHelper.REQUEST_CROP);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        CropHelper.clearCacheDir();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        CropHelper.handleResult(this, requestCode, resultCode, data);
     }
 
     @Override
@@ -196,72 +218,56 @@ public class UserInfoEditActivity
                                            @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        UserInfoEditActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+        UserInfoEditActivityPermissionsDispatcher.onRequestPermissionsResult(this,
+                                                                             requestCode,
+                                                                             grantResults);
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
-     void showCamera() {
-        try{
-            GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    void showCamera() {
+        mCropParams.refreshUri();
+        mCropParams.enable = true;
+        mCropParams.compress = false;
+        Intent intent1 = CropHelper.buildCameraIntent(mCropParams);
+        startActivityForResult(intent1, CropHelper.REQUEST_CAMERA);
     }
+
     @OnShowRationale(Manifest.permission.CAMERA)
     void showRationaleForScan(PermissionRequest request) {
-        showRationaleDialog(R.string.permission_camera_rationale,request);
+        showRationaleDialog(R.string.permission_camera_rationale, request);
     }
+
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void onCameraDenied() {
         // NOTE: Deal with a denied permission, e.g. by showing specific UI
         // or disabling certain functionality
-        mToastor.getSingletonToast(R.string.deny_camera_please_open).show();
-    }
-    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setPositiveButton(R.string.button_allow, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.button_deny, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .setCancelable(false)
-                .setMessage(messageResId)
+        mToastor.getSingletonToast(R.string.deny_camera_please_open)
                 .show();
     }
-    /**
-     * 处理图片结果
-     */
-    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
-        @Override
-        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            try{
-                if (resultList != null && resultList.size() != 0) {
-                    mPhotoInfos.clear();
-                    mPhotoInfos.addAll(resultList);
-                    PhotoInfo photoInfo = resultList.get(0);
 
-                    Picasso.with(UserInfoEditActivity.this)
-                           .load(new File(photoInfo.getPhotoPath()))
-                           .into(mCivAvator);
-                }
-            }catch (Exception e){
-
-            }
-
-        }
-
-        @Override
-        public void onHanlderFailure(int requestCode, String errorMsg) {
-            ToastUtils.showToast(errorMsg);
-        }
-    };
+    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
+        new AlertDialog.Builder(this).setPositiveButton(R.string.button_allow,
+                                                        new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(@NonNull DialogInterface dialog,
+                                                                                int which)
+                                                            {
+                                                                request.proceed();
+                                                            }
+                                                        })
+                                     .setNegativeButton(R.string.button_deny,
+                                                        new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(@NonNull DialogInterface dialog,
+                                                                                int which)
+                                                            {
+                                                                request.cancel();
+                                                            }
+                                                        })
+                                     .setCancelable(false)
+                                     .setMessage(messageResId)
+                                     .show();
+    }
 
 
     @OnClick({R.id.iv_left,
@@ -361,11 +367,13 @@ public class UserInfoEditActivity
                                                                                  int day,
                                                                                  String dateDesc)
                                                                          {
-                                                                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                                                             SimpleDateFormat sdf = new SimpleDateFormat(
+                                                                                     "yyyy-MM-dd");
                                                                              try {
                                                                                  Date date = sdf.parse(
                                                                                          dateDesc);
-                                                                                 mEtAge.setText("" + CommomUtil.getAge(date));
+                                                                                 mEtAge.setText("" + CommomUtil.getAge(
+                                                                                         date));
                                                                              } catch (Exception e) {
                                                                                  mEtAge.setText("0");
                                                                                  e.printStackTrace();
@@ -400,8 +408,9 @@ public class UserInfoEditActivity
                            .toString();
         String hobby = mEtHobby.getText()
                                .toString();
-        if(TextUtils.isEmpty(nickname)){
-            mToastor.getSingletonToast(R.string.empty_nickname).show();
+        if (TextUtils.isEmpty(nickname)) {
+            mToastor.getSingletonToast(R.string.empty_nickname)
+                    .show();
             return;
         }
         //请求参数
@@ -416,11 +425,8 @@ public class UserInfoEditActivity
         params.put("gender", sex);
         params.put("hobby", hobby);
         params.put("age", age);
-        if (mPhotoInfos.size() != 0) {
-            String photoPath = mPhotoInfos.get(0)
-                                          .getPhotoPath();
-            Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
-            params.put("avatar", StringUtils.imgToBase64(bitmap));
+        if (null != mBitmap) {
+            params.put("avatar", StringUtils.imgToBase64(mBitmap));
         }
         OkHttpUtils.post()
                    .url(HttpUrl.BASE + "setUserInfo")
@@ -434,7 +440,8 @@ public class UserInfoEditActivity
                                //修改成功 去后台拉取下数据
                                loadDataFromNet();
                            } else {
-                               mToastor.getSingletonToast(R.string.fail_edit).show();
+                               mToastor.getSingletonToast(R.string.fail_edit)
+                                       .show();
                            }
                        }
                    });
@@ -449,7 +456,7 @@ public class UserInfoEditActivity
                    .url(HttpUrl.BASE + "getUserInfo")
                    .addParams("id", mUserInfo.id)
                    .build()
-                   .execute( new ResultCall() {
+                   .execute(new ResultCall() {
                        @Override
                        public void onResult(String response, int id) {
                            LogUtils.d("edit info = " + response);
@@ -469,4 +476,38 @@ public class UserInfoEditActivity
     }
 
 
+    @Override
+    public void onPhotoCropped(Uri uri) {
+        if (!mCropParams.compress) {
+            mBitmap = BitmapUtil.decodeUriAsBitmap(this, uri);
+            mCivAvator.setImageBitmap(mBitmap);
+        }
+    }
+
+    @Override
+    public void onCompressed(Uri uri) {
+        mBitmap = BitmapUtil.decodeUriAsBitmap(this, uri);
+        mCivAvator.setImageBitmap(mBitmap);
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Override
+    public void onFailed(String message) {
+        Toast.makeText(this, "Crop failed: " + message, Toast.LENGTH_LONG)
+             .show();
+    }
+
+    @Override
+    public void handleIntent(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public CropParams getCropParams() {
+        return mCropParams;
+    }
 }

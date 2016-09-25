@@ -22,8 +22,6 @@ import com.tylz.aelos.bean.ActionDetailBean;
 import com.tylz.aelos.bean.Comment;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.util.HttpUtil;
-import com.tylz.aelos.util.ToastUtils;
-import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
 import org.json.JSONArray;
@@ -87,7 +85,7 @@ public class AllCommentActivity
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-              loadCommentFroNet(0);
+                loadCommentFroNet(0);
             }
         });
         mListview.setLoadMoreListen(new LoadMoreListView.OnLoadMore() {
@@ -126,7 +124,7 @@ public class AllCommentActivity
                                                final String commentsJson = HttpUtil.doPost("getComments",
                                                                                            params);
                                                closeProgress();
-                                               UIUtils.postTaskSafely(new Runnable() {
+                                               runOnUiThread(new Runnable() {
                                                    @Override
                                                    public void run() {
                                                        mSwipeRefresh.setRefreshing(false);
@@ -144,9 +142,9 @@ public class AllCommentActivity
                                                                mAdapter.notifyDataSetChanged();
                                                            }
                                                        }
-
                                                    }
                                                });
+
                                            }
 
                                        }
@@ -173,7 +171,8 @@ public class AllCommentActivity
         final String comment = mEtContent.getText()
                                          .toString();
         if (TextUtils.isEmpty(comment)) {
-            mToastor.getSingletonToast(R.string.empty_comment).show();
+            mToastor.getSingletonToast(R.string.empty_comment)
+                    .show();
             return;
         }
         showProgress();
@@ -215,12 +214,14 @@ public class AllCommentActivity
             boolean result = jsonObject.getBoolean("result");
             mEtContent.setText("");
             if (result) {
-                mToastor.getSingletonToast(R.string.success_comment).show();
+                mToastor.getSingletonToast(R.string.success_comment)
+                        .show();
                 mTvNothing.setVisibility(View.GONE);
                 mListview.setVisibility(View.VISIBLE);
                 loadCommentFroNet(0);
             } else {
-                mToastor.getSingletonToast(R.string.fail_comment).show();
+                mToastor.getSingletonToast(R.string.fail_comment)
+                        .show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -244,20 +245,21 @@ public class AllCommentActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(this,ReplyCommentActivity.class);
+        Intent  intent  = new Intent(this, ReplyCommentActivity.class);
         Comment comment = mDatas.get(position);
-        intent.putExtra(ReplyCommentActivity.EXTRA_DATA,comment);
-        intent.putExtra(ReplyCommentActivity.EXTRA_POS,position);
-        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID,mActionDetailBean.id);
-        startActivityForResult(intent,REQUEST_COMMENT_CODE);
+        intent.putExtra(ReplyCommentActivity.EXTRA_DATA, comment);
+        intent.putExtra(ReplyCommentActivity.EXTRA_POS, position);
+        intent.putExtra(ReplyCommentActivity.EXTRA_GOODSID, mActionDetailBean.id);
+        startActivityForResult(intent, REQUEST_COMMENT_CODE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_COMMENT_CODE && resultCode == ReplyCommentActivity.RESULT_COMMEND_CODE) {
             if (data != null) {
-               Comment comment = (Comment) data.getSerializableExtra(ReplyCommentActivity.EXTRA_DATA);
-                int      postion  = data.getIntExtra(ReplyCommentActivity.EXTRA_POS, -1);
+                Comment comment = (Comment) data.getSerializableExtra(ReplyCommentActivity.EXTRA_DATA);
+                int     postion = data.getIntExtra(ReplyCommentActivity.EXTRA_POS, -1);
                 if (postion != -1) {
                     mDatas.set(postion, comment);
                     mAdapter.notifyDataSetChanged();

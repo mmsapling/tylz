@@ -31,7 +31,6 @@ import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.service.BlueService;
 import com.tylz.aelos.util.CommUtils;
 import com.tylz.aelos.util.LogUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 
 import java.util.ArrayList;
@@ -127,7 +126,7 @@ public class AddStatusActivity
                                   @Override
                                   public void run() {
                                       mDatas = mDbHelper.findStatussByActionId("" + mCustomAction.id);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               mAdapter = new StatusAdapter(AddStatusActivity.this,
@@ -139,6 +138,7 @@ public class AddStatusActivity
                                               showOrNotAddStatusView();
                                           }
                                       });
+
                                   }
                               });
     }
@@ -217,13 +217,14 @@ public class AddStatusActivity
                                                                                   mDatas);
                                       mDbHelper.updateCustomAction(mCustomAction.id + "",
                                                                    fileStream);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
                                               AddStatusActivity.this.finish();
                                           }
                                       });
+
                                   }
                               });
     }

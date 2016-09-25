@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,8 +29,8 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.TypeAdapter;
 import com.tylz.aelos.base.BaseActivity;
@@ -51,15 +50,16 @@ import com.tylz.aelos.view.DNumProgressDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
+import org.hybridsquad.android.library.BitmapUtil;
+import org.hybridsquad.android.library.CropHandler;
+import org.hybridsquad.android.library.CropHelper;
+import org.hybridsquad.android.library.CropParams;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.finalteam.galleryfinal.GalleryFinal;
-import cn.finalteam.galleryfinal.model.PhotoInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -80,6 +80,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class UploadActionActivity
         extends BaseActivity
+        implements CropHandler
 {
     public static final  String EXTRA_DATA             = "extra_data";
     private static final int    REQUEST_LOCAL_VIDEO    = 1002;
@@ -104,19 +105,21 @@ public class UploadActionActivity
     EditText        mEtActionDes;
     /*下面四个为上传的数据*/
     private CustomAction             mCustomAction;
-    private List<PhotoInfo>          mPhotoInfos;
     private VideoEntity              mVideoEntity;
     private UploadType               mUploadType;
     private String                   mActionName;
     private String                   mActionDes;
     private DNumProgressDialog       mNumProgressDialog;
     private ConnectBroadcastReceiver mReceiver;
+    private  Bitmap mBitmap;
+    CropParams mCropParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_action);
         ButterKnife.bind(this);
+        mCropParams = new CropParams(this);
         initData();
         mReceiver = new ConnectBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -148,7 +151,6 @@ public class UploadActionActivity
     }
 
     private void initData() {
-        mPhotoInfos = new ArrayList<>();
         mCustomAction = (CustomAction) getIntent().getSerializableExtra(EXTRA_DATA);
         mTvTitle.setText(R.string.upload_action);
         mIvRight.setImageResource(R.mipmap.upload_uploading);
@@ -201,7 +203,7 @@ public class UploadActionActivity
             mToastor.getSingletonToast(R.string.please_select_type)
                     .show();
             return false;
-        } else if (mPhotoInfos.size() == 0) {
+        } else if (null == mBitmap) {
             mToastor.getSingletonToast(R.string.please_select_photo)
                     .show();
             return false;
@@ -212,6 +214,7 @@ public class UploadActionActivity
         } else if (TextUtils.isEmpty(mCustomAction.filestream)) {
             mToastor.getSingletonToast(R.string.empty_action)
                     .show();
+            //true
             return false;
         }
         return true;
@@ -221,16 +224,12 @@ public class UploadActionActivity
         if (!checkUpload()) {
             return;
         }
-        File picFile = new File(mPhotoInfos.get(0)
-                                           .getPhotoPath());
-        LogUtils.d(picFile.getAbsolutePath());
+
         File videoFile = new File(mVideoEntity.filePath);
-        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoInfos.get(0)
-                                                            .getPhotoPath());
+
         showNumProcess();
 
         OkHttpUtils.post()
-
                    .url(HttpUrl.BASE + "uploadAction")
                    .addParams("title", mActionName)
                    .addParams("content", mActionDes)
@@ -238,7 +237,7 @@ public class UploadActionActivity
                    .addParams("actionStream", mCustomAction.filestream)
                    .addParams("userId", mUser_id)
                    .addParams("titlestream", mCustomAction.titlestream)
-                   .addParams("picurl", StringUtils.imgToBase64(bitmap))
+                   .addParams("picurl", StringUtils.imgToBase64(mBitmap))
                    .addFile("video", videoFile.getName(), videoFile)
                    .build()
                    .execute(new Callback() {
@@ -383,12 +382,11 @@ public class UploadActionActivity
 
     @NeedsPermission(Manifest.permission.CAMERA)
     void showOpenCarmera() {
-        try {
-            GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mCropParams.refreshUri();
+        mCropParams.enable = true;
+        mCropParams.compress = false;
+        Intent intent1 = CropHelper.buildCameraIntent(mCropParams);
+        startActivityForResult(intent1, CropHelper.REQUEST_CAMERA);
 
     }
 
@@ -464,6 +462,7 @@ public class UploadActionActivity
 
     @Override
     protected void onDestroy() {
+        CropHelper.clearCacheDir();
         super.onDestroy();
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -473,6 +472,7 @@ public class UploadActionActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        CropHelper.handleResult(this, requestCode, resultCode, data);
         if (requestCode == REQUEST_LOCAL_VIDEO && resultCode == ShowVideoActivity.RESULT_LOCAL_VIDEO) {
             if (data != null) {
                 mVideoEntity = (VideoEntity) data.getSerializableExtra(ShowVideoActivity.EXTRA_DATA);
@@ -519,7 +519,7 @@ public class UploadActionActivity
                                               videoEntity.filePath,
                                               size,
                                               size);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               if (bitmap == null) {
@@ -569,34 +569,49 @@ public class UploadActionActivity
                 UploadActionActivityPermissionsDispatcher.showOpenCarmeraWithCheck(this);
                 break;
             case 2: //打开相册
-                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+                mCropParams.refreshUri();
+                mCropParams.enable = true;
+                mCropParams.compress = false;
+                Intent intent2 = CropHelper.buildGalleryIntent(mCropParams);
+                startActivityForResult(intent2, CropHelper.REQUEST_CROP);
                 break;
         }
     }
 
-    /**
-     * 处理图片结果
-     */
-    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
-        @Override
-        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            try {
-                if (resultList != null && resultList.size() != 0) {
-                    mPhotoInfos.clear();
-                    mPhotoInfos.addAll(resultList);
-                    PhotoInfo photoInfo = resultList.get(0);
 
-                    Picasso.with(UploadActionActivity.this)
-                           .load(new File(photoInfo.getPhotoPath()))
-                           .into(mCivPhoto);
-                }
-            } catch (Exception e) {}
 
+    @Override
+    public void onPhotoCropped(Uri uri) {
+        if (!mCropParams.compress) {
+            mBitmap = BitmapUtil.decodeUriAsBitmap(this, uri);
+            mCivPhoto.setImageBitmap(mBitmap);
         }
+    }
 
-        @Override
-        public void onHanlderFailure(int requestCode, String errorMsg) {
-            ToastUtils.showToast(errorMsg);
-        }
-    };
+    @Override
+    public void onCompressed(Uri uri) {
+        mBitmap = BitmapUtil.decodeUriAsBitmap(this, uri);
+        mCivPhoto.setImageBitmap(mBitmap);
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Override
+    public void onFailed(String message) {
+        Toast.makeText(this, "Crop failed: " + message, Toast.LENGTH_LONG)
+             .show();
+    }
+
+    @Override
+    public void handleIntent(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public CropParams getCropParams() {
+        return mCropParams;
+    }
 }

@@ -1,7 +1,6 @@
 package com.tylz.aelos.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +24,7 @@ import android.widget.VideoView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.CommentAdapter;
 import com.tylz.aelos.base.BaseActivity;
@@ -157,7 +157,7 @@ public class ActionIdDetailActivity
                                       params.put("number", Constants.PAGE_SIZE);
                                       final String commentsJson = HttpUtil.doPost("getComments",
                                                                                   params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               Type type = new TypeToken<List<Comment>>() {}.getType();
@@ -171,6 +171,7 @@ public class ActionIdDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }
@@ -332,23 +333,11 @@ public class ActionIdDetailActivity
         }
 
             /*去网络获取视频第一帧*/
-        ThreadPoolProxyFactory.createNormalThreadPoolProxy()
-                              .execute(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      final Bitmap videoThumbnail = CommomUtil.createVideoThumbnail(
-                                              mActionDetailBean.video,
-                                              480,
-                                              480);
-
-                                      UIUtils.postTaskSafely(new Runnable() {
-                                          @Override
-                                          public void run() {
-                                              mIvBgVideo.setImageBitmap(videoThumbnail);
-                                          }
-                                      });
-                                  }
-                              });
+        Picasso.with(this)
+               .load(mActionDetailBean.videopicurl)
+               .error(R.mipmap.applogo)
+               .placeholder(R.mipmap.applogo)
+               .into(mIvBgVideo);
 
         MediaController mediaController = new MediaController(this);
         // mediaController.set
@@ -368,13 +357,14 @@ public class ActionIdDetailActivity
                 } else {
                     mPbProgress.setVisibility(View.VISIBLE);
                     mIbVideoPlay.setVisibility(View.GONE);
+                    //mVideoview.setVideoURI(Uri.parse(mActionDetailBean.video));
                     mVideoview.setVideoPath(mActionDetailBean.video);
                     mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         @Override
                         public void onPrepared(MediaPlayer mp) {
                             mIvBgVideo.setVisibility(View.GONE);
                             mPbProgress.setVisibility(View.GONE);
-                            mVideoview.start();
+                                mVideoview.start();
                         }
                     });
                 }
@@ -511,7 +501,7 @@ public class ActionIdDetailActivity
 
                        @Override
                        public void onResponse(File response, int id) {
-                           UIUtils.postTaskSafely(new Runnable() {
+                           runOnUiThread(new Runnable() {
                                @Override
                                public void run() {
                                    closeNumProcess();
@@ -528,20 +518,19 @@ public class ActionIdDetailActivity
                                    loadDownLoadCountFromNet();
                                }
                            });
+
                        }
 
                        @Override
                        public void inProgress(final float progress, long total, int id) {
 
-                           UIUtils.postTaskSafely(new Runnable() {
-                               @Override
-                               public void run() {
+
+
                                    int index = (int) (progress * 100);
                                    if (mNumProgressDialog != null) {
                                        mNumProgressDialog.setProgress(index);
                                    }
-                               }
-                           });
+
                        }
                    });
     }
@@ -557,7 +546,7 @@ public class ActionIdDetailActivity
                                       params.put("goodsid", id);
                                       final String countDownload = HttpUtil.doPost("countDownload",
                                                                                    params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -574,6 +563,7 @@ public class ActionIdDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }
@@ -706,7 +696,7 @@ public class ActionIdDetailActivity
                                       params.put("userid", mUser_id);
                                       params.put("goodsid", id);
                                       final String praiseData = HttpUtil.doPost("applaud", params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -718,6 +708,7 @@ public class ActionIdDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }
@@ -768,7 +759,7 @@ public class ActionIdDetailActivity
                                       params.put("goodsid", id);
                                       final String collectData = HttpUtil.doPost("collect", params);
                                       LogUtils.d("collectdata = " + collectData);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -780,6 +771,7 @@ public class ActionIdDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }

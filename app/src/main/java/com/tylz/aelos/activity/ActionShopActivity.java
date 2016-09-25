@@ -2,6 +2,8 @@ package com.tylz.aelos.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -51,6 +53,8 @@ public class ActionShopActivity
 {
 
     private static final int REQUEST_CODE_DETAIL = 2000;
+    private static final int WHAT_AUTO_LOOP      = 0;
+    private static final int TIME_DELY           = 2000;
     @Bind(R.id.iv_left)
     ImageButton     mIvLeft;
     @Bind(R.id.tv_title)
@@ -65,7 +69,6 @@ public class ActionShopActivity
     MeasureListView mShopListview;
     @Bind(R.id.shop_point_container)
     LinearLayout    mPointContainer;
-    AutoScrollTask mAutoScrollTask;
     private List<ShopBean>      mDatas;
     private ShopListViewAdapter mAdapter;
 
@@ -79,7 +82,7 @@ public class ActionShopActivity
         loadPicDataFromNet();
         loadActionDataFromNet(true);
         boolean isFirst = mSpUtils.getBoolean(Constants.IS_FIRST_ACTION_SHOP, true);
-        if(isFirst){
+        if (isFirst) {
             skipActivity(GuideActionShopActivity.class);
         }
     }
@@ -200,11 +203,34 @@ public class ActionShopActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mAutoScrollTask != null) {
-            mAutoScrollTask.stop();
-        }
+        stopAutoLoop();
     }
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == WHAT_AUTO_LOOP) {
+                processLoopInfo();
+            }
+        }
+    };
+
+    private void processLoopInfo() {
+        int currentItem = mShopViewpager.getCurrentItem();
+        currentItem++;
+        mShopViewpager.setCurrentItem(currentItem);
+        startAutoLoop();
+    }
+
+    private void startAutoLoop() {
+        mHandler.removeMessages(WHAT_AUTO_LOOP);
+        mHandler.sendEmptyMessageDelayed(WHAT_AUTO_LOOP, TIME_DELY);
+    }
+
+    private void stopAutoLoop() {
+        mHandler.removeMessages(WHAT_AUTO_LOOP);
+    }
 
     /**
      * 自动轮播
@@ -214,21 +240,22 @@ public class ActionShopActivity
         //左右无限轮播
         mShopViewpager.setCurrentItem(length * 100);
         //自动轮播
-        mAutoScrollTask = new AutoScrollTask(mShopViewpager);
-        mAutoScrollTask.start();
+        startAutoLoop();
         //按压下去停止 轮播
         mShopViewpager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        mAutoScrollTask.stop();
+                        //mAutoScrollTask.stop();
+                        stopAutoLoop();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
-                        mAutoScrollTask.start();
+                        //mAutoScrollTask.start();
+                        startAutoLoop();
                         break;
                     default:
                         break;
@@ -238,38 +265,6 @@ public class ActionShopActivity
         });
     }
 
-    /**
-     * 自动轮播任务
-     */
-    private class AutoScrollTask
-            implements Runnable
-    {
-        private ViewPager mViewPager;
-
-        public AutoScrollTask(ViewPager viewPager) {
-            mViewPager = viewPager;
-        }
-
-        public void start() {
-            UIUtils.getMainThreadHandler()
-                   .removeCallbacks(this);
-            UIUtils.getMainThreadHandler()
-                   .postDelayed(this, 3000);
-        }
-
-        public void stop() {
-            UIUtils.getMainThreadHandler()
-                   .removeCallbacks(this);
-        }
-
-        @Override
-        public void run() {
-            int currentItem = mViewPager.getCurrentItem();
-            currentItem++;
-            mViewPager.setCurrentItem(currentItem);
-            start();
-        }
-    }
 
     /**
      * 从网络获取数据

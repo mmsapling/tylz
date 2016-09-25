@@ -219,6 +219,7 @@ public class GameSettingActivity
      */
     private void initType(final String type) {
         showProgress();
+
         ThreadPoolProxyFactory.createNormalThreadPoolProxy()
                               .execute(new Runnable() {
                                   @Override
@@ -227,7 +228,7 @@ public class GameSettingActivity
 
                                       mTypeDatas.clear();
                                       mTypeDatas.addAll(typeDatas);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -652,7 +653,7 @@ public class GameSettingActivity
                                       List<SettingTypeData> typeDatas = procesData(mBaseAction);
                                       mTypeDatas.clear();
                                       mTypeDatas.addAll(typeDatas);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -660,6 +661,7 @@ public class GameSettingActivity
                                               initCurrentTypePress(mTvType1Base);
                                           }
                                       });
+
                                   }
                               });
     }
@@ -1125,7 +1127,7 @@ public class GameSettingActivity
 
     /**展示进度条弹窗*/
     private void showNumProcess() {
-        UIUtils.postTaskSafely(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mNumProgressDialog = new DNumProgressDialog(GameSettingActivity.this);
@@ -1135,11 +1137,12 @@ public class GameSettingActivity
             }
         });
 
+
     }
 
     /**关闭进度条弹窗*/
     private void closeNumProcess() {
-        UIUtils.postTaskSafely(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mNumProgressDialog != null) {
@@ -1148,6 +1151,7 @@ public class GameSettingActivity
                 }
             }
         });
+
 
     }
 
@@ -1250,13 +1254,14 @@ public class GameSettingActivity
                                       if (isDelete) {
                                           deleteActionTrue();
                                       }
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
                                               GameSettingActivity.this.finish();
                                           }
                                       });
+                                     
                                   }
                               });
     }

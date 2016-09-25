@@ -286,7 +286,7 @@ public class GameActivity
 
                                       final String titles     = mDbHelper.findTitleStrByKey(key);
                                       String       notSetting = UIUtils.getString(R.string.not_setting);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               mToastor.getSingletonToast(titles)

@@ -148,7 +148,7 @@ public class CustomActionActivity
                                   @Override
                                   public void run() {
                                       final List<CustomAction> actions = mDbHelper.findCustomActionList();
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               mDatas.clear();
@@ -157,6 +157,7 @@ public class CustomActionActivity
                                               showOrNotAddActionView();
                                           }
                                       });
+
                                   }
                               });
     }
@@ -285,7 +286,7 @@ public class CustomActionActivity
 
                                       CustomAction realAction = mDbHelper.findCustomAction(action.titlestream);
                                       mDatas.add(realAction);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -293,6 +294,7 @@ public class CustomActionActivity
                                               showOrNotAddActionView();
                                           }
                                       });
+
                                   }
                               });
 
@@ -354,13 +356,14 @@ public class CustomActionActivity
                                               SystemClock.sleep(Constants.PLAY_ACTION_SLEEP_TIME);
                                           }
                                       } else {
-                                          UIUtils.postTaskSafely(new Runnable() {
+                                          runOnUiThread(new Runnable() {
                                               @Override
                                               public void run() {
                                                   mToastor.getSingletonToast(R.string.not_status)
                                                           .show();
                                               }
                                           });
+
                                       }
                                       isFirst = true;
                                   }
@@ -412,13 +415,14 @@ public class CustomActionActivity
                                       mDbHelper.deleteActionByTitleStream(customAction.titlestream);
                                       mDbHelper.deleteStatusByActionId(customAction.id + "");
                                       mDatas.remove(customAction);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
                                               mAdapter.notifyDataSetChanged();
                                           }
                                       });
+
                                   }
                               });
     }

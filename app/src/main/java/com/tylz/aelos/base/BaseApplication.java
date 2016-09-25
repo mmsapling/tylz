@@ -65,7 +65,7 @@ public class BaseApplication
         super.onCreate();
         init();
         initOkHttp();
-        initGallery();
+        //initGallery();
         isLoadConfigModel = false;
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
@@ -122,10 +122,10 @@ public class BaseApplication
         /**
          * Tid Thread Pid Process Uid User
          */
-        mMainThreadId = android.os.Process.myTid();
+       // mMainThreadId = android.os.Process.myTid();
 
         // 3.创建一个主线程的handler
-        mMainThreadHandler = new Handler();
+       // mMainThreadHandler = new Handler();
     }
 
 

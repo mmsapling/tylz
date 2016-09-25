@@ -30,4 +30,5 @@ public class ActionDetailBean implements Serializable{
     public String collectCount; // 收藏量
     public String titlestream;//0A31343634333232313735
     public String hasAction;//	true
+    public String videopicurl;
 }

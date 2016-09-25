@@ -10,8 +10,9 @@ package com.tylz.aelos.manager;
  */
 public interface HttpUrl {
 
-    String BASE_IP                  = "192.168.1.92:8080";
+    //String BASE                 = "http://192.168.1.92:8080/Workspace/network/app/interface.php?func=";
     String BASE                     = "http://www.lejurobot.com/client/interface.php?func=";
+    //String BASE                     = "http://www.lejurobot.com/client/interface.php?func=";
     /**版本更新地址*/
     String LOCAL_VERSION_UPDATE_URL = "http://www.lejurobot.com/client/version.xml";
 

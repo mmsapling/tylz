@@ -156,7 +156,7 @@ public class ForgetPwdActivity
                    .addParams("type", "forget")
                    .addParams("code", mLocalVerifyCode)
                    .build()
-                   .execute(new ResultCall() {
+                   .execute(new ResultCall(false) {
                        @Override
                        public void onResult(String response, int id) {
                            if (response.equals("true")) {

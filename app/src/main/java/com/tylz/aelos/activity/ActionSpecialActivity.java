@@ -87,7 +87,7 @@ public class ActionSpecialActivity
                                       params.put("ids", mLoopPicData.ids);
                                         final String data = HttpUtil.doPost("getSlideGoodsList",
                                                                           params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -103,6 +103,7 @@ public class ActionSpecialActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }

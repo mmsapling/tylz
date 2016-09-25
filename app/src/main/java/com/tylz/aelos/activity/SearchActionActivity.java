@@ -105,7 +105,7 @@ public class SearchActionActivity
                                   @Override
                                   public void run() {
                                       final String data = HttpUtil.doPost("search", params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -128,6 +128,7 @@ public class SearchActionActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }

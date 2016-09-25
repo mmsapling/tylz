@@ -41,9 +41,14 @@ public class LoadObject3DService
                                   public void run() {
                                       mObject3D = loadModel(Constants.MODEL_NAME, 1.2f);
                                       //是否需要广播发送加载完毕
-                                      //                broadcastUpdate();
+                                      // broadcastUpdate();
                                   }
                               });
+    }
+
+    private void broadcastUpdate() {
+        Intent intent = new Intent(Constants.ACTION_MODEL_LOADED);
+        sendBroadcast(intent);
     }
 
     @Nullable
@@ -79,14 +84,14 @@ public class LoadObject3DService
     */
     private Object3D loadModel(String filename, float scale)
     {
-        Object3D   o3d   = new Object3D(0);
-        InputStream is = null;
+        Object3D    o3d = new Object3D(0);
+        InputStream is  = null;
         try {
             is = getAssets().open(filename);
 
             Object3D[] model = Loader.load3DS(is, scale);
 
-            Object3D   temp  = null;
+            Object3D temp = null;
             for (int i = 0; i < model.length; i++) {
                 temp = model[i];
                 temp.setCenter(SimpleVector.ORIGIN);

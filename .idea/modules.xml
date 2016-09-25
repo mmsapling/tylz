@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Library_PagerSlidingTabStrip/Library_PagerSlidingTabStrip.iml" filepath="$PROJECT_DIR$/Library_PagerSlidingTabStrip/Library_PagerSlidingTabStrip.iml" />
       <module fileurl="file://$PROJECT_DIR$/ToggleButtonLib/ToggleButtonLib.iml" filepath="$PROJECT_DIR$/ToggleButtonLib/ToggleButtonLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library_photo/library_photo.iml" filepath="$PROJECT_DIR$/library_photo/library_photo.iml" />
       <module fileurl="file://$PROJECT_DIR$/pickview_library/pickview_library.iml" filepath="$PROJECT_DIR$/pickview_library/pickview_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/sliding_menu_library/sliding_menu_library.iml" filepath="$PROJECT_DIR$/sliding_menu_library/sliding_menu_library.iml" />
     </modules>

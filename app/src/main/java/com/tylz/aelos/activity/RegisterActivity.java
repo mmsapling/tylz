@@ -2,8 +2,9 @@ package com.tylz.aelos.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -15,28 +16,27 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.StringUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.DActionSheetDialog;
 import com.zhy.http.okhttp.OkHttpUtils;
 
-import java.io.File;
-import java.util.ArrayList;
+import org.hybridsquad.android.library.BitmapUtil;
+import org.hybridsquad.android.library.CropHandler;
+import org.hybridsquad.android.library.CropHelper;
+import org.hybridsquad.android.library.CropParams;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.finalteam.galleryfinal.GalleryFinal;
-import cn.finalteam.galleryfinal.model.PhotoInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
@@ -55,6 +55,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class RegisterActivity
         extends BaseActivity
+        implements CropHandler
 {
     public static final String EXTRA_PHONE = "phone";
     private final int REQUEST_CODE_CAMERA  = 1000;
@@ -75,15 +76,15 @@ public class RegisterActivity
     Button          mBtNext;
     @Bind(R.id.ll_gologin)
     LinearLayout    mLlGologin;
-    List<PhotoInfo> mPhotoInfos;
-
+    private Bitmap mBitmap;
+    CropParams mCropParams;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         mTvTitle.setText(R.string.register);
-        mPhotoInfos = new ArrayList<>();
+        mCropParams = new CropParams(this);
     }
 
     @OnClick({R.id.iv_left,
@@ -126,7 +127,7 @@ public class RegisterActivity
         } else if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(confirmPwd)) {
             mToastor.getSingletonToast(R.string.empty_password).show();
             return;
-        } else if (mPhotoInfos == null || mPhotoInfos.size() == 0) {
+        } else if (null == mBitmap) {
             mToastor.getSingletonToast(R.string.please_select_photo).show();
             return;
         } else if (!pwd.equals(confirmPwd)) {
@@ -134,13 +135,12 @@ public class RegisterActivity
             return;
         }
         //参数
-        Bitmap              bitmap = BitmapFactory.decodeFile(mPhotoInfos.get(0)
-                                                                         .getPhotoPath());
+
         Map<String, String> map = new HashMap<String, String>();
         map.put("username", getIntent().getStringExtra(EXTRA_PHONE));
         map.put("password", pwd);
         map.put("nickname", nickname);
-        map.put("picurl", StringUtils.imgToBase64(bitmap));
+        map.put("picurl", StringUtils.imgToBase64(mBitmap));
         //请求注册
         showProgress();
         OkHttpUtils.post()
@@ -198,9 +198,23 @@ public class RegisterActivity
                RegisterActivityPermissionsDispatcher.showOpenCameraWithCheck(this);
                 break;
             case 2: //打开相册
-                GalleryFinal.openGallerySingle(REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+                mCropParams.refreshUri();
+                mCropParams.enable = true;
+                mCropParams.compress = false;
+                Intent intent2 = CropHelper.buildGalleryIntent(mCropParams);
+                startActivityForResult(intent2, CropHelper.REQUEST_CROP);
                 break;
         }
+    }
+    @Override
+    protected void onDestroy() {
+        CropHelper.clearCacheDir();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        CropHelper.handleResult(this, requestCode, resultCode, data);
     }
 
     @Override
@@ -214,9 +228,11 @@ public class RegisterActivity
 
     @NeedsPermission(Manifest.permission.CAMERA)
      void showOpenCamera() {
-        try{
-            GalleryFinal.openCamera(REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
-        }catch (Exception e){}
+        mCropParams.refreshUri();
+        mCropParams.enable = true;
+        mCropParams.compress = false;
+        Intent intent1 = CropHelper.buildCameraIntent(mCropParams);
+        startActivityForResult(intent1, CropHelper.REQUEST_CAMERA);
     }
     @OnShowRationale(Manifest.permission.CAMERA)
     void showRationaleForScan(PermissionRequest request) {
@@ -246,29 +262,39 @@ public class RegisterActivity
                 .setMessage(messageResId)
                 .show();
     }
-    /**
-     * 处理图片结果
-     */
-    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
-        @Override
-        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
-            try{
-                if (resultList != null && resultList.size() != 0) {
-                    mPhotoInfos.clear();
-                    mPhotoInfos.addAll(resultList);
-                    PhotoInfo photoInfo = resultList.get(0);
 
-                    Picasso.with(RegisterActivity.this)
-                           .load(new File(photoInfo.getPhotoPath()))
-                           .into(mCivAvator);
-                }
-            }catch (Exception e){}
-
+    @Override
+    public void onPhotoCropped(Uri uri) {
+        if (!mCropParams.compress) {
+            mBitmap = BitmapUtil.decodeUriAsBitmap(this, uri);
+            mCivAvator.setImageBitmap(mBitmap);
         }
+    }
 
-        @Override
-        public void onHanlderFailure(int requestCode, String errorMsg) {
-            ToastUtils.showToast(errorMsg);
-        }
-    };
+    @Override
+    public void onCompressed(Uri uri) {
+        mBitmap = BitmapUtil.decodeUriAsBitmap(this, uri);
+        mCivAvator.setImageBitmap(mBitmap);
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Override
+    public void onFailed(String message) {
+        Toast.makeText(this, "Crop failed: " + message, Toast.LENGTH_LONG)
+             .show();
+    }
+
+    @Override
+    public void handleIntent(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public CropParams getCropParams() {
+        return mCropParams;
+    }
 }

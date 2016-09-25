@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.manager.HttpUrl;
-import com.tylz.aelos.util.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -83,9 +82,6 @@ public class AboutHelpActivity
                        @Override
                        public void onResponse(final String response, int id) {
                            closeProgress();
-                           UIUtils.postTaskSafely(new Runnable() {
-                               @Override
-                               public void run() {
                                    if(TextUtils.isEmpty(response)){
                                         mWebview.setVisibility(View.GONE);
                                         mTvNothing.setVisibility(View.VISIBLE);
@@ -93,12 +89,10 @@ public class AboutHelpActivity
                                        mWebview.loadDataWithBaseURL(null,
                                                                     response,
                                                                     "text/html",
-                                                                    "UTF-8",
+                                                                    "utf-8",
                                                                     null);
                                    }
 
-                               }
-                           });
                        }
                    });
     }

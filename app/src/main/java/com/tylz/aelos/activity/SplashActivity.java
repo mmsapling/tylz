@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -43,13 +44,22 @@ public class SplashActivity
 {
 
 
-    GifView mSplashGif;
-    ILoadModel mILoadModel;
+    private static final int WHAT_CHECK_LOAD = 0;
+    GifView                     mSplashGif;
+    ILoadModel                  mILoadModel;
     LoadObjectServiceConnection mServiceConnection;
     private DNumProgressDialog mNumProgressDialog;
-    private CheckLoadTask mCheckLoadTask;
-    private DAlertDialog mDAlertDialog;
-    private LoadHandler mLoadHandler;
+    private DAlertDialog       mDAlertDialog;
+    private Handler mLoadHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (WHAT_CHECK_LOAD == msg.what) {
+                processLoadInfo();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +71,7 @@ public class SplashActivity
         bindService(service, mServiceConnection, Context.BIND_AUTO_CREATE);
         mSplashGif = (GifView) findViewById(R.id.splash_gif);
         mSplashGif.setMovieResource(R.mipmap.welcome);
-        if(mCheckLoadTask == null){
-            mCheckLoadTask = new CheckLoadTask();
-        }
-        if(mLoadHandler == null){
-            mLoadHandler = new LoadHandler();
-        }
+
         checkUpdate();
     }
 
@@ -82,9 +87,39 @@ public class SplashActivity
         JPushInterface.onPause(this);
 
     }
-    private class LoadHandler extends Handler{
+
+    private boolean isFinish = false;
+
+    private void processLoadInfo() {
+        if (mILoadModel != null) {
+            Object3D object3D = mILoadModel.callLoad3DModel();
+            if (object3D != null) {
+                isFinish = true;
+                /**
+                 * 如果存在用户信息，那么跳过登录，直接进入扫描
+                 * 否则进入登录
+                 */
+                if (!TextUtils.isEmpty(mUser_id)) {
+                    skipActivityF(ScanBleActivity.class);
+                } else {
+                    skipActivityF(LoginActivity.class);
+                }
+            }
+
+        }
+        if (isFinish) {
+            mLoadHandler.removeMessages(WHAT_CHECK_LOAD);
+        } else {
+            startCheckLoad();
+        }
 
     }
+
+    private void startCheckLoad() {
+        mLoadHandler.removeMessages(WHAT_CHECK_LOAD);
+        mLoadHandler.sendEmptyMessageDelayed(WHAT_CHECK_LOAD, Constants.LAUNCH_SLEEP_TIME);
+    }
+
     private class LoadObjectServiceConnection
             implements ServiceConnection
     {
@@ -103,52 +138,13 @@ public class SplashActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mServiceConnection != null){
+        if (mServiceConnection != null) {
             unbindService(mServiceConnection);
         }
-        if(mCheckLoadTask != null){
-            mCheckLoadTask.stop();
-        }
+        mLoadHandler.removeMessages(WHAT_CHECK_LOAD);
+        mLoadHandler = null;
     }
 
-    /**
-     * 检查加载模型是否完成
-     */
-    class CheckLoadTask implements  Runnable{
-        public void start(){
-            if(mLoadHandler != null){
-                mLoadHandler.removeCallbacks(this);
-                mLoadHandler.postDelayed(this,Constants.LAUNCH_SLEEP_TIME);
-            }
-
-        }
-        public void stop(){
-            if(mLoadHandler != null){
-                mLoadHandler.removeCallbacks(this);
-            }
-            mLoadHandler = null;
-        }
-        @Override
-        public void run() {
-            if(mILoadModel != null){
-                Object3D object3D = mILoadModel.callLoad3DModel();
-                if(object3D != null){
-                    /**
-                     * 如果存在用户信息，那么跳过登录，直接进入扫描
-                     * 否则进入登录
-                     */
-                    if(!TextUtils.isEmpty(mUser_id)){
-                        skipActivityF(ScanBleActivity.class);
-                    }else{
-                        skipActivityF(LoginActivity.class);
-                    }
-                    stop();
-                }
-
-            }
-            start();
-        }
-    }
     /**
      * 检查更新
      */
@@ -160,52 +156,54 @@ public class SplashActivity
                        @Override
                        public void onResult(String response, int id) {
                            try {
-                               UpdateInfo updateInfo        = UpdateInfoParser.getUpdateInfo(response);
-                               int        versionCode       = AppUtils.getVersionCode(SplashActivity.this);
-                               int        serverVersionCode = Integer.parseInt(updateInfo.version);
-                               if(serverVersionCode > versionCode){
+                               UpdateInfo updateInfo = UpdateInfoParser.getUpdateInfo(response);
+                               int versionCode       = AppUtils.getVersionCode(SplashActivity.this);
+                               int serverVersionCode = Integer.parseInt(updateInfo.version);
+                               if (serverVersionCode > versionCode) {
                                    showUpdateTip(updateInfo);
-                               }else{
-//                                   mToastor.getSingletonToast(R.string.latest_version)
-//                                           .show();
-                                   mCheckLoadTask.start();
+                               } else {
+                                   //                                   mToastor.getSingletonToast(R.string.latest_version)
+                                   //                                           .show();
+                                   startCheckLoad();
                                }
                            } catch (Exception e) {
                                e.printStackTrace();
-                               mCheckLoadTask.start();
+                               startCheckLoad();
                            }
                        }
 
                        @Override
                        public void onError(Call call, Exception e, int id) {
                            super.onError(call, e, id);
-                           mCheckLoadTask.start();
+                           startCheckLoad();
                        }
 
                        @Override
                        public void onEmpty() {
                            super.onEmpty();
-                           mCheckLoadTask.start();
+                           startCheckLoad();
                        }
                    });
     }
+
     private void showUpdateTip(final UpdateInfo updateInfo) {
-        if(mDAlertDialog == null){
-            mDAlertDialog = new DAlertDialog(this).builder().setTitle(UIUtils.getString(R.string.tip))
-                    .setCancelable(false)
-                    .setMsg(UIUtils.getString(R.string.tip_app_update))
-                    .setPositiveButton(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            downloadApk(updateInfo);
-                        }
-                    })
-                    .setNegativeButton(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mCheckLoadTask.start();
-                        }
-                    });
+        if (mDAlertDialog == null) {
+            mDAlertDialog = new DAlertDialog(this).builder()
+                                                  .setTitle(UIUtils.getString(R.string.tip))
+                                                  .setCancelable(false)
+                                                  .setMsg(UIUtils.getString(R.string.tip_app_update))
+                                                  .setPositiveButton(new View.OnClickListener() {
+                                                      @Override
+                                                      public void onClick(View v) {
+                                                          downloadApk(updateInfo);
+                                                      }
+                                                  })
+                                                  .setNegativeButton(new View.OnClickListener() {
+                                                      @Override
+                                                      public void onClick(View v) {
+                                                          startCheckLoad();
+                                                      }
+                                                  });
         }
         mDAlertDialog.show();
     }
@@ -213,33 +211,36 @@ public class SplashActivity
     private void downloadApk(UpdateInfo updateInfo) {
         String fileName = System.currentTimeMillis() + ".apk";
         showNumProcess();
-        OkHttpUtils.get().url(updateInfo.url).build().execute(new FileCallBack(FileUtils.getDownloadDir(), fileName) {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                closeNumProcess();
-                mToastor.getSingletonToast(R.string.tip_check_net).show();
-                mCheckLoadTask.start();
-            }
+        OkHttpUtils.get()
+                   .url(updateInfo.url)
+                   .build()
+                   .execute(new FileCallBack(FileUtils.getDownloadDir(), fileName) {
+                       @Override
+                       public void onError(Call call, Exception e, int id) {
+                           closeNumProcess();
+                           mToastor.getSingletonToast(R.string.tip_check_net)
+                                   .show();
+                           startCheckLoad();
+                       }
 
-            @Override
-            public void onResponse(File response, int id) {
-                closeNumProcess();
-                installApk(response);
-            }
+                       @Override
+                       public void onResponse(File response, int id) {
+                           closeNumProcess();
+                           installApk(response);
+                       }
 
-            @Override
-            public void inProgress(final float progress, long total, int id) {
-                UIUtils.postTaskSafely(new Runnable() {
-                    @Override
-                    public void run() {
-                        int index = (int) (progress * 100);
-                        if (mNumProgressDialog != null) {
-                            mNumProgressDialog.setProgress(index);
-                        }
-                    }
-                });
-            }
-        });
+                       @Override
+                       public void inProgress(final float progress, long total, int id) {
+
+
+                           int index = (int) (progress * 100);
+                           if (mNumProgressDialog != null) {
+                               mNumProgressDialog.setProgress(index);
+                           }
+
+
+                       }
+                   });
     }
 
     private void installApk(File file) {

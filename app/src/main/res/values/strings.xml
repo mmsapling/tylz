@@ -283,6 +283,7 @@
     <string name="permission_camera_rationale">同意使用相机权限吗？</string>
     <string name="permission_recorder_rationale">同意使用录音权限吗？</string>
     <string name="show_pwd">显示密码</string>
+    <string name="error_play_video">无法播放此视频！</string>
 
     <array name="tabs_upload">
         <item>全部</item>

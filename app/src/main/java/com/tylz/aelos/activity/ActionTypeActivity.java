@@ -3,6 +3,7 @@ package com.tylz.aelos.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -17,7 +18,6 @@ import com.tylz.aelos.bean.ShopBean;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.Constants;
 import com.tylz.aelos.util.HttpUtil;
-import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
 import java.lang.reflect.Type;
@@ -82,6 +82,7 @@ public class ActionTypeActivity
         if (mPage == 0) {
             mDatas.clear();
         }
+
         final Map<String, String> params = new HashMap<String, String>();
         String                    id     = mSpUtils.getString(Constants.USER_ID, "");
         params.put("id", id);
@@ -92,13 +93,13 @@ public class ActionTypeActivity
                                   @Override
                                   public void run() {
                                       final String data = HttpUtil.doPost("getGoodsList", params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
                                               mSwipeRefresh.setRefreshing(false);
                                               mListview.onLoadComplete();
-                                              if ("null".equals(data)) {
+                                              if ("null".equals(data) || TextUtils.isEmpty(data)) {
                                                   if (mPage != 0) {
                                                       mPage--;
                                                   } else if (mPage == 0 && mDatas.size() == 0) {
@@ -113,6 +114,7 @@ public class ActionTypeActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }

@@ -21,7 +21,6 @@ import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.Comment;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.util.HttpUtil;
-import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
 import org.json.JSONArray;
@@ -125,7 +124,7 @@ public class AllCommentIdActivity
                                                final String commentsJson = HttpUtil.doPost("getComments",
                                                                                            params);
                                                closeProgress();
-                                               UIUtils.postTaskSafely(new Runnable() {
+                                               runOnUiThread(new Runnable() {
                                                    @Override
                                                    public void run() {
                                                        mSwipeRefresh.setRefreshing(false);
@@ -143,9 +142,9 @@ public class AllCommentIdActivity
                                                                mAdapter.notifyDataSetChanged();
                                                            }
                                                        }
-
                                                    }
                                                });
+
                                            }
 
                                        }

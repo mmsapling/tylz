@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /*
- *  @项目名：  Aelos 
+ *  @项目名：  Aelos
  *  @包名：    com.tylz.aelos.activity
  *  @文件名:   MyCollectActivity
  *  @创建者:   陈选文
@@ -111,27 +111,27 @@ public class MyCollectActivity
                                   @Override
                                   public void run() {
                                       final String data = HttpUtil.doPost("getGoodsList", params);
-                                      UIUtils.postTaskSafely(new Runnable() {
-                                          @Override
-                                          public void run() {
-                                              closeProgress();
-                                              mSwipeRefresh.setRefreshing(false);
-                                              mListview.onLoadComplete();
-                                              if ("null".equals(data)) {
-                                                  if (mPage != 0) {
-                                                      mPage--;
-                                                  } else if (mPage == 0 && mDatas.size() == 0) {
-                                                      mTvNothing.setVisibility(View.VISIBLE);
-                                                      mListview.setVisibility(View.GONE);
-                                                  }
-                                                  mAdapter.notifyDataSetChanged();
-                                              } else {
-                                                  mTvNothing.setVisibility(View.GONE);
-                                                  mListview.setVisibility(View.VISIBLE);
-                                                  processData(data);
-                                              }
-                                          }
-                                      });
+                                     runOnUiThread(new Runnable() {
+                                         @Override
+                                         public void run() {
+                                             closeProgress();
+                                             mSwipeRefresh.setRefreshing(false);
+                                             mListview.onLoadComplete();
+                                             if ("null".equals(data)) {
+                                                 if (mPage != 0) {
+                                                     mPage--;
+                                                 } else if (mPage == 0 && mDatas.size() == 0) {
+                                                     mTvNothing.setVisibility(View.VISIBLE);
+                                                     mListview.setVisibility(View.GONE);
+                                                 }
+                                                 mAdapter.notifyDataSetChanged();
+                                             } else {
+                                                 mTvNothing.setVisibility(View.GONE);
+                                                 mListview.setVisibility(View.VISIBLE);
+                                                 processData(data);
+                                             }
+                                         }
+                                     });
                                   }
                               });
     }

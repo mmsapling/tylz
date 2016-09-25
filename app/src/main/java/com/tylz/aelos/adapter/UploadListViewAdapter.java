@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.base.MyBaseApdater;
 import com.tylz.aelos.bean.UploadBean;
@@ -13,6 +14,8 @@ import com.tylz.aelos.db.DbHelper;
 import com.tylz.aelos.util.UIUtils;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /*
  *  @项目名：  Aelos 
@@ -46,6 +49,7 @@ public class UploadListViewAdapter
             holder.ivDownload = (ImageView) convertView.findViewById(R.id.item_iv_download);
             holder.ivCollect = (ImageView) convertView.findViewById(R.id.item_ib_collect);
             holder.tvCheckStatus = (TextView) convertView.findViewById(R.id.item_tv_check_status);
+            holder.civ = (CircleImageView) convertView.findViewById(R.id.item_civ_avator);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -84,10 +88,12 @@ public class UploadListViewAdapter
         }else{
             holder.tvDownload.setText(UIUtils.getString(R.string.download) + " " + shopBean.downloadCount);
         }
+        Picasso.with(mContext).load(shopBean.picurl).placeholder(R.mipmap.noimg).into(holder.civ);
         return convertView;
     }
 
     private class ViewHolder {
+        CircleImageView civ;
         TextView tvName;
         TextView tvTime;
         TextView tvType;

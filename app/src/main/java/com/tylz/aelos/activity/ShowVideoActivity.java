@@ -24,7 +24,6 @@ import com.tylz.aelos.R;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.VideoEntity;
 import com.tylz.aelos.util.StringUtils;
-import com.tylz.aelos.util.ToastUtils;
 import com.tylz.aelos.util.videoutils.ImageCache;
 import com.tylz.aelos.util.videoutils.ImageResizer;
 import com.tylz.aelos.util.videoutils.Utils;

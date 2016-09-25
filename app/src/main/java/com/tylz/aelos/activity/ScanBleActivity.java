@@ -86,8 +86,8 @@ public class ScanBleActivity
             switch (msg.what) {
                 case WHAT_CONNECT_WAITING_TIME:
                     closeProgress();
-                    mToastor.getSingletonToast(R.string.fail_connect_robot)
-                            .show();
+//                    mToastor.getSingletonToast(R.string.fail_connect_robot)
+//                            .show();
                     break;
             }
         }

@@ -24,7 +24,7 @@ public interface Constants {
     /** 启动页等待时间 */
     long   LAUNCH_TIME                  = 4000;
     /** 启动页睡眠时间*/
-    long   LAUNCH_SLEEP_TIME            = 200;
+    long   LAUNCH_SLEEP_TIME            = 1000;
     /** 用户id */
     String USER_ID                      = "user_id";
     /** 音频目录 */
@@ -78,4 +78,5 @@ public interface Constants {
     long   ADD_STATUS_TIME              = 3000;
     String WIFI_NAME                    = "wifi_name";
     String WIFI_PWD                     = "wifi_pwd";
+    String ACTION_MODEL_LOADED          = "action_model_loaded";
 }

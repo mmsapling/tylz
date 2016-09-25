@@ -23,7 +23,6 @@ import com.tylz.aelos.bean.UploadBean;
 import com.tylz.aelos.db.DbHelper;
 import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.util.CommomUtil;
-import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 
 import java.util.ArrayList;
@@ -168,6 +167,11 @@ public class UploadActionDetailActivity
         }
 
             /*去网络获取视频第一帧*/
+//        Picasso.with(this)
+//               .load(mActionDetailBean.videopicurl)
+//               .error(R.mipmap.applogo)
+//               .placeholder(R.mipmap.applogo)
+//               .into(mIvBgVideo);
         ThreadPoolProxyFactory.createNormalThreadPoolProxy()
                               .execute(new Runnable() {
                                   @Override
@@ -176,12 +180,12 @@ public class UploadActionDetailActivity
                                               mUploadBean.video,
                                               480,
                                               480);
-                                      UIUtils.postTaskSafely(new Runnable() {
-                                          @Override
-                                          public void run() {
-                                              mIvBgVideo.setImageBitmap(videoThumbnail);
-                                          }
-                                      });
+                                     runOnUiThread(new Runnable() {
+                                         @Override
+                                         public void run() {
+                                             mIvBgVideo.setImageBitmap(videoThumbnail);
+                                         }
+                                     });
                                   }
                               });
 

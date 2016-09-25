@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+
+apply plugin: 'com.jfrog.bintray'
+
+version = "3.0.1"
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+    resourcePrefix "hybridsquad_"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 20
+        versionCode 16
+        versionName version
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

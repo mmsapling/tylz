@@ -14,7 +14,6 @@ import com.tylz.aelos.adapter.InstructionsAdapter;
 import com.tylz.aelos.base.BaseActivity;
 import com.tylz.aelos.bean.Instructions;
 import com.tylz.aelos.manager.HttpUrl;
-import com.tylz.aelos.util.UIUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -56,6 +55,7 @@ public class InstructionsActivity
         mTvTitle.setText(R.string.instructions);
         loadDataFromNet();
     }
+
     /**
      * 从网络加载数据
      */
@@ -73,19 +73,15 @@ public class InstructionsActivity
                        @Override
                        public void onResponse(final String response, int id) {
                            closeProgress();
-                           UIUtils.postTaskSafely(new Runnable() {
-                               @Override
-                               public void run() {
-                                   if(TextUtils.isEmpty(response)){
-                                       mListview.setVisibility(View.GONE);
-                                       mTvNothing.setVisibility(View.VISIBLE);
-                                   }else{
-                                       //给listview设置数据
-                                       processJson(response);
-                                   }
 
-                               }
-                           });
+                           if (TextUtils.isEmpty(response) || "null".equals(response)) {
+                               mListview.setVisibility(View.GONE);
+                               mTvNothing.setVisibility(View.VISIBLE);
+                           } else {
+                               //给listview设置数据
+                               processJson(response);
+                           }
+
                        }
                    });
     }
@@ -96,11 +92,16 @@ public class InstructionsActivity
      *         json数据
      */
     private void processJson(String json) {
-        Type type = new TypeToken<List<Instructions>>(){}.getType();
-        Gson gson = new Gson();
-        List<Instructions> datas = gson.fromJson(json, type);
-        InstructionsAdapter adapter = new InstructionsAdapter(this,datas);
-        mListview.setAdapter(adapter);
+        try {
+            Type                type    = new TypeToken<List<Instructions>>() {}.getType();
+            Gson                gson    = new Gson();
+            List<Instructions>  datas   = gson.fromJson(json, type);
+            InstructionsAdapter adapter = new InstructionsAdapter(this, datas);
+            mListview.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @OnClick(R.id.iv_left)

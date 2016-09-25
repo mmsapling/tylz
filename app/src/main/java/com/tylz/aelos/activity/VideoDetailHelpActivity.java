@@ -83,13 +83,13 @@ public class VideoDetailHelpActivity
                                               mHelpData.url,
                                               480,
                                               480);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mIvBgVideo.setImageBitmap(videoThumbnail);
+                                        }
+                                    });
 
-                                      UIUtils.postTaskSafely(new Runnable() {
-                                          @Override
-                                          public void run() {
-                                              mIvBgVideo.setImageBitmap(videoThumbnail);
-                                          }
-                                      });
                                   }
                               });
 

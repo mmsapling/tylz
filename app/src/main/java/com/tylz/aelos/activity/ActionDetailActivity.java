@@ -1,8 +1,8 @@
 package com.tylz.aelos.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +25,7 @@ import android.widget.VideoView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.squareup.picasso.Picasso;
 import com.tylz.aelos.R;
 import com.tylz.aelos.adapter.CommentAdapter;
 import com.tylz.aelos.base.BaseActivity;
@@ -159,7 +160,7 @@ public class ActionDetailActivity
                                       params.put("number", Constants.PAGE_SIZE);
                                       final String commentsJson = HttpUtil.doPost("getComments",
                                                                                   params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               Type type = new TypeToken<List<Comment>>() {}.getType();
@@ -173,6 +174,7 @@ public class ActionDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }
@@ -349,54 +351,57 @@ public class ActionDetailActivity
         }
 
             /*去网络获取视频第一帧*/
-        ThreadPoolProxyFactory.createNormalThreadPoolProxy()
-                              .execute(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      final Bitmap videoThumbnail = CommomUtil.createVideoThumbnail(
-                                              mActionDetailBean.video,
-                                              480,
-                                              480);
-
-                                      UIUtils.postTaskSafely(new Runnable() {
-                                          @Override
-                                          public void run() {
-                                              mIvBgVideo.setImageBitmap(videoThumbnail);
-                                          }
-                                      });
-                                  }
-                              });
+        Picasso.with(this)
+               .load(mActionDetailBean.videopicurl)
+               .error(R.mipmap.applogo)
+               .placeholder(R.mipmap.applogo)
+               .into(mIvBgVideo);
 
         MediaController mediaController = new MediaController(this);
         // mediaController.set
         mVideoview.setMediaController(mediaController);
+        mVideoview.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                mToastor.getSingletonToast(R.string.error_play_video).show();
+                return true;
+            }
+        });
         /*视频中间按钮播放*/
         mIbVideoPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(mActionDetailBean.video)) {
-                    mToastor.getSingletonToast(R.string.empty_video_path);
-                    return;
-                }
-                boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
-                boolean wifi   = CommUtils.isWifi(getApplicationContext());
-                if (!wifi && isWifi) {
-                    showPlayTip();
-                } else {
-                    mPbProgress.setVisibility(View.VISIBLE);
-                    mIbVideoPlay.setVisibility(View.GONE);
-                    mVideoview.setVideoPath(mActionDetailBean.video);
-                    mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            mIvBgVideo.setVisibility(View.GONE);
-                            mPbProgress.setVisibility(View.GONE);
-                            mVideoview.start();
-                        }
-                    });
-                }
+                playVideo();
+
             }
         });
+    }
+
+    private void playVideo() {
+
+        if (TextUtils.isEmpty(mActionDetailBean.video)) {
+            mToastor.getSingletonToast(R.string.empty_video_path);
+            return;
+        }
+        boolean isWifi = mSpUtils.getBoolean(Constants.IS_DOWNLOAD_WIFI, true);
+        boolean wifi   = CommUtils.isWifi(getApplicationContext());
+        if (!wifi && isWifi) {
+            showPlayTip();
+        } else {
+            mPbProgress.setVisibility(View.VISIBLE);
+            mIbVideoPlay.setVisibility(View.GONE);
+            mVideoview.setVideoURI(Uri.parse(mActionDetailBean.video));
+//            mVideoview.setVideoPath(mActionDetailBean.video);
+            mVideoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mIvBgVideo.setVisibility(View.GONE);
+                    mPbProgress.setVisibility(View.GONE);
+                    mVideoview.start();
+                }
+            });
+
+        }
     }
 
     private void showPlayTip() {
@@ -481,7 +486,8 @@ public class ActionDetailActivity
                               .execute(new Runnable() {
                                   @Override
                                   public void run() {
-                                      String id = mSpUtils.getString(Constants.USER_ID, "");
+                                      String              id     = mSpUtils.getString(Constants.USER_ID,
+                                                                                      "");
                                       Map<String, String> params = new HashMap<>();
                                       params.put("id", mShopBean.id);
                                       params.put("userid", id);
@@ -504,49 +510,43 @@ public class ActionDetailActivity
                    .url(mActionDetailBean.audio)
                    .build()
                    .execute(new FileCallBack(Constants.DIR_AUDIO, fileName) {
-                       @Override
-                       public void onError(Call call, Exception e, int id) {
-                           closeProgress();
-                           closeNumProcess();
-                           mToastor.getSingletonToast(R.string.tip_check_net)
-                                   .show();
-                       }
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    closeProgress();
+                                    closeNumProcess();
+                                    mToastor.getSingletonToast(R.string.tip_check_net)
+                                            .show();
+                                }
 
-                       @Override
-                       public void onResponse(File response, int id) {
-                           UIUtils.postTaskSafely(new Runnable() {
-                               @Override
-                               public void run() {
-                                   closeNumProcess();
-                                   long result = mDbHelper.insertAction(mActionDetailBean, "false");
-                                   if (result != -1) {
-                                       mShopBean.isdownload = "true";
-                                       mIvDownload.setEnabled(false);
-                                       mToastor.getSingletonToast(R.string.success_download)
-                                               .show();
-                                   } else {
-                                       mShopBean.isdownload = "false";
-                                       mIvDownload.setEnabled(true);
-                                   }
-                                   loadDownLoadCountFromNet();
-                               }
-                           });
-                       }
+                                @Override
+                                public void onResponse(File response, int id) {
 
-                       @Override
-                       public void inProgress(final float progress, long total, int id) {
+                                    closeNumProcess();
+                                    long result = mDbHelper.insertAction(mActionDetailBean, "false");
+                                    if (result != -1) {
+                                        mShopBean.isdownload = "true";
+                                        mIvDownload.setEnabled(false);
+                                        mToastor.getSingletonToast(R.string.success_download)
+                                                .show();
+                                    } else {
+                                        mShopBean.isdownload = "false";
+                                        mIvDownload.setEnabled(true);
+                                    }
+                                    loadDownLoadCountFromNet();
+                                }
 
-                           UIUtils.postTaskSafely(new Runnable() {
-                               @Override
-                               public void run() {
-                                   int index = (int) (progress * 100);
-                                   if (mNumProgressDialog != null) {
-                                       mNumProgressDialog.setProgress(index);
-                                   }
-                               }
-                           });
-                       }
-                   });
+
+                                @Override
+                                public void inProgress(final float progress, long total, int id) {
+
+                                    int index = (int) (progress * 100);
+                                    if (mNumProgressDialog != null) {
+                                        mNumProgressDialog.setProgress(index);
+                                    }
+                                }
+                            }
+
+                   );
     }
 
     /**从网络重新加载下载次数*/
@@ -560,13 +560,12 @@ public class ActionDetailActivity
                                       params.put("goodsid", mShopBean.id);
                                       final String countDownload = HttpUtil.doPost("countDownload",
                                                                                    params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
                                               try {
-                                                  JSONArray  jsonArray  = new JSONArray(
-                                                          countDownload);
+                                                  JSONArray jsonArray = new JSONArray(countDownload);
                                                   JSONObject jsonObject = jsonArray.getJSONObject(0);
                                                   String downloadCount = jsonObject.getString(
                                                           "downloadCount");
@@ -577,6 +576,7 @@ public class ActionDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }
@@ -726,7 +726,7 @@ public class ActionDetailActivity
                                       params.put("userid", mUser_id);
                                       params.put("goodsid", mShopBean.id);
                                       final String praiseData = HttpUtil.doPost("applaud", params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -787,7 +787,7 @@ public class ActionDetailActivity
                                       params.put("goodsid", mShopBean.id);
                                       final String collectData = HttpUtil.doPost("collect", params);
                                       LogUtils.d("collectdata = " + collectData);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
@@ -799,6 +799,7 @@ public class ActionDetailActivity
                                               }
                                           }
                                       });
+
                                   }
                               });
     }

@@ -20,7 +20,6 @@ import com.tylz.aelos.factory.ThreadPoolProxyFactory;
 import com.tylz.aelos.manager.HttpUrl;
 import com.tylz.aelos.util.HttpUtil;
 import com.tylz.aelos.util.LogUtils;
-import com.tylz.aelos.util.UIUtils;
 import com.tylz.aelos.view.LoadMoreListView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -89,6 +88,7 @@ public class MsgActivity
             mPage = page;
         }
         showProgress();
+
         ThreadPoolProxyFactory.createNormalThreadPoolProxy()
                               .execute(new Runnable() {
                                   @Override
@@ -96,14 +96,16 @@ public class MsgActivity
                                       Map<String, String> params = new HashMap<>();
                                       params.put("userid", mUser_id);
                                       params.put("page", mPage + "");
-                                      final String data = HttpUtil.doPost("getUserPush", params);
-                                      UIUtils.postTaskSafely(new Runnable() {
+                                      final String response = HttpUtil.doPost("getUserPush",
+                                                                              params);
+                                      runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
                                               closeProgress();
                                               mSwipeRefresh.setRefreshing(false);
                                               mListview.onLoadComplete();
-                                              if (TextUtils.isEmpty(data)) {
+                                              if (TextUtils.isEmpty(response) || "null".equals(response))
+                                              {
                                                   if (mPage != 1) {
                                                       mPage--;
                                                   } else if (mPage == 1 && mDatas.size() == 0) {
@@ -114,34 +116,27 @@ public class MsgActivity
                                               } else {
                                                   mTvNothing.setVisibility(View.GONE);
                                                   mListview.setVisibility(View.VISIBLE);
-                                                  processData(data);
+                                                  processData(response);
                                               }
                                           }
                                       });
+
                                   }
                               });
+
+
     }
 
     private void processData(String data) {
-        if(data.equals("null")){
-            if(mDatas != null && mDatas.size() == 0){
-                mTvNothing.setVisibility(View.VISIBLE);
-                mListview.setVisibility(View.GONE);
-            }
+        Type          type        = new TypeToken<List<MsgBean>>() {}.getType();
+        Gson          gson        = new Gson();
+        List<MsgBean> msgBeanList = gson.fromJson(data, type);
+        if (msgBeanList != null) {
+            mDatas.addAll(msgBeanList);
+            mAdapter.notifyDataSetChanged();
+        } else {
             mPage--;
-        }else{
-            Type          type        = new TypeToken<List<MsgBean>>() {}.getType();
-            Gson          gson        = new Gson();
-            List<MsgBean> msgBeanList = gson.fromJson(data, type);
-            if (msgBeanList != null) {
-                mDatas.addAll(msgBeanList);
-                mAdapter.notifyDataSetChanged();
-            } else {
-                mPage--;
-            }
         }
-
-
     }
 
     @Override
