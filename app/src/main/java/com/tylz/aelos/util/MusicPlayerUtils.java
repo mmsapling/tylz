@@ -19,6 +19,22 @@ public class MusicPlayerUtils {
     private MediaPlayer mMediaPlayer;
     private List<String> mMusics;
     private boolean   isPlaying;
+    private static MusicPlayerUtils mInstance;
+    private  MusicPlayerUtils(){
+        isPlaying = false;
+        mMediaPlayer = new MediaPlayer();
+    }
+
+    public static  MusicPlayerUtils getInstance(){
+        if(mInstance == null){
+            synchronized (MusicPlayerUtils.class){
+                if(mInstance == null){
+                    mInstance = new MusicPlayerUtils();
+                }
+            }
+        }
+        return mInstance;
+    }
     public void setMusics(List<String> musics) {
         mMusics = musics;
     }
@@ -40,10 +56,7 @@ public class MusicPlayerUtils {
     public void setMediaPlayer(MediaPlayer mediaPlayer) {
         mMediaPlayer = mediaPlayer;
     }
-    public MusicPlayerUtils() {
-        isPlaying = false;
-        mMediaPlayer = new MediaPlayer();
-    }
+
     public void play(){
         if(mMusics == null || mMusics.size() == 0){
             return;

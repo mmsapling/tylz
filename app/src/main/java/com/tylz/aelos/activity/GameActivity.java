@@ -142,7 +142,7 @@ public class GameActivity
     private void init() {
 
         mDbHelper = new DbHelper(this);
-        mPlayerUtils = new MusicPlayerUtils();
+        mPlayerUtils = MusicPlayerUtils.getInstance();
         mTvTitle.setText(R.string.remote_control);
         Intent service = new Intent(this, BlueService.class);
         startService(service);
@@ -421,7 +421,7 @@ public class GameActivity
                             .show();
                     break;
                 case R.id.ib_right_turn:
-                   mIbRightTurn.setPressed(true);
+                    mIbRightTurn.setPressed(true);
                     mIBluetooth.callWrite("d6");
                     mToastor.getSingletonToast(R.string.right_turn)
                             .show();
@@ -627,6 +627,14 @@ public class GameActivity
         if (mBlueServiceConnection != null) {
             unbindService(mBlueServiceConnection);
             mBlueServiceConnection = null;
+        }
+        if (mPlayerUtils != null) {
+            mPlayerUtils.clear();
+        }
+        try {
+            mIBluetooth.callWrite("da");
+        } catch (Exception e) {
+
         }
     }
 
